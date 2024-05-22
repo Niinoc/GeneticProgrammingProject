@@ -22,11 +22,11 @@ public enum Operator {
 //        NEG("-x", input -> -(input[0])),
 //        INV("1/x", input -> 1/(input[0])),
 //        SQRT("sqrt", input -> Math.sqrt(input[0])),
-//        EXP("^", input -> Math.pow(input[0], input[1]),
-//        LOG("log", input -> Math.log(input[0]), //unterschiedliche log?
-//        SIN("sin", input -> Math.sin(input[0]),
-//        COS("cos", input -> Math.cos(input[0]),
-//        TAN("tan", input -> Math.tan(input[0]),
+//        EXP("^", input -> Math.pow(input[0], input[1])),
+//        LOG("log", input -> Math.log(input[0])), //unterschiedliche log?
+//        SIN("sin", input -> Math.sin(input[0])),
+//        COS("cos", input -> Math.cos(input[0])),
+//        TAN("tan", input -> Math.tan(input[0])),
     //iwas mit e
     //iwas mit konstanten
         ;
