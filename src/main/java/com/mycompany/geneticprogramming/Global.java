@@ -15,8 +15,14 @@ public class Global {
     // Do NOT add non-static variables here!
 
     static String logFileNamePrefix = "out.";   // Here you can change the prefix of the log-files
-    static long seed = 2;
-            //System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom
+
+    static String inputFileNamePrefix = "in.";
+    static String logFileNamePostfix = ".txt";
+
+    static String fitnessCasesFileName = "fitnessCases";
+
+    static String targetFunction = "x*x*x + 0.5*x*x + 1";
+    static long seed = System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom
     private static long getProcessId() {
         String processName =
                 java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
@@ -32,13 +38,31 @@ public class Global {
 
     static int numberOfFitnessCases = 50;
 
-    static String targetFunction = "x*x*x + 0.5*x*x + 1";
-
+    static double stepSize = 0.1;
 
     static double mutationProbabiltyInstructions = 0.1;
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
 
     static FitnessFunction fitnessFunction = new FitnessRegression();
+
+    static String toStringStatic() {
+        return "Parameters:\n" +
+                "seed: " + seed + "\n" +
+                "numberOfRegisters: " + numberOfRegisters + "\n" +
+                "initialProgramLength: " + initialProgramLength + "\n" +
+                "populationSize: " + populationSize + "\n" +
+                "numberOfGenerations: " + numberOfGenerations + "\n" +
+                "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
+                "stepSize: " + stepSize + "\n" +
+                "targetFunction: " + targetFunction + "\n" +
+                "mutationProbabiltyInstructions: " + mutationProbabiltyInstructions + "\n" +
+                "mutationProbabiltyInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
+                "mutationStrengthInitialRegisterStates: " + mutationStrengthInitialRegisterStates + "\n" +
+                "FitnessCasesFileName: " + fitnessCasesFileName + "\n" +
+                "logFileNamePrefix: " + logFileNamePrefix + "\n" +
+                "logFileNamePostfix: " + logFileNamePostfix;
+    }
+
 
 }
