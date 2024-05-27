@@ -20,9 +20,9 @@ import java.util.logging.Logger;
  * Note that    Log.writer("dat").println(myDataString);  does not flush !
  * @author Peter
  */
-public class Log {
-    static String fileNamePrefix = "out.";
-    static String fileNamePostfix = ".txt";  // due to Windoof
+public class Log extends Global{
+    static String fileNamePrefix = logFileNamePrefix;
+    static String fileNamePostfix = logFileNamePostfix;  // due to Windoof
     
 
     static Map<String, PrintWriter> writers = new HashMap<>();
