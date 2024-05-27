@@ -41,10 +41,11 @@ public class GeneticProgramming extends Global {
      *
      */
     public void runOptimization() {
+        Log.println("parameters", toStringStatic());
         Population population = newRandomPopulation();  // Create initial random population
 
         // Logging ----
-        System.out.println("\nGeneration 0: \n -----------------");             //TODO printet Gen0 zweimal aus, aber einmal verändert
+        System.out.println("\n--------------------------------");             //TODO printet Gen0 zweimal aus, aber einmal verändert
         // System.out.println(population);
         System.out.println("Best individual at generation " + 0);
         System.out.println(population.best());
@@ -209,8 +210,9 @@ public class GeneticProgramming extends Global {
         if (args.length >= 4 && Integer.parseInt(args[3]) >= 1) populationSize = Integer.parseInt(args[3]);
         if (args.length >= 5) numberOfGenerations = Integer.parseInt(args[4]);
         if (args.length >= 6) numberOfFitnessCases = Integer.parseInt(args[5]);
-        if (args.length >= 7 && Double.parseDouble(args[5]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabiltyInstructions = Double.parseDouble(args[5]);
-        if (args.length >= 8 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[6]);
-        if (args.length >= 9 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[8]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[7]);
+        if (args.length >= 7 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabiltyInstructions = Double.parseDouble(args[6]);
+        if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[7]);
+        if (args.length >= 9 && Double.parseDouble(args[8]) >= 0 && Double.parseDouble(args[8]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[8]);
+        if (args.length >= 10) fitnessCasesFileName = args[9];
     }
 }
