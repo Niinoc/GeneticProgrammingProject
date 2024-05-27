@@ -24,11 +24,11 @@ public class GeneticProgramming extends Global {
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
         parseAndSetArguments(args);
 
-        System.out.println("Seed: " + seed);
+//        System.out.println("Seed: " + seed);
 
         Log.fileNamePrefix = logFileNamePrefix; // You can change the log-output prefix in class Global
 
-        fitnessFunction = new FitnessRegression();  // Create a fitness function (objective function)
+        fitnessFunction = new FitnessRegression(fitnessCasesFileName);  // Create a fitness function (objective function) from file
 
         GeneticProgramming gp = new GeneticProgramming(); // Create a gp instance (using the global fitnessFunction)
 
@@ -45,7 +45,7 @@ public class GeneticProgramming extends Global {
         Population population = newRandomPopulation();  // Create initial random population
 
         // Logging ----
-        System.out.println("\n--------------------------------");             //TODO printet Gen0 zweimal aus, aber einmal verändert
+        System.out.println("\n--------------------------------");
         // System.out.println(population);
         System.out.println("Best individual at generation " + 0);
         System.out.println(population.best());
@@ -214,5 +214,6 @@ public class GeneticProgramming extends Global {
         if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[7]);
         if (args.length >= 9 && Double.parseDouble(args[8]) >= 0 && Double.parseDouble(args[8]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[8]);
         if (args.length >= 10) fitnessCasesFileName = args[9];
+        if (args.length >= 11) targetFunction = args[10];
     }
 }
