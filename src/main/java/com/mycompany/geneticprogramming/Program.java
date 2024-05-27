@@ -70,7 +70,7 @@ public class Program extends Global {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
         for (int i = 0; i < numberOfRegisters; i++) {
-            program.initialRegisterStates[i] = randomRegisterValue();
+            program.initialRegisterStates[i] = randomRegisterValue(-1.0, 1.0);
         }
         // Generate random instructions
         for (int i = 0; i < size; i++) {
@@ -86,8 +86,12 @@ public class Program extends Global {
      * @return Random value to be used to initialize a register.
      */
     public static Double randomRegisterValue() {
-        return MyRandom.nextDouble() * 2.0 - 1.0;  // TODO: SHOULD BE A PARAMTER
+        return MyRandom.nextDouble() * 2.0 - 1.0;  // TODO: SHOULD BE A PARAMETER
     }
+    public static Double randomRegisterValue(double minValue, double maxValue) {
+        return minValue + (MyRandom.nextDouble() * (maxValue - minValue));
+    }
+
 
     @Override
     public String toString() {
