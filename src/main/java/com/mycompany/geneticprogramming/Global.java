@@ -21,7 +21,7 @@ public class Global {
 
     static String fitnessCasesFileName = "fitnessCases";
 
-    static String targetFunction = "x*x*x + 0.5*x*x + 1";
+    static String targetFunction = "x";
     static long seed = System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom
     private static long getProcessId() {
         String processName =
@@ -36,15 +36,15 @@ public class Global {
 
     static int numberOfGenerations = 1000;
 
-    static int numberOfFitnessCases = 50;
+    static int numberOfFitnessCases = 20;
 
-    static double stepSize = 0.1;
+    static double stepSize = 1;
 
     static double mutationProbabiltyInstructions = 0.1;
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
 
-    static FitnessFunction fitnessFunction = new FitnessRegression();
+    static FitnessFunction fitnessFunction = new FitnessRegression(fitnessCasesFileName);
 
     static String toStringStatic() {
         return "Parameters:\n" +
@@ -55,7 +55,6 @@ public class Global {
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
                 "stepSize: " + stepSize + "\n" +
-                "targetFunction: " + targetFunction + "\n" +
                 "mutationProbabiltyInstructions: " + mutationProbabiltyInstructions + "\n" +
                 "mutationProbabiltyInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
                 "mutationStrengthInitialRegisterStates: " + mutationStrengthInitialRegisterStates + "\n" +
