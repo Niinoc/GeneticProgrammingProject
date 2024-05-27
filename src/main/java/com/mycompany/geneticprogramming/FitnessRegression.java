@@ -4,6 +4,9 @@
  */
 package com.mycompany.geneticprogramming;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,12 +46,35 @@ public class FitnessRegression extends FitnessFunction {
     public FitnessRegression() {        //TODO: wurzel, log, 1/x haben NAN ergebnisse -> kann nicht damit umgehen
         // create fitness cases
         for (int i = 0; i < numberOfFitnessCases; i++) {
-            double input = (double) (i - numberOfFitnessCases / 2) * 0.1;   //anpassung von mir -> variabel
+            double input = (double) (i - numberOfFitnessCases / 2) * stepSize;   //anpassung von mir -> variabel
             double output = targetFunction(targetFunction, input);
             fitnessCasesInput[i][0] = input;
             fitnessCasesOutput[i] = output;
         }
     }
+
+    public FitnessRegression(String fileName) {
+        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix; // Pfad zur Textdatei
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                int i = 0;
+                String[] parts = line.split("-->");
+                if (parts.length == 2) {
+                    double inputValue = Double.parseDouble(parts[0].trim());
+                    double outputValue = Double.parseDouble(parts[1].trim());
+                    fitnessCasesInput[i][0] = inputValue;
+                    fitnessCasesOutput[i] = outputValue;
+                }
+                ++i;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO zweiter Konstruktor, erstellt in und output aus txt file | Beachte numberOfFitnessCases
 
     /***
      * This function returns the number of inputs of a fitness case
@@ -129,11 +155,13 @@ public class FitnessRegression extends FitnessFunction {
             registerExpressions.put(i, String.valueOf((program.initialRegisterStates[i])));
         }
 
+        int lastWrittenRegister = 0;
+
         // Auswertung der Anweisungen
         for (Instruction instruction : program.instructions) {
 
             int targetRegister = instruction.operands[0];
-
+            lastWrittenRegister = targetRegister;
             //region baut Ausdruck
                 Operator operator = instruction.operator;
                 String operation = operator.toString();
@@ -148,8 +176,8 @@ public class FitnessRegression extends FitnessFunction {
             registerExpressions.put(targetRegister, expression);
         }
 
-        // Der letzte Zielregister enthält das Endergebnis
-        String finalExpression = registerExpressions.get(program.getNumberOfRegisters() - 1);
+        // Das letzte Zielregister enthält das Endergebnis
+        String finalExpression = registerExpressions.get(lastWrittenRegister); //TODO last written register statt last register
         function.append(finalExpression);
 
         return function.toString();
