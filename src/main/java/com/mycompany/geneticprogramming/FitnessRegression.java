@@ -35,8 +35,8 @@ public class FitnessRegression extends FitnessFunction {
      * @param x Input value
      * @return Output value
      */
-    double targetFunction(String function, double x) {      //TODO schafft einfach keine konstanten ordentlich, bzw sind überraschend schwer
-        return x*x*x + 0.5*x*x + 1;                         // 1 / (x*x*x) erreicht fitness = infinity
+    double targetFunction(double x) {      //TODO ist auf = gestellt da python input regelt
+        return x;                         // 1 / (x*x*x) erreicht fitness = infinity
     }
 
     /***
@@ -47,7 +47,7 @@ public class FitnessRegression extends FitnessFunction {
         // create fitness cases
         for (int i = 0; i < numberOfFitnessCases; i++) {
             double input = (double) (i - numberOfFitnessCases / 2) * stepSize;   //anpassung von mir -> variabel
-            double output = targetFunction(targetFunction, input);
+            double output = targetFunction(input);
             fitnessCasesInput[i][0] = input;
             fitnessCasesOutput[i] = output;
         }
@@ -58,23 +58,21 @@ public class FitnessRegression extends FitnessFunction {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
+            int i = 0;
             while ((line = br.readLine()) != null) {
-                int i = 0;
-                String[] parts = line.split("-->");
+                String[] parts = line.split("--> ");
                 if (parts.length == 2) {
                     double inputValue = Double.parseDouble(parts[0].trim());
                     double outputValue = Double.parseDouble(parts[1].trim());
                     fitnessCasesInput[i][0] = inputValue;
                     fitnessCasesOutput[i] = outputValue;
                 }
-                ++i;
+                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    //TODO zweiter Konstruktor, erstellt in und output aus txt file | Beachte numberOfFitnessCases
 
     /***
      * This function returns the number of inputs of a fitness case
@@ -177,7 +175,7 @@ public class FitnessRegression extends FitnessFunction {
         }
 
         // Das letzte Zielregister enthält das Endergebnis
-        String finalExpression = registerExpressions.get(lastWrittenRegister); //TODO last written register statt last register
+        String finalExpression = registerExpressions.get(lastWrittenRegister);
         function.append(finalExpression);
 
         return function.toString();
@@ -189,7 +187,7 @@ public class FitnessRegression extends FitnessFunction {
      * @return A string describing the fitness function including the fitness cases.
      */
     @Override
-    public String toString() {
+    public String toString() {      //TODO change to new contructorformat
         String result = "FitnessFunction: FitnessRegression \n"
                 + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n"
                 + "#  targetFunction:     \t" + "f(x) = " + targetFunction + "\n";

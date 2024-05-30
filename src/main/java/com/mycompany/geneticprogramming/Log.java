@@ -21,14 +21,11 @@ import java.util.logging.Logger;
  * @author Peter
  */
 public class Log extends Global{
-    static String fileNamePrefix = logFileNamePrefix;
-    static String fileNamePostfix = logFileNamePostfix;  // due to Windoof
-    
 
     static Map<String, PrintWriter> writers = new HashMap<>();
 
     public static String fileNameEnding2fileName(String fileNameEnding){
-        return fileNamePrefix + fileNameEnding + fileNamePostfix;
+        return logFileNamePrefix + fileNameEnding + logFileNamePostfix;
     }
     
     public static PrintWriter writer(String fileNameEnding) {
