@@ -9,7 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.ArrayList;
 
 
 
@@ -25,8 +25,11 @@ public class FitnessRegression extends FitnessFunction {
     Interpreter interpreter;
     
     int numberOfInputs = 1;
-    double[][] fitnessCasesInput = new double[numberOfFitnessCases][numberOfInputs];
-    double[] fitnessCasesOutput = new double[numberOfFitnessCases];
+//    double[][] fitnessCasesInput = new double[numberOfFitnessCases][numberOfInputs];
+//    double[] fitnessCasesOutput = new double[numberOfFitnessCases];
+
+    ArrayList<ArrayList<Double>> fitnessCasesInput = new ArrayList<>();
+    ArrayList<Double> fitnessCasesOutput = new ArrayList<>();
 
     /**
      * *
@@ -43,31 +46,32 @@ public class FitnessRegression extends FitnessFunction {
      * Instantiate a fitness function by generating a number of fitness cases.
      * A fitness case is one desired input-output pair.
      */
-    public FitnessRegression() {        //TODO: wurzel, log, 1/x haben NAN ergebnisse -> kann nicht damit umgehen
-        // create fitness cases
+    public FitnessRegression() {
         for (int i = 0; i < numberOfFitnessCases; i++) {
-            double input = (double) (i - numberOfFitnessCases / 2) * stepSize;   //anpassung von mir -> variabel
+            double input = (double) (i - numberOfFitnessCases / 2) * stepSize;
             double output = targetFunction(input);
-            fitnessCasesInput[i][0] = input;
-            fitnessCasesOutput[i] = output;
+            ArrayList<Double> inputList = new ArrayList<>();
+            inputList.add(input);
+            fitnessCasesInput.add(inputList);
+            fitnessCasesOutput.add(output);
         }
     }
 
     public FitnessRegression(String fileName) {
-        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix; // Pfad zur Textdatei
+        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            int i = 0;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("--> ");
                 if (parts.length == 2) {
                     double inputValue = Double.parseDouble(parts[0].trim());
                     double outputValue = Double.parseDouble(parts[1].trim());
-                    fitnessCasesInput[i][0] = inputValue;
-                    fitnessCasesOutput[i] = outputValue;
+                    ArrayList<Double> inputList = new ArrayList<>();
+                    inputList.add(inputValue);
+                    fitnessCasesInput.add(inputList);
+                    fitnessCasesOutput.add(outputValue);
                 }
-                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,12 +98,12 @@ public class FitnessRegression extends FitnessFunction {
     public Double eval(Program program) {
         interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
 
-        double errorSum = 0;  // here we collect the error the program makes on the fitness cases
-        for (int i = 0; i < numberOfFitnessCases; i++) { // For each fitness case
-            double error = interpreter.run(fitnessCasesInput[i]) - fitnessCasesOutput[i];  // Run the program
-            errorSum += error * error;    // And compare the output of the program with the desired output.                
+        double errorSum = 0;    // here we collect the error the program makes on the fitness cases
+        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
+            double error = interpreter.run(fitnessCasesInput.get(i)) - fitnessCasesOutput.get(i);   // Run the program
+            errorSum += error * error;  // And compare the output of the program with the desired output.
         }
-        return errorSum / numberOfFitnessCases;  //return the average error as the fitness
+        return errorSum / numberOfFitnessCases;     //return the average error as the fitness
     }
 
     
@@ -112,27 +116,26 @@ public class FitnessRegression extends FitnessFunction {
  
     @Override
     public String evalInputOutputBehavior(Program program) {
-        String result = "";
-        interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
+        StringBuilder result = new StringBuilder();
+        interpreter = new Interpreter(program);     // instantiate an interpreter that runs the program
 
-        double[] inputs = new double[numberOfFitnessCases];                 //für plotter
-        double[] outputs = new double[numberOfFitnessCases];                //für plotter
+        double[] inputs = new double[numberOfFitnessCases];     //für plotter
+        double[] outputs = new double[numberOfFitnessCases];    //für plotter
 
-        for (int i = 0; i < numberOfFitnessCases; i++) { // For each fitness case
-            for (double input : fitnessCasesInput[i]) {
-                result += input + "\t";
-                inputs[i] = input;                                          //für plotter
+        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
+            ArrayList<Double> inputList = fitnessCasesInput.get(i);
+            for (double input : inputList) {
+                result.append(input).append("\t");      //für plotter
             }
-            result += interpreter.run(fitnessCasesInput[i]) + "\t";
-            result += fitnessCasesOutput[i] + "\n";
-
-            outputs[i] = interpreter.run(fitnessCasesInput[i]);             //für plotter
-
+            double output = interpreter.run(inputList);
+            result.append(output).append("\t").append(fitnessCasesOutput.get(i)).append("\n");
+            inputs[i] = inputList.get(0);
+            outputs[i] = output;
         }
 
 //        new GraphPlotter(inputs, outputs, fitnessCasesOutput);  //TODO für java plot entkommentieren
 
-        return result;  //return the average error as the fitness
+        return result.toString();  //return the average error as the fitness
     }
 
     /**
@@ -192,10 +195,10 @@ public class FitnessRegression extends FitnessFunction {
                 + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n"
                 + "#  targetFunction:     \t" + "f(x) = " + targetFunction + "\n";
         for (int i = 0; i < numberOfFitnessCases; i++) {
-            for (double x : fitnessCasesInput[i]) {
+            for (double x : fitnessCasesInput.get(i)) {
                 result += " " + x;
             }
-            result += " --> " + fitnessCasesOutput[i] + "\n";
+            result += " --> " + fitnessCasesOutput.get(i) + "\n";
         }
         return result;
     }

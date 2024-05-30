@@ -26,7 +26,7 @@ public class GeneticProgramming extends Global {
 
 //        System.out.println("Seed: " + seed);
 
-        Log.fileNamePrefix = logFileNamePrefix; // You can change the log-output prefix in class Global
+//        Log.fileNamePrefix = logFileNamePrefix; // You can change the log-output prefix in class Global
 
         fitnessFunction = new FitnessRegression(fitnessCasesFileName);  // Create a fitness function (objective function) from file
 
