@@ -11,24 +11,50 @@ package com.mycompany.geneticprogramming;
  */
 public class Individual {
     public Program program;
-    public Double fitness;
+    public Double fitnessMSE;
+    public Double fitnessR2;
+    public Double fitnessEVS;
+    public Double fitnessMAPE;
 
-    public Individual(Program program, Double fitness) {
+public Individual(Program program, Double fitnessMSE, Double fitnessR2, Double fitnessEVS, Double fitnessMAPE) {
         this.program = program;
-        this.fitness = fitness;
+        this.fitnessMSE = fitnessMSE;
+        this.fitnessR2 = fitnessR2;
+        this.fitnessEVS = fitnessEVS;
+        this.fitnessMAPE = fitnessMAPE;
+    }
+    public Individual(Program program, Double fitnessMSE) {
+        this.program = program;
+        this.fitnessMSE = fitnessMSE;
     }
 
     public Program getProgram() {
         return program;
     }
 
-    public Double getFitness() {
-        return fitness;
+    public Double getFitnessMSE() {
+        return fitnessMSE;
     }
-    
+
+    public Double getFitnessR2() {
+        return fitnessR2;
+    }
+
+    public Double getFitnessEVS() {
+        return fitnessEVS;
+    }
+
+    public Double getFitnessMAPE() {
+        return fitnessMAPE;
+    }
+
     @Override
     public String toString(){
-        return "Individual with fitness " + getFitness() + "\n"+ program + "\n";        
+        return "MSE fitness " + getFitnessMSE() + "\n"
+//                + "R2 Score " + getFitnessR2() + "\n"
+//                + "Explained Varianz Score " + getFitnessEVS() + "\n"
+//                + "MAPE Score " +getFitnessMAPE() + "\n"      //TODO entkommentieren für weitere Maße
+                + program + "\n";
     }
-    
+
 }

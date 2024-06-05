@@ -25,8 +25,6 @@ public class FitnessRegression extends FitnessFunction {
     Interpreter interpreter;
     
     int numberOfInputs = 1;
-//    double[][] fitnessCasesInput = new double[numberOfFitnessCases][numberOfInputs];
-//    double[] fitnessCasesOutput = new double[numberOfFitnessCases];
 
     ArrayList<ArrayList<Double>> fitnessCasesInput = new ArrayList<>();
     ArrayList<Double> fitnessCasesOutput = new ArrayList<>();
@@ -95,7 +93,7 @@ public class FitnessRegression extends FitnessFunction {
      * @return The fitness of the program.
      */
     @Override
-    public Double eval(Program program) {
+    public Double evalMSE(Program program) {
         interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
 
         double errorSum = 0;    // here we collect the error the program makes on the fitness cases
@@ -106,7 +104,77 @@ public class FitnessRegression extends FitnessFunction {
         return errorSum / numberOfFitnessCases;     //return the average error as the fitness
     }
 
-    
+    //region R2 Score, Explained Varianz Score, MAPE
+    @Override
+    public Double evalMAPE(Program program) {
+        interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
+
+        double totalAbsolutePercentageError = 0;
+
+        for (int i = 0; i < numberOfFitnessCases; i++) {
+            double actual = fitnessCasesOutput.get(i);
+            double predicted = interpreter.run(fitnessCasesInput.get(i));
+            double absolutePercentageError = Math.abs((actual - predicted) / actual);
+
+            totalAbsolutePercentageError += absolutePercentageError;
+        }
+
+        return (totalAbsolutePercentageError / numberOfFitnessCases) * 100;
+    }
+
+    // Helper method to calculate the mean of the actual outputs
+    private double calculateMeanOutput() {
+        double meanOutput = 0;
+        for (int i = 0; i < numberOfFitnessCases; i++) {
+            meanOutput += fitnessCasesOutput.get(i);
+        }
+        return meanOutput / numberOfFitnessCases;
+    }
+
+    // Helper method to calculate the sum of squared residuals (ssRes) and total sum of squares (ssTot)
+    private double[] calculateSums(Program program, double meanOutput) {
+        interpreter = new Interpreter(program);
+
+        double ssRes = 0;
+        double ssTot = 0;
+
+        for (int i = 0; i < numberOfFitnessCases; i++) {
+            double actual = fitnessCasesOutput.get(i);
+            double predicted = interpreter.run(fitnessCasesInput.get(i));
+            double residual = actual - predicted;
+
+            ssRes += residual * residual;
+            ssTot += (actual - meanOutput) * (actual - meanOutput);
+        }
+
+        return new double[] {ssRes, ssTot};
+    }
+
+    @Override
+    public Double evalR2(Program program) {
+        double meanOutput = calculateMeanOutput();
+        double[] sums = calculateSums(program, meanOutput);
+
+        double ssRes = sums[0];
+        double ssTot = sums[1];
+
+        // Calculate R² score
+        return 1 - (ssRes / ssTot);
+    }
+
+    @Override
+    public Double evalEVS(Program program) {
+        double meanOutput = calculateMeanOutput();
+        double[] sums = calculateSums(program, meanOutput);
+
+        double ssRes = sums[0];
+        double ssTot = sums[1];
+
+        // Calculate explained variance
+        return (ssTot - ssRes) / ssTot;
+    }
+    //endregion
+
     /*** 
      * Computes the input output behavior of the program in the same way as the fitness is evaluated.
      * Can be used to make a plot what we have learned.

@@ -31,7 +31,7 @@ public class Population extends ArrayList<Individual> {
     public Individual best(){
         Individual bestIndividual = this.get(0);
         for (Individual individual : this){
-            if (individual.getFitness() < bestIndividual.getFitness())
+            if (individual.getFitnessMSE() < bestIndividual.getFitnessMSE())
                 bestIndividual = individual;
         }
         return bestIndividual;

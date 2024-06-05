@@ -5,7 +5,6 @@
 package com.mycompany.geneticprogramming;
 
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -44,44 +43,56 @@ public class GeneticProgramming extends Global {
         Log.println("parameters", toStringStatic());
         Population population = newRandomPopulation();  // Create initial random population
 
+        Individual best = population.best();
         // Logging ----
         System.out.println("\n--------------------------------");
         // System.out.println(population);
         System.out.println("Best individual at generation " + 0);
-        System.out.println(population.best());
+        System.out.println(best);
 
         Log.println("initialbehavior",
-                fitnessFunction.evalInputOutputBehavior(population.best().getProgram()) );
+                fitnessFunction.evalInputOutputBehavior(best.getProgram()) );
         Log.println("initialpopulation", "" + population);
-        Log.println("fitnessFunction", "# The fitness function: " + fitnessFunction);
+        Log.println("fitnessFunction", "" + fitnessFunction);
 
         // Evolution loop
         for (int generation = 1; generation <= numberOfGenerations; generation++) {
             Population nextPopulation = new Population(); // Create a new empty population
             for (int i = 0; i < populationSize; i++) { // and fill it with mutated offsprings.
                 Program offspring = makeOffspring(population);  //Create offprint program
-                nextPopulation.add(new Individual(offspring, fitnessFunction.eval(offspring))); // Compute fitness (takes a lot of time)
+                nextPopulation.add(new Individual(offspring,
+                        fitnessFunction.evalMSE(offspring)
+//                        ,fitnessFunction.evalMAPE(offspring)
+//                        ,fitnessFunction.evalR2(offspring)
+//                        ,fitnessFunction.evalEVS(offspring)   //TODO entkommentieren für weitere Maße
+                )); // Compute fitness (takes a lot of time)
             }
 
             //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
-
-            // nextPopulation.set(0, population.best()); // Survival of the best ("elitist strategy")
+            nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
             population = nextPopulation;
 
+            best = population.best();
             // --- Write log data after each generation ---
-            Log.println("bestfitness", generation + "\t" + population.best().getFitness());
+            Log.println("bestfitness", generation
+                    + "\t" + best.getFitnessMSE()
+//                    + "\t" + best.getFitnessMAPE()
+//                    + "\t" + best.getFitnessR2()
+//                    + "\t" + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
+            );
 
         }
 
         System.out.println("Best individual at generation " + numberOfGenerations);
-        System.out.println(population.best());
-        System.out.println(fitnessFunction.toArithmetic(population.best().getProgram()));
+        System.out.println(best);
+//        System.out.println(fitnessFunction.toArithmetic(best.getProgram()));
 
         // --- Log final result --- 
         // Store input-output behavior of final best program in a file
-        Log.println("finalbehavior",
-                fitnessFunction.evalInputOutputBehavior(population.best().getProgram()));
-        Log.println("finalprogram", "Best final individual: " + population.best());
+        Log.println("finalbehavior", "# final function: " +
+                fitnessFunction.toArithmetic(best.getProgram()) + "\n" +
+                fitnessFunction.evalInputOutputBehavior(best.getProgram()));
+        Log.println("finalprogram", "Best final individual: " + "\n" + best);
 
         Log.println("finalpopulation", "" + population);  // Store final population
 
@@ -99,7 +110,12 @@ public class GeneticProgramming extends Global {
         Population population = new Population();
         for (int i = 0; i < populationSize; i++) {
             Program program = Program.random(initialProgramLength);
-            population.add(new Individual(program, fitnessFunction.eval(program)));
+            population.add(new Individual(program,
+                    fitnessFunction.evalMSE(program)
+//                    ,fitnessFunction.evalMAPE(program)
+//                    ,fitnessFunction.evalR2(program)
+//                    ,fitnessFunction.evalEVS(program)     //TODO entkommentieren für weitere Maße
+            ));
         }
         return population;
     }
@@ -147,7 +163,7 @@ public class GeneticProgramming extends Global {
         // we do a tournament selection, tournament size 2
         Individual parent1 = population.get(MyRandom.nextInt(population.size()));
         Individual parent2 = population.get(MyRandom.nextInt(population.size()));
-        return parent1.getFitness() < parent2.getFitness() ? parent1 : parent2;
+        return parent1.getFitnessMSE() < parent2.getFitnessMSE() ? parent1 : parent2;
     }
 
     /**
@@ -209,7 +225,7 @@ public class GeneticProgramming extends Global {
         if (args.length >= 3 && Integer.parseInt(args[2]) >= 1) initialProgramLength = Integer.parseInt(args[2]);
         if (args.length >= 4 && Integer.parseInt(args[3]) >= 1) populationSize = Integer.parseInt(args[3]);
         if (args.length >= 5) numberOfGenerations = Integer.parseInt(args[4]);
-        if (args.length >= 6) numberOfFitnessCases = Integer.parseInt(args[5]);
+        if (args.length >= 6) numberOfFitnessCases = Integer.parseInt(args[5]);     //TODO nicht mehr übergeben, mach ne methode die s aus der file zieht
         if (args.length >= 7 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabiltyInstructions = Double.parseDouble(args[6]);
         if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[7]);
         if (args.length >= 9 && Double.parseDouble(args[8]) >= 0 && Double.parseDouble(args[8]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[8]);

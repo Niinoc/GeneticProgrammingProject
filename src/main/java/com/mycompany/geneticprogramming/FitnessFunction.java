@@ -9,7 +9,13 @@ package com.mycompany.geneticprogramming;
  * @author Peter
  */
 abstract public class FitnessFunction extends Global{
-    abstract public Double eval(Program program);
+    abstract public Double evalMSE(Program program);
+
+    public abstract Double evalMAPE(Program program);
+
+    abstract public Double evalR2(Program program);
+    public abstract Double evalEVS(Program program);
+
     abstract public int getNumberOfInputs();   // the number of inputs of the program
     abstract public String evalInputOutputBehavior(Program program);
     abstract public String toArithmetic(Program program);
