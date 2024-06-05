@@ -4,6 +4,10 @@
  */
 package com.mycompany.geneticprogramming;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 /**
  * Global parameter of the genetic programing system.
  * To keep things simple, parameters are global and defined here as static class variables.
@@ -17,6 +21,7 @@ public class Global {
     static String logFileNamePrefix = "out.";   // Here you can change the prefix of the log-files
 
     static String inputFileNamePrefix = "in.";
+    
     static String logFileNamePostfix = ".txt";
 
     static String fitnessCasesFileName = "fitnessCases";
@@ -36,7 +41,18 @@ public class Global {
 
     static int numberOfGenerations = 1000;
 
-    static int numberOfFitnessCases = 20;
+    static int numberOfFitnessCases = 1;    //damit er keinen mist macht, passt nicht, komisch what ever
+
+    public static void setNumberOfFitnessCases(String fileName) {
+        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
+        int numberOfLines = 0;
+        try {
+            numberOfLines = (int) Files.lines(Paths.get(filePath)).count();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Global.numberOfFitnessCases = numberOfLines;
+    }
 
     static double stepSize = 1;
 
@@ -44,7 +60,7 @@ public class Global {
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
 
-    static FitnessFunction fitnessFunction = new FitnessRegression(fitnessCasesFileName);
+    static FitnessFunction fitnessFunction = new FitnessRegression(fitnessCasesFileName);       //TODO entferne fitnessCasesFileName um programm wieder über targetfunction zu steuern
 
     static String toStringStatic() {
         return "Parameters:\n" +
@@ -54,7 +70,6 @@ public class Global {
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
-                "stepSize: " + stepSize + "\n" +
                 "mutationProbabiltyInstructions: " + mutationProbabiltyInstructions + "\n" +
                 "mutationProbabiltyInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
                 "mutationStrengthInitialRegisterStates: " + mutationStrengthInitialRegisterStates + "\n" +

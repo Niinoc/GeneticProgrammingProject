@@ -4,13 +4,13 @@
  */
 package com.mycompany.geneticprogramming;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 
 /**
@@ -36,8 +36,8 @@ public class FitnessRegression extends FitnessFunction {
      * @param x Input value
      * @return Output value
      */
-    double targetFunction(double x) {      //TODO ist auf = gestellt da python input regelt
-        return x;                         // 1 / (x*x*x) erreicht fitness = infinity
+    double targetFunction(double x) {
+        return x;
     }
 
     /***
@@ -58,11 +58,10 @@ public class FitnessRegression extends FitnessFunction {
     public FitnessRegression(String fileName) {
         String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            lines.forEach(line -> {
                 String[] parts = line.split("--> ");
-                if (parts.length == 2) {        //TODO in abhängigkeit der parts.length ne schleife für alle inputs
+                if (parts.length == 2) {
                     double inputValue = Double.parseDouble(parts[0].trim());
                     double outputValue = Double.parseDouble(parts[1].trim());
                     ArrayList<Double> inputList = new ArrayList<>();
@@ -70,17 +69,19 @@ public class FitnessRegression extends FitnessFunction {
                     fitnessCasesInput.add(inputList);
                     fitnessCasesOutput.add(outputValue);
                 }
-            }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    //TODO in abhängigkeit der parts.length ne schleife für alle inputs
+
     /***
      * This function returns the number of inputs of a fitness case
      * and thus the number of inputs a learned program should have.
      * Here, it is simply 1.
-     * @return 
+     * @return
      */
     @Override
     public int getNumberOfInputs() {
