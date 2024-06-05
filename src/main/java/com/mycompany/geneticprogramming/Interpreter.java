@@ -4,8 +4,7 @@
  */
 package com.mycompany.geneticprogramming;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * An Interpreter can run a Program for a given input.
@@ -35,26 +34,33 @@ public class Interpreter {
      * @param input
      * @return 
      */
-    double run(double[] input) {
+    double run(ArrayList<Double> input) {
         // Initialize registers according to the program.
         for (int i = 0; i < program.getNumberOfRegisters(); i++) {
             registers[i] = program.initialRegisterStates[i];
         }
         // Write input into registers (hoping that there are enough registers :-)
-        for (int i = 0; i < input.length; i++) {
-            registers[i] = input[i];
+        for (int i = 0; i < input.size(); i++) {
+            registers[i] = input.get(i);
         }
         // Run instructions
         int targetRegister = 0;  // just some initialization so that empty programs can be exectuted.
         for (Instruction instruction : program.instructions) {
             Operator operator = instruction.operator;
             targetRegister = instruction.operands[0];
-            Double [] operandValues = {
-                registers[instruction.operands[1]],
-                registers[instruction.operands[2]]};
-
+            Double[] operandValues;
+            if (operator.numberOfOperands == 2) {
+                operandValues = new Double[]{
+                        registers[instruction.operands[1]]
+                };
+            } else {
+                operandValues = new Double[]{
+                        registers[instruction.operands[1]],
+                        registers[instruction.operands[2]]
+                };
+            }
             registers[targetRegister] = instruction.operator.function.apply(operandValues);
-           
+
         }
         return registers[targetRegister]; // Return the value from the last target register written to.
     }

@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.geneticprogramming;
-
 import java.util.Random;
 
 /**
@@ -46,21 +45,33 @@ public class Instruction extends Global{
      * Note that the first numberOfInputs registers are taken as input registers.
      * @return The new instruction generated.
      */
-    public static Instruction random() {
+    public static Instruction random() {        //TODO chnage for operator -> 1 or 2 operands
         int numberOfInputs = fitnessFunction.getNumberOfInputs();
-        return new Instruction(Operator.random(), 
-                MyRandom.nextInt(numberOfRegisters-numberOfInputs)+numberOfInputs, // do not allow the input to be overwritten
-                MyRandom.nextInt(numberOfRegisters),
-                MyRandom.nextInt(numberOfRegisters)
-        );
+        Operator op = Operator.random();
+        if (op.numberOfOperands >= 2) {
+            return new Instruction(Operator.random(),
+                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfRegisters),
+                    (MyRandom.nextInt(numberOfRegisters))
+            );
+        }
+        else {
+            return new Instruction(Operator.random(),
+                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfRegisters)
+            );
+        }
     }
     
     @Override
     public String toString(){
-        if (operands.length == 3)
+        if (operator.numberOfOperands == 3)
             return "R[" + operands[0] + "] = " + "R[" + operands[1] 
                     + "] " + operator + " " 
                     + "R[" + operands[2] + "];";
+        if (operator.numberOfOperands == 2)
+            return "R[" + operands[0] + "] = " + operator + " "
+                    + "R[" + operands[1] + "];";
         return "UNKOWN_NUMBER_OF_OPERANDS: " + operands.length;
     }
     

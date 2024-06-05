@@ -15,38 +15,41 @@ import java.util.function.Function;
  * @author Peter
  */
 public enum Operator {
-        ADD("+", input -> input[0] + input[1]),
-        SUB("-", input -> input[0] - input[1]),
-        MUL("*", input -> input[0] * input[1]),
-        DIV("/", input -> input[1] != 0 ? input[0] / input[1] : 0), // protected division
-//        NEG("-x", input -> -(input[0])),
-//        INV("1/x", input -> 1/(input[0])),
-//        SQRT("sqrt", input -> Math.sqrt(input[0])),
-//        EXP("^", input -> Math.pow(input[0], input[1])),
-//        LOG("log", input -> Math.log(input[0])), //unterschiedliche log?
-//        SIN("sin", input -> Math.sin(input[0])),
-//        COS("cos", input -> Math.cos(input[0])),
-//        TAN("tan", input -> Math.tan(input[0])),
+    ADD("+", input -> input[0] + input[1], 3),
+    SUB("-", input -> input[0] - input[1], 3),
+    MUL("*", input -> input[0] * input[1], 3),
+    DIV("/", input -> input[1] != 0 ? input[0] / input[1] : 0, 3), // Geschützte Division
+    NEG("-", input -> -(input[0]), 2),
+    INV("1/", input -> input[0] != 0 ? 1 / input[0] : 0, 2), // Geschützte Inversion
+    SQRT("sqrt", input -> input[0] >= 0 ? Math.sqrt(input[0]) : 0, 2), // Geschützte Quadratwurzel
+    EXP("**", input -> Math.pow(input[0], input[1]), 3),
+    LOG("log", input -> input[0] > 0 ? Math.log(input[0]) : 0, 2), // Geschützter Logarithmus (nur für positive Werte)
+    SIN("sin", input -> Math.sin(input[0]), 2),
+    COS("cos", input -> Math.cos(input[0]), 2),
+    TAN("tan", input -> Math.tan(input[0]), 2);
     //iwas mit e
     //iwas mit konstanten
         ;
 
-        final String name;
-        final Function<Double [],Double> function; 
-        Operator (String name, Function<Double [], Double> function) {
-            this.name = name;
-            this.function = function;
-        };
-        
-        /***
-         * Returns a randomly selected operator.
-         * @return A random operator. 
-         */
-        public static Operator random(){
-            return Operator.values()[MyRandom.nextInt(Operator.values().length)];
-        }
-        
-        @Override
+    final String name;
+    final Function<Double [],Double> function;
+    final int numberOfOperands;
+
+    Operator (String name, Function<Double [], Double> function, int numberOfOperands) {
+        this.name = name;
+        this.function = function;
+        this.numberOfOperands = numberOfOperands;
+    }
+
+    /***
+     * Returns a randomly selected operator.
+     * @return A random operator.
+     */
+    public static Operator random(){
+        return Operator.values()[MyRandom.nextInt(Operator.values().length)];
+    }
+
+    @Override
         public String toString(){
             return name;
         }

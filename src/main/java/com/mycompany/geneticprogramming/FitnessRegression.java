@@ -62,7 +62,7 @@ public class FitnessRegression extends FitnessFunction {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("--> ");
-                if (parts.length == 2) {
+                if (parts.length == 2) {        //TODO in abhängigkeit der parts.length ne schleife für alle inputs
                     double inputValue = Double.parseDouble(parts[0].trim());
                     double outputValue = Double.parseDouble(parts[1].trim());
                     ArrayList<Double> inputList = new ArrayList<>();
@@ -234,14 +234,25 @@ public class FitnessRegression extends FitnessFunction {
             //region baut Ausdruck
                 Operator operator = instruction.operator;
                 String operation = operator.toString();
-                // Ausdrücke für Operanden
-                String operand1Expression = registerExpressions.get(instruction.operands[1]);
-                String operand2Expression = registerExpressions.get(instruction.operands[2]);
+
+            // Ausdrücke für Operanden
+                String operand1Expression = "";
+                String operand2Expression = "";
+                String expression = "";
+            if (operator.numberOfOperands == 2) {
+                    operand1Expression = registerExpressions.get(instruction.operands[1]);
+                expression = String.format("%s(%s)", operation, operand1Expression);
+
+            } else {
+                    operand1Expression = registerExpressions.get(instruction.operands[1]);
+                    operand2Expression = registerExpressions.get(instruction.operands[2]);
+                    expression = String.format("(%s %s %s)", operand1Expression, operation, operand2Expression);
+                }
+
             //endregion
 
 
             // aktualisiert Registerausdruck
-            String expression = String.format("(%s %s %s)", operand1Expression, operation, operand2Expression);
             registerExpressions.put(targetRegister, expression);
         }
 
@@ -258,8 +269,8 @@ public class FitnessRegression extends FitnessFunction {
      * @return A string describing the fitness function including the fitness cases.
      */
     @Override
-    public String toString() {      //TODO change to new contructorformat
-        String result = "FitnessFunction: FitnessRegression \n"
+    public String toString() {
+        String result = "# FitnessFunction: FitnessRegression \n"
                 + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n"
                 + "#  targetFunction:     \t" + "f(x) = " + targetFunction + "\n";
         for (int i = 0; i < numberOfFitnessCases; i++) {
