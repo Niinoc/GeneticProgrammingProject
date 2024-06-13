@@ -26,7 +26,6 @@ public class Global {
 
     static String fitnessCasesFileName = "fitnessCases";
 
-    static String targetFunction = "x";
     static long seed = System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom
     private static long getProcessId() {
         String processName =
@@ -56,11 +55,16 @@ public class Global {
 
     static double stepSize = 1;
 
+    static int numberOfInputs = 1;
+
+
     static double mutationProbabiltyInstructions = 0.1;
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
+    static double mutationProbabiltyInstructionInsertion = 0.01;
+    static double mutationProbabiltyInstructionDeletion = 0.01;
 
-    static FitnessFunction fitnessFunction = new FitnessRegression(fitnessCasesFileName);       //TODO entferne fitnessCasesFileName um programm wieder über targetfunction zu steuern
+    static FitnessFunction fitnessFunction;
 
     static String toStringStatic() {
         return "Parameters:\n" +
@@ -70,12 +74,27 @@ public class Global {
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
-                "mutationProbabiltyInstructions: " + mutationProbabiltyInstructions + "\n" +
-                "mutationProbabiltyInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
+                "mutationProbabilityInstructions: " + mutationProbabiltyInstructions + "\n" +
+                "mutationProbabilityInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
                 "mutationStrengthInitialRegisterStates: " + mutationStrengthInitialRegisterStates + "\n" +
                 "FitnessCasesFileName: " + fitnessCasesFileName + "\n" +
                 "logFileNamePrefix: " + logFileNamePrefix + "\n" +
                 "logFileNamePostfix: " + logFileNamePostfix;
+    }
+
+    static String toStringShort(){
+        return "["
+                +seed +"|"
+                +numberOfRegisters +"|"
+                +initialProgramLength +"|"
+                +populationSize +"|"
+                +numberOfGenerations +"|"
+                +numberOfFitnessCases +"|"
+                +mutationProbabiltyInstructions +"|"
+                +mutationProbabiltyInitialRegisterStates +"|"
+                +mutationStrengthInitialRegisterStates +"|"
+                +fitnessCasesFileName
+                +"]";
     }
 
 
