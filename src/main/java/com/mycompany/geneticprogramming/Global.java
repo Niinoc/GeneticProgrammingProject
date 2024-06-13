@@ -36,7 +36,7 @@ public class Global {
     static int numberOfRegisters = 5;           // Must be greater equal to the number of inputs, here the number of inputs is 1.
     static int initialProgramLength = 5;        // In the current version, the length of a program is fixed.
 
-    static int populationSize = 100;
+    static int maxProgramLength = 100;
 
     static int numberOfGenerations = 1000;
 

@@ -208,6 +208,17 @@ public class GeneticProgramming extends Global {
             }
         }
 
+        if (parentProgram.instructions.size() < maxProgramLength && parentProgram.instructions.size() > 1) {
+            // insert random instruction
+            if ( MyRandom.nextDouble() < mutationProbabiltyInstructionInsertion) {
+                offspring.instructions.add(Instruction.random());
+            }
+            // delete random instruction
+            if (MyRandom.nextDouble() < mutationProbabiltyInstructionDeletion) {
+                offspring.instructions.remove(MyRandom.nextInt(parentProgram.instructions.size()));
+            }
+        }
+
         //TODO: neue Mutationen hier
 
         return offspring;
