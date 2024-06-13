@@ -5,35 +5,63 @@
 package com.mycompany.geneticprogramming;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A population of programs.
  * It is simply an ArryList of Individuals.
+ *
  * @author Peter
- * 
- * 
- * 
  */
 public class Population extends ArrayList<Individual> {
+    double diversity;
+    HashMap<Individual, Integer> diversIndividulas;
+
     @Override
-    public String toString(){
+    public String toString() {
         String result = "----- Population ------ \n";
         for (Individual individual : this)
             result += individual + " - - - - - - - - - \n";
         result += "----------------------\n";
         return result;
     }
-    
-    /***
-     * Returns the best individual from the population. That is, the individual with the lowest fitness.
-     * @return 
+
+    /**
+     * @return the best individual from the population. That is, the individual with the lowest fitness.
      */
-    public Individual best(){
+    public Individual best() {
         Individual bestIndividual = this.get(0);
-        for (Individual individual : this){
+        for (Individual individual : this) {
             if (individual.getFitnessMSE() < bestIndividual.getFitnessMSE())
                 bestIndividual = individual;
         }
         return bestIndividual;
+    }
+
+
+    /**
+     * sets the HashMap of every different Individuals and their amount
+     *
+     * @return
+     */
+    public void computeDiversityMap() {
+        HashMap<Individual, Integer> diversPrograms = new HashMap<>();
+        for (Individual individual : this) {
+            if (diversPrograms.containsKey(individual)) {
+                diversPrograms.put(individual, diversPrograms.get(individual) + 1);
+            } else {
+                diversPrograms.put(individual, 1);
+            }
+        }
+        diversIndividulas = diversPrograms;
+    }
+
+    /**
+     * sets the Diversity of the Population
+     *
+     * @return
+     */
+    public void computeDiversity() {
+        diversity = (double) diversIndividulas.size() / this.size();
     }
 }

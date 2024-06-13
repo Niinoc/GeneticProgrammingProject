@@ -5,7 +5,9 @@
 package com.mycompany.geneticprogramming;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -90,6 +92,26 @@ public class Program extends Global {
     }
     public static Double randomRegisterValue(double minValue, double maxValue) {
         return minValue + (MyRandom.nextDouble() * (maxValue - minValue));
+    }
+
+    /**
+     * provides important functionality for HashMap
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Program that = (Program) obj;
+        return /*Arrays.equals(initialRegisterStates, that.initialRegisterStates) &&*/
+                Objects.equals(instructions, that.instructions);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(instructions);
+        result = 31 * result + Arrays.hashCode(initialRegisterStates);
+        return result;
     }
 
 

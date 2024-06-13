@@ -6,6 +6,8 @@ package com.mycompany.geneticprogramming;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -40,16 +42,22 @@ public class GeneticProgramming extends Global {
      *
      */
     public void runOptimization() {
+
         Log.println("parameters", toStringStatic());
+
         Population population = newRandomPopulation();  // Create initial random population
 
+        //check Diversity
+        System.out.println(population.diversity * 100 +"%");
+
         Individual best = population.best();
-        // Logging ----
+
         System.out.println("\n--------------------------------");
         // System.out.println(population);
         System.out.println("Best individual at generation " + 0);
         System.out.println(best);
 
+        // Logging ----
         Log.println("initialbehavior",
                 fitnessFunction.evalInputOutputBehavior(best.getProgram()) );
         Log.println("initialpopulation", "" + population);
@@ -57,20 +65,13 @@ public class GeneticProgramming extends Global {
 
         // Evolution loop
         for (int generation = 1; generation <= numberOfGenerations; generation++) {
-            Population nextPopulation = new Population(); // Create a new empty population
-            for (int i = 0; i < populationSize; i++) { // and fill it with mutated offsprings.
-                Program offspring = makeOffspring(population);  //Create offprint program
-                nextPopulation.add(new Individual(offspring,
-                        fitnessFunction.evalMSE(offspring)
-//                        ,fitnessFunction.evalMAPE(offspring)
-//                        ,fitnessFunction.evalR2(offspring)
-//                        ,fitnessFunction.evalEVS(offspring)   //TODO entkommentieren für weitere Maße
-                )); // Compute fitness (takes a lot of time)
-            }
+            Population nextPopulation = nextGenPopulation(population);
 
             //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
-            nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
+//            nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
             population = nextPopulation;
+            population.diversIndividulas = nextPopulation.diversIndividulas;
+            population.diversity = nextPopulation.diversity;
 
             best = population.best();
             // --- Write log data after each generation ---
@@ -81,11 +82,12 @@ public class GeneticProgramming extends Global {
 //                    + "\t" + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
             );
 
+            System.out.println(generation);
         }
 
         System.out.println("Best individual at generation " + numberOfGenerations);
         System.out.println(best);
-//        System.out.println(fitnessFunction.toArithmetic(best.getProgram()));
+        System.out.println(fitnessFunction.toArithmetic(best.getProgram()));
 
         // --- Log final result --- 
         // Store input-output behavior of final best program in a file
@@ -95,6 +97,12 @@ public class GeneticProgramming extends Global {
         Log.println("finalprogram", "Best final individual: " + "\n" + best);
 
         Log.println("finalpopulation", "" + population);  // Store final population
+
+        System.out.println(population.diversity * 100 +"%");
+        System.out.println("HashMap:");
+        for (Map.Entry<Individual, Integer> entry : population.diversIndividulas.entrySet()) {
+            if (entry.getValue() > 1) System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
 
     }
 
@@ -117,7 +125,26 @@ public class GeneticProgramming extends Global {
 //                    ,fitnessFunction.evalEVS(program)     //TODO entkommentieren für weitere Maße
             ));
         }
+        population.computeDiversityMap();
+        population.computeDiversity();
         return population;
+    }
+
+    Population nextGenPopulation(Population oldPopulation) {
+        Population nextPopulation = new Population(); // Create a new empty population
+        for (int i = 0; i < populationSize; i++) { // and fill it with mutated offsprings.
+            Program offspring = makeOffspring(oldPopulation);  //Create offprint program
+            nextPopulation.add(new Individual(offspring,
+                    fitnessFunction.evalMSE(offspring)
+//                        ,fitnessFunction.evalMAPE(offspring)
+//                        ,fitnessFunction.evalR2(offspring)
+//                        ,fitnessFunction.evalEVS(offspring)   //TODO entkommentieren für weitere Maße
+            )); // Compute fitness (takes a lot of time)
+        }
+        nextPopulation.computeDiversityMap();
+        nextPopulation.computeDiversity();
+
+        return nextPopulation;
     }
 
     /**
@@ -148,7 +175,6 @@ public class GeneticProgramming extends Global {
      * @return An individual selected.
      */
     public Individual selectParent(Population population) {
-        // return selectParentTournament(population); 
         return selectParentTournament(population);
     }
 

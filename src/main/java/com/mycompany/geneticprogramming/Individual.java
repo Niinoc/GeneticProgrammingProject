@@ -4,6 +4,8 @@
  */
 package com.mycompany.geneticprogramming;
 
+import java.util.Objects;
+
 /**
  * An individual consists of a program and a fitness.
  * @author Peter
@@ -23,6 +25,7 @@ public Individual(Program program, Double fitnessMSE, Double fitnessR2, Double f
         this.fitnessEVS = fitnessEVS;
         this.fitnessMAPE = fitnessMAPE;
     }
+
     public Individual(Program program, Double fitnessMSE) {
         this.program = program;
         this.fitnessMSE = fitnessMSE;
@@ -46,6 +49,23 @@ public Individual(Program program, Double fitnessMSE, Double fitnessR2, Double f
 
     public Double getFitnessMAPE() {
         return fitnessMAPE;
+    }
+
+    /**
+     * provides important functionality for HashMap
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Individual that = (Individual) obj;
+        return Objects.equals(program, that.program);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(program);
     }
 
     @Override

@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.geneticprogramming;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -45,8 +47,7 @@ public class Instruction extends Global{
      * Note that the first numberOfInputs registers are taken as input registers.
      * @return The new instruction generated.
      */
-    public static Instruction random() {        //TODO chnage for operator -> 1 or 2 operands
-        int numberOfInputs = fitnessFunction.getNumberOfInputs();
+    public static Instruction random() {
         Operator op = Operator.random();
         if (op.numberOfOperands >= 2) {
             return new Instruction(Operator.random(),
@@ -62,7 +63,26 @@ public class Instruction extends Global{
             );
         }
     }
-    
+
+    /**
+     * provides important functionality for HashMap
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Instruction that = (Instruction) obj;
+        return operator == that.operator && Arrays.equals(operands, that.operands);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(operator);
+        result = 31 * result + Arrays.hashCode(operands);
+        return result;
+    }
+
     @Override
     public String toString(){
         if (operator.numberOfOperands == 3)
