@@ -42,17 +42,7 @@ public class Global {
 
     static int numberOfFitnessCases = 1;    //damit er keinen mist macht, passt nicht, komisch what ever
 
-    public static void setNumberOfFitnessCases(String fileName) {
-        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
-        int numberOfLines = 0;
-        try {
-            numberOfLines = (int) Files.lines(Paths.get(filePath)).count();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Global.numberOfFitnessCases = numberOfLines;
-    }
-
+    static int numberOfFitnessCases = 50;
     static double stepSize = 1;
 
     static int numberOfInputs = 1;
