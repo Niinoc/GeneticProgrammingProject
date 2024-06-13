@@ -23,9 +23,6 @@ import java.util.stream.Stream;
  */
 public class FitnessRegression extends FitnessFunction {
     Interpreter interpreter;
-    
-    int numberOfInputs = 1;
-
     ArrayList<ArrayList<Double>> fitnessCasesInput = new ArrayList<>();
     ArrayList<Double> fitnessCasesOutput = new ArrayList<>();
 
@@ -54,28 +51,27 @@ public class FitnessRegression extends FitnessFunction {
             fitnessCasesOutput.add(output);
         }
     }
-
     public FitnessRegression(String fileName) {
         String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
 
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             lines.forEach(line -> {
-                String[] parts = line.split("--> ");
-                if (parts.length == 2) {
-                    double inputValue = Double.parseDouble(parts[0].trim());
-                    double outputValue = Double.parseDouble(parts[1].trim());
+                String[] parts = line.split("\\s+"); //split in and output by -->
+                for (int i = 0; i < parts.length-1; i++) {
                     ArrayList<Double> inputList = new ArrayList<>();
-                    inputList.add(inputValue);
+                    inputList.add(Double.parseDouble(parts[i]));
+                    double outputValue = Double.parseDouble(parts[parts.length-1].trim());
                     fitnessCasesInput.add(inputList);
                     fitnessCasesOutput.add(outputValue);
                 }
             });
+            Global.numberOfFitnessCases = fitnessCasesInput.size();
+            Global.numberOfInputs = fitnessCasesInput.get(0).size();      //TODO besser hier oder in main?
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    //TODO in abhängigkeit der parts.length ne schleife für alle inputs
 
     /***
      * This function returns the number of inputs of a fitness case
@@ -188,8 +184,8 @@ public class FitnessRegression extends FitnessFunction {
         StringBuilder result = new StringBuilder();
         interpreter = new Interpreter(program);     // instantiate an interpreter that runs the program
 
-        double[] inputs = new double[numberOfFitnessCases];     //für plotter
-        double[] outputs = new double[numberOfFitnessCases];    //für plotter
+//        double[] inputs = new double[numberOfFitnessCases];     //für plotter
+//        double[] outputs = new double[numberOfFitnessCases];    //für plotter
 
         for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
             ArrayList<Double> inputList = fitnessCasesInput.get(i);
@@ -198,8 +194,8 @@ public class FitnessRegression extends FitnessFunction {
             }
             double output = interpreter.run(inputList);
             result.append(output).append("\t").append(fitnessCasesOutput.get(i)).append("\n");
-            inputs[i] = inputList.get(0);
-            outputs[i] = output;
+//            inputs[i] = inputList.get(0);
+//            outputs[i] = output;
         }
 
 //        new GraphPlotter(inputs, outputs, fitnessCasesOutput);  //TODO für java plot entkommentieren
@@ -214,14 +210,15 @@ public class FitnessRegression extends FitnessFunction {
      */
     public String toArithmetic(Program program) {
         StringBuilder function = new StringBuilder();
-//        function.append("f(x) = ");
 
         // Mapping für die Registerausdrücke
         Map<Integer, String> registerExpressions = new HashMap<>();
 
         // Initialisierung der Ausdrücke für die Eingaberegister
-        registerExpressions.put(0, "x");
-        for (int i = 1; i < program.getNumberOfRegisters(); i++) {
+        for (int i = 0; i < numberOfInputs; i++) {
+            registerExpressions.put(i, "x_" + i);
+        }
+        for (int i = numberOfInputs; i < program.getNumberOfRegisters(); i++) {
             registerExpressions.put(i, String.valueOf((program.initialRegisterStates[i])));
         }
 
@@ -272,13 +269,12 @@ public class FitnessRegression extends FitnessFunction {
     @Override
     public String toString() {
         String result = "# FitnessFunction: FitnessRegression \n"
-                + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n"
-                + "#  targetFunction:     \t" + "f(x) = " + targetFunction + "\n";
+                + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n";
         for (int i = 0; i < numberOfFitnessCases; i++) {
             for (double x : fitnessCasesInput.get(i)) {
                 result += " " + x;
             }
-            result += " --> " + fitnessCasesOutput.get(i) + "\n";
+            result += "\t" + fitnessCasesOutput.get(i) + "\n";
         }
         return result;
     }
