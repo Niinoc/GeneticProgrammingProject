@@ -19,17 +19,26 @@ public enum Operator {
     SUB("-", input -> input[0] - input[1], 3),
     MUL("*", input -> input[0] * input[1], 3),
     DIV("/", input -> input[1] != 0 ? input[0] / input[1] : 0, 3), // Geschützte Division
+
     NEG("-", input -> -(input[0]), 2),
     INV("1/", input -> input[0] != 0 ? 1 / input[0] : 0, 2), // Geschützte Inversion
+
     SQRT("sqrt", input -> input[0] >= 0 ? Math.sqrt(input[0]) : 0, 2), // Geschützte Quadratwurzel
-    EXP("**", input -> Math.pow(input[0], input[1]), 3),
-    LOG("log", input -> input[0] > 0 ? Math.log(input[0]) : 0, 2), // Geschützter Logarithmus (nur für positive Werte)
+    EXP("^", input -> Math.pow(input[0], input[1]), 3),
+    LN("ln", input -> input[0] > 0 ? Math.log(input[0]) : 0, 2), // Geschützter Logarithmus (nur für positive Werte)
+
     SIN("sin", input -> Math.sin(input[0]), 2),
+    ARCSIN("arcsin", input -> Math.asin(input[0]), 2),
     COS("cos", input -> Math.cos(input[0]), 2),
-    TAN("tan", input -> Math.tan(input[0]), 2);
-    //iwas mit e
-    //iwas mit konstanten
-        ;
+    ARCCOS("arccos", input -> Math.acos(input[0]), 2),
+    TAN("tan", input -> Math.tan(input[0]), 2),
+    ARCTAN("arctan", input -> Math.atan(input[0]), 2),
+
+    PI("π", input -> Math.PI*(input[0]), 2),
+    EUL("e^", input -> Math.exp(input[0]), 2),
+
+    //mehr mit konstanten
+    ;
 
     final String name;
     final Function<Double [],Double> function;
