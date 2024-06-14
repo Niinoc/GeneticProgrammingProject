@@ -56,32 +56,20 @@ public class FitnessRegression extends FitnessFunction {
 
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             lines.forEach(line -> {
-                String[] parts = line.split("\\s+"); //split in and output by -->
+                String[] parts = line.split("\\s+"); //split in and output by "  "
+                ArrayList<Double> inputList = new ArrayList<>();
                 for (int i = 0; i < parts.length-1; i++) {
-                    ArrayList<Double> inputList = new ArrayList<>();
                     inputList.add(Double.parseDouble(parts[i]));
-                    double outputValue = Double.parseDouble(parts[parts.length-1].trim());
-                    fitnessCasesInput.add(inputList);
-                    fitnessCasesOutput.add(outputValue);
                 }
+                fitnessCasesInput.add(inputList);
+                double outputValue = Double.parseDouble(parts[parts.length-1].trim());
+                fitnessCasesOutput.add(outputValue);
             });
             Global.numberOfFitnessCases = fitnessCasesInput.size();
             Global.numberOfInputs = fitnessCasesInput.get(0).size();      //TODO besser hier oder in main?
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    /***
-     * This function returns the number of inputs of a fitness case
-     * and thus the number of inputs a learned program should have.
-     * Here, it is simply 1.
-     * @return
-     */
-    @Override
-    public int getNumberOfInputs() {
-        return numberOfInputs;
     }
 
     /*** 
@@ -202,65 +190,6 @@ public class FitnessRegression extends FitnessFunction {
 
         return result.toString();  //return the average error as the fitness
     }
-
-    /**
-     * Converts the program to an arithmetic function as a string.
-     * @return A string representing the arithmetic function.
-     * @author Nicholas
-     */
-    public String toArithmetic(Program program) {
-        StringBuilder function = new StringBuilder();
-
-        // Mapping für die Registerausdrücke
-        Map<Integer, String> registerExpressions = new HashMap<>();
-
-        // Initialisierung der Ausdrücke für die Eingaberegister
-        for (int i = 0; i < numberOfInputs; i++) {
-            registerExpressions.put(i, "x_" + i);
-        }
-        for (int i = numberOfInputs; i < program.getNumberOfRegisters(); i++) {
-            registerExpressions.put(i, String.valueOf((program.initialRegisterStates[i])));
-        }
-
-        int lastWrittenRegister = 0;
-
-        // Auswertung der Anweisungen
-        for (Instruction instruction : program.instructions) {
-
-            int targetRegister = instruction.operands[0];
-            lastWrittenRegister = targetRegister;
-            //region baut Ausdruck
-                Operator operator = instruction.operator;
-                String operation = operator.toString();
-
-            // Ausdrücke für Operanden
-                String operand1Expression = "";
-                String operand2Expression = "";
-                String expression = "";
-            if (operator.numberOfOperands == 2) {
-                    operand1Expression = registerExpressions.get(instruction.operands[1]);
-                expression = String.format("%s(%s)", operation, operand1Expression);
-
-            } else {
-                    operand1Expression = registerExpressions.get(instruction.operands[1]);
-                    operand2Expression = registerExpressions.get(instruction.operands[2]);
-                    expression = String.format("(%s %s %s)", operand1Expression, operation, operand2Expression);
-                }
-
-            //endregion
-
-
-            // aktualisiert Registerausdruck
-            registerExpressions.put(targetRegister, expression);
-        }
-
-        // Das letzte Zielregister enthält das Endergebnis
-        String finalExpression = registerExpressions.get(lastWrittenRegister);
-        function.append(finalExpression);
-
-        return function.toString();
-    }
-
     
     /***
      * For printing the fitness cases.

@@ -15,9 +15,6 @@ abstract public class FitnessFunction extends Global{
 
     abstract public Double evalR2(Program program);
     public abstract Double evalEVS(Program program);
-
-    abstract public int getNumberOfInputs();   // the number of inputs of the program
     abstract public String evalInputOutputBehavior(Program program);
-    abstract public String toArithmetic(Program program);
 
 }
