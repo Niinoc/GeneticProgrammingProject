@@ -48,61 +48,76 @@ public class GeneticProgramming extends Global {
         Population population = newRandomPopulation();  // Create initial random population
 
         //check Diversity
-        System.out.println(population.diversity * 100 +"%");
+        double startDiversity = population.diversity * 100;
 
         Individual best = population.best();
+        Individual first = best;
 
-        System.out.println("\n--------------------------------");
         // System.out.println(population);
-        System.out.println("Best individual at generation " + 0);
-        System.out.println(best);
 
         // Logging ----
         Log.println("initialbehavior",
-                fitnessFunction.evalInputOutputBehavior(best.getProgram()) );
+                fitnessFunction.evalInputOutputBehavior(first.getProgram()) );
         Log.println("initialpopulation", "" + population);
         Log.println("fitnessFunction", "" + fitnessFunction);
 
+        int lastPrintedProgress = -1; // for progess
+
         // Evolution loop
-        for (int generation = 1; generation <= numberOfGenerations; generation++) {
-            Population nextPopulation = nextGenPopulation(population);
+            for (int generation = 1; generation <= numberOfGenerations; generation++) {
+                Population nextPopulation = nextGenPopulation(population);
 
-            //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
-//            nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
-            population = nextPopulation;
-            population.diversIndividulas = nextPopulation.diversIndividulas;
-            population.diversity = nextPopulation.diversity;
+                //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
+                nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
+                population = nextPopulation;
+                population.diversIndividulas = nextPopulation.diversIndividulas;
+                population.diversity = nextPopulation.diversity;
 
-            best = population.best();
-            // --- Write log data after each generation ---
-            Log.println("bestfitness", generation
-                    + "\t" + best.getFitnessMSE()
-//                    + "\t" + best.getFitnessMAPE()
-//                    + "\t" + best.getFitnessR2()
-//                    + "\t" + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
-            );
+                best = population.best();
+                // --- Write log data after each generation ---
+                Log.println("bestfitness", generation
+                        + "\t" + best.getFitnessMSE()
+        //                    + "\t" + best.getFitnessMAPE()
+        //                    + "\t" + best.getFitnessR2()
+        //                    + "\t" + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
+                );
 
-            System.out.println(generation);
-        }
+                //print progress in %
+                int progress = (int) (100.0 * generation / numberOfGenerations);
+
+                if (progress % 5 == 0 && progress != lastPrintedProgress) {
+                    System.out.println(progress + "%");
+                    lastPrintedProgress = progress;
+                }
+
+            }
+
+        System.out.println();
+        System.out.println("Best individual at generation " + 0);
+        System.out.println(first);
 
         System.out.println("Best individual at generation " + numberOfGenerations);
         System.out.println(best);
-        System.out.println(fitnessFunction.toArithmetic(best.getProgram()));
+        System.out.println(best.getProgram().toArithmetic());
+
 
         // --- Log final result --- 
         // Store input-output behavior of final best program in a file
         Log.println("finalbehavior", "# final function: " +
-                fitnessFunction.toArithmetic(best.getProgram()) + "\n" +
+                best.getProgram().toArithmetic() + "\n" +
                 fitnessFunction.evalInputOutputBehavior(best.getProgram()));
         Log.println("finalprogram", "Best final individual: " + "\n" + best);
 
         Log.println("finalpopulation", "" + population);  // Store final population
 
-        System.out.println(population.diversity * 100 +"%");
-        System.out.println("HashMap:");
-        for (Map.Entry<Individual, Integer> entry : population.diversIndividulas.entrySet()) {
-            if (entry.getValue() > 1) System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
+        double endDiversity = population.diversity * 100;
+
+        System.out.println("startDiversity: " + startDiversity +"\n"
+                            +"endDiversity: " + endDiversity);
+//        System.out.println("HashMap:");
+//        for (Map.Entry<Individual, Integer> entry : population.diversIndividulas.entrySet()) {
+//            if (entry.getValue() > 1) System.out.println(entry.getKey() + ": " + entry.getValue());
+//        }
 
     }
 
