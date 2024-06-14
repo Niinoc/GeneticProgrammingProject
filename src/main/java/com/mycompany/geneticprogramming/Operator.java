@@ -24,7 +24,13 @@ public enum Operator {
     INV("1/", input -> input[0] != 0 ? 1 / input[0] : 0, 2), // Geschützte Inversion
 
     SQRT("sqrt", input -> input[0] >= 0 ? Math.sqrt(input[0]) : 0, 2), // Geschützte Quadratwurzel
-    EXP("^", input -> Math.pow(input[0], input[1]), 3),
+    EXP("**", input -> {
+        if (input[0] == 0) return (input[1] > 0) ? 0 : Math.pow(10.0, 8.0);  // 0^positive = 0, 0^negative = "Infinity"
+
+        else if (input[0] < 0 && input[1] % 1 != 0) return 0.0;  // negative base and non-integer exponent result in NaN, handle as 0
+
+        else return Math.pow(input[0], input[1]);
+    }, 3),
     LN("ln", input -> input[0] > 0 ? Math.log(input[0]) : 0, 2), // Geschützter Logarithmus (nur für positive Werte)
 
     SIN("sin", input -> Math.sin(input[0]), 2),
