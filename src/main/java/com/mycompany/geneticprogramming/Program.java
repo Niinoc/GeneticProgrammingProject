@@ -4,10 +4,7 @@
  */
 package com.mycompany.geneticprogramming;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -103,14 +100,12 @@ public class Program extends Global {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Program that = (Program) obj;
-        return /*Arrays.equals(initialRegisterStates, that.initialRegisterStates) &&*/
-                Objects.equals(instructions, that.instructions);
+        return Objects.equals(this.toArithmetic(), that.toArithmetic());    //just evaluates the symbolic form -> no introns
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(instructions);
-        result = 31 * result + Arrays.hashCode(initialRegisterStates);
+        int result = Objects.hash(this.toArithmetic());
         return result;
     }
 
@@ -125,6 +120,59 @@ public class Program extends Global {
             result += "\n" + instruction;
         }
         return result;
+    }
+
+    public String toArithmetic() {
+        StringBuilder function = new StringBuilder();
+
+        // Mapping für die Registerausdrücke
+        Map<Integer, String> registerExpressions = new HashMap<>();
+
+        // Initialisierung der Ausdrücke für die Eingaberegister
+        for (int i = 0; i < numberOfInputs; i++) {
+            registerExpressions.put(i, "x_" + i);
+        }
+        for (int i = numberOfInputs; i < this.getNumberOfRegisters(); i++) {
+            registerExpressions.put(i, String.valueOf((this.initialRegisterStates[i])));
+        }
+
+        int lastWrittenRegister = 0;
+
+        // Auswertung der Anweisungen
+        for (Instruction instruction : this.instructions) {
+
+            int targetRegister = instruction.operands[0];
+            lastWrittenRegister = targetRegister;
+            //region baut Ausdruck
+            Operator operator = instruction.operator;
+            String operation = operator.toString();
+
+            // Ausdrücke für Operanden
+            String operand1Expression = "";
+            String operand2Expression = "";
+            String expression = "";
+            if (operator.numberOfOperands == 2) {
+                operand1Expression = registerExpressions.get(instruction.operands[1]);
+                expression = String.format("%s(%s)", operation, operand1Expression);
+
+            } else {
+                operand1Expression = registerExpressions.get(instruction.operands[1]);
+                operand2Expression = registerExpressions.get(instruction.operands[2]);
+                expression = String.format("(%s %s %s)", operand1Expression, operation, operand2Expression);
+            }
+
+            //endregion
+
+
+            // aktualisiert Registerausdruck
+            registerExpressions.put(targetRegister, expression);
+        }
+
+        // Das letzte Zielregister enthält das Endergebnis
+        String finalExpression = registerExpressions.get(lastWrittenRegister);
+        function.append(finalExpression);
+
+        return function.toString();
     }
 
 }
