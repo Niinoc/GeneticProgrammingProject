@@ -5,19 +5,18 @@
 package com.mycompany.geneticprogramming;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * An Instruction is one row of our program, e.g.  R3 := R0 + R5
- * @author Peter
- * 
+ *
  * To simplyfy things:
  * - there are only arithmetic instructions, for example:   R3 := R0 + R5
- * - There are always (at least) three operands, for example register 3, 0, 5
+ * - There are always (at least) (not anymore) three operands, for example register 3, 0, 5
  * - The first operand (here, 3) is the target register, where the result is written to.
  * - The only addressing mode is by registers, so constant values have to be stored in a register first.
- *    (Sorry, this might not be a good design decission,because we need two 
+ *    (Sorry, this might not be a good design decission,because we need two
  *     types of mutations: mutation of instructions and mutation of initial register values)
+ * @author Peter & Nicholas
  */
 public class Instruction extends Global{
 
@@ -45,21 +44,22 @@ public class Instruction extends Global{
      * Uses the global variable numberOfRegisters and fitnessFunction.
      * The generated instruction does not overwrite input registers.
      * Note that the first numberOfInputs registers are taken as input registers.
+     * Now includes unary and binary Operators!
      * @return The new instruction generated.
      */
     public static Instruction random() {
         Operator op = Operator.random();
         if (op.numberOfOperands >= 2) {
             return new Instruction(Operator.random(),
-                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
-                    MyRandom.nextInt(numberOfRegisters),
-                    (MyRandom.nextInt(numberOfRegisters))
+                    MyRandom.nextInt(numberOfFreeRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfFreeRegisters),
+                    (MyRandom.nextInt(numberOfFreeRegisters))
             );
         }
         else {
             return new Instruction(Operator.random(),
-                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
-                    MyRandom.nextInt(numberOfRegisters)
+                    MyRandom.nextInt(numberOfFreeRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfFreeRegisters)
             );
         }
     }

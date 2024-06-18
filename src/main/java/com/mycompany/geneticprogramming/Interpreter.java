@@ -49,10 +49,12 @@ public class Interpreter {
             Operator operator = instruction.operator;
             targetRegister = instruction.operands[0];
             Double[] operandValues;
+            //for unary operator
             if (operator.numberOfOperands == 2) {
                 operandValues = new Double[]{
                         registers[instruction.operands[1]]
                 };
+            //for binary operator
             } else {
                 operandValues = new Double[]{
                         registers[instruction.operands[1]],

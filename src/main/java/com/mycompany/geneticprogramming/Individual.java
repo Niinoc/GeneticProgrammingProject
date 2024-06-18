@@ -8,8 +8,8 @@ import java.util.Objects;
 
 /**
  * An individual consists of a program and a fitness.
- * @author Peter
  * Later we can add further parameters to an invidual, like a mutation strength.
+ * @author Peter & Nicholas
  */
 public class Individual {
     public Program program;

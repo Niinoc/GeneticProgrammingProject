@@ -5,8 +5,6 @@
 package com.mycompany.geneticprogramming;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +17,7 @@ import java.util.stream.Stream;
  * The fitness of a program is the average squared error on the fitness cases.
  * The target function can be changed below.
  * 
- * @author Peter
+ * @author Peter & Nicholas
  */
 public class FitnessRegression extends FitnessFunction {
     Interpreter interpreter;
@@ -65,8 +63,10 @@ public class FitnessRegression extends FitnessFunction {
                 double outputValue = Double.parseDouble(parts[parts.length-1].trim());
                 fitnessCasesOutput.add(outputValue);
             });
+            //overrides important static variables in Global after Input Read-out
             Global.numberOfFitnessCases = fitnessCasesInput.size();
-            Global.numberOfInputs = fitnessCasesInput.get(0).size();      //TODO besser hier oder in main?
+            Global.numberOfInputs = fitnessCasesInput.get(0).size();
+            Global.numberOfFreeRegisters += numberOfInputs;                 //TODO besser hier oder in main?
         } catch (IOException e) {
             e.printStackTrace();
         }

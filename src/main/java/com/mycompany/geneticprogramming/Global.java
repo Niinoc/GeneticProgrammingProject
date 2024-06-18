@@ -4,16 +4,12 @@
  */
 package com.mycompany.geneticprogramming;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * Global parameter of the genetic programing system.
  * To keep things simple, parameters are global and defined here as static class variables.
  * All classes (that need these parameters) are derived from Global.
  * 
- * @author Peter
+ * @author Peter & Nicholas
  */
 public class Global {
     // Do NOT add non-static variables here!
@@ -33,14 +29,14 @@ public class Global {
         return Long.parseLong(processName.split("@")[0]);
     }
 
-    static int numberOfRegisters = 5;           // Must be greater equal to the number of inputs, here the number of inputs is 1.
-    static int initialProgramLength = 5;        // In the current version, the length of a program is fixed.
+    static int numberOfFreeRegisters = 5;           // Must be greater equal to the number of inputs, so this will now be added to numberOfInputs
+    static int initialProgramLength = 15;        // In the current version, the length of a program is fixed. (new Mutation already implemented)
 
     static int maxProgramLength = 100;
 
-    static int numberOfGenerations = 1000;
+    static int populationSize = 120;
 
-    static int numberOfFitnessCases = 1;    //damit er keinen mist macht, passt nicht, komisch what ever
+    static int numberOfGenerations = 8000;
 
     static int numberOfFitnessCases = 50;
     static double stepSize = 1;
@@ -51,15 +47,15 @@ public class Global {
     static double mutationProbabiltyInstructions = 0.1;
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
-    static double mutationProbabiltyInstructionInsertion = 0.01;
-    static double mutationProbabiltyInstructionDeletion = 0.01;
+    static double mutationProbabiltyInstructionInsertion = 0.0;
+    static double mutationProbabiltyInstructionDeletion = 0.0;
 
     static FitnessFunction fitnessFunction;
 
     static String toStringStatic() {
         return "Parameters:\n" +
                 "seed: " + seed + "\n" +
-                "numberOfRegisters: " + numberOfRegisters + "\n" +
+                "numberOfRegisters: " + numberOfFreeRegisters + "\n" +
                 "initialProgramLength: " + initialProgramLength + "\n" +
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
@@ -75,7 +71,7 @@ public class Global {
     static String toStringShort(){
         return "["
                 +seed +"|"
-                +numberOfRegisters +"|"
+                + numberOfFreeRegisters +"|"
                 +initialProgramLength +"|"
                 +populationSize +"|"
                 +numberOfGenerations +"|"

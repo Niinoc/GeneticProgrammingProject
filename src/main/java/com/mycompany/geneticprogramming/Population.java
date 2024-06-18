@@ -11,11 +11,11 @@ import java.util.HashMap;
  * A population of programs.
  * It is simply an ArryList of Individuals.
  *
- * @author Peter
+ * @author Peter & Nicholas
  */
 public class Population extends ArrayList<Individual> {
     double diversity;
-    HashMap<Individual, Integer> diversIndividulas;
+    HashMap<Individual, Integer> diverseIndividuals;
 
     @Override
     public String toString() {
@@ -40,7 +40,8 @@ public class Population extends ArrayList<Individual> {
 
 
     /**
-     * sets the HashMap of every different Individuals and their amount
+     * sets the HashMap of every different Individual and their amount
+     * equality is checked with toArithmetic() (--> Program)
      *
      * @return
      */
@@ -53,7 +54,7 @@ public class Population extends ArrayList<Individual> {
                 diversPrograms.put(individual, 1);
             }
         }
-        diversIndividulas = diversPrograms;
+        diverseIndividuals = diversPrograms;
     }
 
     /**
@@ -62,6 +63,6 @@ public class Population extends ArrayList<Individual> {
      * @return
      */
     public void computeDiversity() {
-        diversity = (double) diversIndividulas.size() / this.size();
+        diversity = (double) diverseIndividuals.size() / this.size();
     }
 }

@@ -5,13 +5,12 @@
 package com.mycompany.geneticprogramming;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * A Program consists of initial values for each register and a list of instructions.
  *   
  *
- * @author Peter
+ * @author Peter & Nicholas
  */
 public class Program extends Global {
 
@@ -27,7 +26,7 @@ public class Program extends Global {
      * @param numberOfRegisters
      */
     public Program() {
-        initialRegisterStates = new double[numberOfRegisters];
+        initialRegisterStates = new double[numberOfFreeRegisters];
     }
 
     /**
@@ -68,7 +67,7 @@ public class Program extends Global {
     public static Program random(int size) {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
-        for (int i = 0; i < numberOfRegisters; i++) {
+        for (int i = 0; i < numberOfFreeRegisters; i++) {
             program.initialRegisterStates[i] = randomRegisterValue(-1.0, 1.0);
         }
         // Generate random instructions
@@ -122,6 +121,11 @@ public class Program extends Global {
         return result;
     }
 
+    /**
+     *
+     * @return the arithmetic form of the Program aka it's Instructions
+     * @author Nicholas
+     */
     public String toArithmetic() {
         StringBuilder function = new StringBuilder();
 

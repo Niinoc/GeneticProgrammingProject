@@ -6,8 +6,6 @@ package com.mycompany.geneticprogramming;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -70,7 +68,7 @@ public class GeneticProgramming extends Global {
                 //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
                 nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
                 population = nextPopulation;
-                population.diversIndividulas = nextPopulation.diversIndividulas;
+                population.diverseIndividuals = nextPopulation.diverseIndividuals;
                 population.diversity = nextPopulation.diversity;
 
                 best = population.best();
@@ -268,12 +266,12 @@ public class GeneticProgramming extends Global {
     /**
      * *
      * setzt mitgegebene Parameter in Global und überprüft Richtigkeit
-     *
      * @param args
+     * @author Nicholas
      */
     private static void parseAndSetArguments(String[] args) {
         if (args.length >= 1) seed = Long.parseLong(args[0]);
-        if (args.length >= 2 && Integer.parseInt(args[1]) >= 1) numberOfRegisters = Integer.parseInt(args[1]);
+        if (args.length >= 2 && Integer.parseInt(args[1]) >= 1) numberOfFreeRegisters = Integer.parseInt(args[1]);
         if (args.length >= 3 && Integer.parseInt(args[2]) >= 1) initialProgramLength = Integer.parseInt(args[2]);
         if (args.length >= 4 && Integer.parseInt(args[3]) >= 1) populationSize = Integer.parseInt(args[3]);
         if (args.length >= 5) numberOfGenerations = Integer.parseInt(args[4]);
