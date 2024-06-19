@@ -5,8 +5,12 @@
 package com.mycompany.geneticprogramming;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,8 +28,20 @@ public class Log extends Global{
 
     static Map<String, PrintWriter> writers = new HashMap<>();
 
+
     public static String fileNameEnding2fileName(String fileNameEnding){
-        return logFileNamePrefix + fileNameEnding + logFileNamePostfix;
+        return logFolderPath + logFileNamePrefix + fileNameEnding + logFileNamePostfix;
+    }
+
+    public static void createLogFolder() {
+        Path logFolder = Paths.get(logFolderPath);
+        if (!Files.exists(logFolder)) {
+            try {
+                Files.createDirectories(logFolder);
+            } catch (IOException e) {
+                e.printStackTrace();  // Handle error appropriately
+            }
+        }
     }
     
     public static PrintWriter writer(String fileNameEnding) {
@@ -63,7 +79,7 @@ public class Log extends Global{
         }
     }
 
-        public static void flush(String fileNameEnding){
+    public static void flush(String fileNameEnding){
         String fileName = fileNameEnding2fileName(fileNameEnding);
         if (writers.containsKey(fileName)) {
             writers.get(fileName).flush();

@@ -20,6 +20,9 @@ public class Global {
     
     static String logFileNamePostfix = ".txt";
 
+    static String logFolderPath = "log/";
+    static String inputFolderPath = "in/";
+
     static String fitnessCasesFileName = "fitnessCases";
 
     static long seed = System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom

@@ -41,6 +41,8 @@ public class GeneticProgramming extends Global {
      */
     public void runOptimization() {
 
+        Log.createLogFolder();
+
         Log.println("parameters", toStringStatic());
 
         Population population = newRandomPopulation();  // Create initial random population

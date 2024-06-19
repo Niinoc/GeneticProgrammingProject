@@ -50,7 +50,7 @@ public class FitnessRegression extends FitnessFunction {
         }
     }
     public FitnessRegression(String fileName) {
-        String filePath = inputFileNamePrefix + fileName + logFileNamePostfix;
+        String filePath = inputFolderPath + inputFileNamePrefix + fileName + logFileNamePostfix;
 
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             lines.forEach(line -> {
