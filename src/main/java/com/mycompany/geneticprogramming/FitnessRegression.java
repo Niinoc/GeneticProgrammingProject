@@ -66,7 +66,7 @@ public class FitnessRegression extends FitnessFunction {
             //overrides important static variables in Global after Input Read-out
             Global.numberOfFitnessCases = fitnessCasesInput.size();
             Global.numberOfInputs = fitnessCasesInput.get(0).size();
-            Global.numberOfFreeRegisters += numberOfInputs;                 //TODO besser hier oder in main?
+            Global.numberOfFreeRegisters += numberOfInputs;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,52 +160,87 @@ public class FitnessRegression extends FitnessFunction {
     }
     //endregion
 
-    /*** 
+    /***
      * Computes the input output behavior of the program in the same way as the fitness is evaluated.
      * Can be used to make a plot what we have learned.
+     * format: CSV
      * @param program
      * @return All input output pairs used for fitness calculation. The last column is the target value.
      */
- 
+
+    /*public String evalInputOutputBehavior(Program program) {
+        StringBuilder result = new StringBuilder();
+        interpreter = new Interpreter(program);     // instantiate an interpreter that runs the program
+
+        //        double[] inputs = new double[numberOfFitnessCases];     //für plotter
+        //        double[] outputs = new double[numberOfFitnessCases];    //für plotter
+
+        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
+            ArrayList<Double> inputList = fitnessCasesInput.get(i);
+            for (double input : inputList) {
+        //                result.append(input).append("\t");
+            }
+            double output = interpreter.run(inputList);
+            result.append(output).append("\t").append(fitnessCasesOutput.get(i)).append("\n");
+        //            inputs[i] = inputList.get(0);
+        //          outputs[i] = output;
+        }
+
+        //        new GraphPlotter(inputs, outputs, fitnessCasesOutput);  //TODO für java plot entkommentieren
+
+        return result.toString();  //return the average error as the fitness
+    }*/
+
     @Override
     public String evalInputOutputBehavior(Program program) {
         StringBuilder result = new StringBuilder();
         interpreter = new Interpreter(program);     // instantiate an interpreter that runs the program
 
-//        double[] inputs = new double[numberOfFitnessCases];     //für plotter
-//        double[] outputs = new double[numberOfFitnessCases];    //für plotter
+        // Header für CSV-Datei
+        for (int i = 0; i<numberOfInputs; i++) {
+            result.append("Input").append(i).append(",");
+        }
+        result.append("Expected Output\n");
 
         for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
             ArrayList<Double> inputList = fitnessCasesInput.get(i);
             for (double input : inputList) {
-                result.append(input).append("\t");      //für plotter
+                result.append(input).append(",");
             }
             double output = interpreter.run(inputList);
-            result.append(output).append("\t").append(fitnessCasesOutput.get(i)).append("\n");
-//            inputs[i] = inputList.get(0);
-//            outputs[i] = output;
+            result.append(output).append(",").append(fitnessCasesOutput.get(i)).append("\n");
         }
-
-//        new GraphPlotter(inputs, outputs, fitnessCasesOutput);  //TODO für java plot entkommentieren
 
         return result.toString();  //return the average error as the fitness
     }
-    
+
+
     /***
-     * For printing the fitness cases.
+     * For printing the fitness cases in CSV format.
      * @return A string describing the fitness function including the fitness cases.
      */
+
     @Override
     public String toString() {
-        String result = "# FitnessFunction: FitnessRegression \n"
-                + "#  numberOfFitnessCases: \t" + numberOfFitnessCases + "\n";
+        StringBuilder result = new StringBuilder();
+
+        // Header für CSV-Datei
+        result.append("# FitnessFunction: FitnessRegression\n");
+        result.append("# numberOfFitnessCases:,").append(numberOfFitnessCases).append("\n");
+        for (int i = 0; i<numberOfInputs; i++) {
+            result.append("Input").append(i).append(",");
+        }
+        result.append("Expected Output\n");
+
         for (int i = 0; i < numberOfFitnessCases; i++) {
             for (double x : fitnessCasesInput.get(i)) {
-                result += " " + x;
+                result.append(x).append(",");
             }
-            result += "\t" + fitnessCasesOutput.get(i) + "\n";
+            result.append(fitnessCasesOutput.get(i)).append("\n");
         }
-        return result;
+
+        return result.toString();
     }
+
 
 }

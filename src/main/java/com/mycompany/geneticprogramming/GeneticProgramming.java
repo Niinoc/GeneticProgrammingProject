@@ -43,7 +43,7 @@ public class GeneticProgramming extends Global {
 
         Log.createLogFolder();
 
-        Log.println("parameters", toStringStatic());
+        Log.println("parameters", parametersToCSV());
 
         Population population = newRandomPopulation();  // Create initial random population
 
@@ -63,6 +63,8 @@ public class GeneticProgramming extends Global {
 
         int lastPrintedProgress = -1; // for progess
 
+        Log.println("bestfitness", "generation,FitnessMSE"); //bestfitness file header
+
         // Evolution loop
             for (int generation = 1; generation <= numberOfGenerations; generation++) {
                 Population nextPopulation = nextGenPopulation(population);
@@ -75,11 +77,11 @@ public class GeneticProgramming extends Global {
 
                 best = population.best();
                 // --- Write log data after each generation ---
-                Log.println("bestfitness", generation
-                        + "\t" + best.getFitnessMSE()
-        //                    + "\t" + best.getFitnessMAPE()
-        //                    + "\t" + best.getFitnessR2()
-        //                    + "\t" + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
+                Log.println("bestfitness", generation + ","
+                                + best.getFitnessMSE()
+        //                    + "," + best.getFitnessMAPE()
+        //                    + "," + best.getFitnessR2()
+        //                    + "," + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
                 );
 
                 //print progress in %

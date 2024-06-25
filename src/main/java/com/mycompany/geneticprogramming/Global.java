@@ -23,7 +23,7 @@ public class Global {
     static String logFolderPath = "log/";
     static String inputFolderPath = "in/";
 
-    static String fitnessCasesFileName = "fitnessCases";
+    static String fitnessCasesFileName = "I.11.19";
 
     static long seed = System.currentTimeMillis() + (Runtime.getRuntime().freeMemory() % 100000) + getProcessId();  // Seed for MyRandom
     private static long getProcessId() {
@@ -39,7 +39,7 @@ public class Global {
 
     static int populationSize = 120;
 
-    static int numberOfGenerations = 8000;
+    static int numberOfGenerations = 1000;
 
     static int numberOfFitnessCases = 50;
     static double stepSize = 1;
@@ -55,7 +55,7 @@ public class Global {
 
     static FitnessFunction fitnessFunction;
 
-    static String toStringStatic() {
+    static String parametersToString() {
         return "Parameters:\n" +
                 "seed: " + seed + "\n" +
                 "numberOfRegisters: " + numberOfFreeRegisters + "\n" +
@@ -71,7 +71,22 @@ public class Global {
                 "logFileNamePostfix: " + logFileNamePostfix;
     }
 
-    static String toStringShort(){
+    static String parametersToCSV() {
+        return "seed," + seed + "\n" +
+                "numberOfRegisters," + numberOfFreeRegisters + "\n" +
+                "initialProgramLength," + initialProgramLength + "\n" +
+                "populationSize," + populationSize + "\n" +
+                "numberOfGenerations," + numberOfGenerations + "\n" +
+                "numberOfFitnessCases," + numberOfFitnessCases + "\n" +
+                "mutationProbabilityInstructions," + mutationProbabiltyInstructions + "\n" +
+                "mutationProbabilityInitialRegisterStates," + mutationProbabiltyInitialRegisterStates + "\n" +
+                "mutationStrengthInitialRegisterStates," + mutationStrengthInitialRegisterStates + "\n" +
+                "FitnessCasesFileName," + fitnessCasesFileName + "\n" +
+                "logFileNamePrefix," + logFileNamePrefix + "\n" +
+                "logFileNamePostfix," + logFileNamePostfix;
+    }
+
+    static String parametersToStringShort(){
         return "["
                 +seed +"|"
                 + numberOfFreeRegisters +"|"
