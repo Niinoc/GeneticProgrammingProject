@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # setze Pfad
+# shellcheck disable=SC2164
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # kompilieren
@@ -23,7 +24,7 @@ param8=0.2
 input_file_name=I.11.19
 
 # Hauptordner für die Tests
-test_dir=test_population_size2
+test_dir=test_population_size
 
 # erstelle Verzeichnis
 mkdir -p "$test_dir"
@@ -49,7 +50,7 @@ for k in $(seq 1 $NUM_TESTS); do
         mkdir -p "$run_dir"
 
         # übergebe Job an SGE
-        qsub -v param1=$param1,param2=$param2,param3=$param3,param4=$param4,param5=$param5,param6=$param6,param7=$param7,param8=$param8,input_file_name=$input_file_name,run_dir=$run_dir job_script.sh
+        qsub -v param1="$param1",param2=$param2,param3=$param3,param4=$param4,param5=$param5,param6=$param6,param7=$param7,param8=$param8,input_file_name=$input_file_name,run_dir=$run_dir job_script.sh
     done
 done
 

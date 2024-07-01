@@ -3,6 +3,7 @@
 #$ -o /dev/null
 #$ -e /dev/null
 
+# shellcheck disable=SC2164
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # Java-Programm ausführen
