@@ -51,8 +51,11 @@ for param6 in $param6_list; do
         run_dir="$test_run_dir/run_${param6}_${i}"
         mkdir -p "$run_dir"
 
+        log_dir="log/$run_dir"
+        mkdir -p "$log_dir"
+
         # übergebe Job an SGE
-        qsub -v param1="$param1",param2=$param2,param3=$param3,param4=$param4,param5=$param5,param6=param6,param7=$param7,param8=$param8,input_file_name=$input_file_name,run_dir=$run_dir job_script.sh
+        qsub -v param1="$param1",param2=$param2,param3=$param3,param4=$param4,param5=$param5,param6=$param6,param7=$param7,param8=$param8,input_file_name=$input_file_name,log_dir="$log_dir",run_dir="$run_dir" job_script.sh
     done
 done
 
