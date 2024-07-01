@@ -200,7 +200,7 @@ public class FitnessRegression extends FitnessFunction {
         for (int i = 0; i<numberOfInputs; i++) {
             result.append("Input").append(i).append(",");
         }
-        result.append("Expected Output\n");
+        result.append("Output").append("Expected Output").append("\n");
 
         for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
             ArrayList<Double> inputList = fitnessCasesInput.get(i);
