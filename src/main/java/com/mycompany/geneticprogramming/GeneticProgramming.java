@@ -283,5 +283,6 @@ public class GeneticProgramming extends Global {
         if (args.length >= 7 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[6]);
         if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[7]);
         if (args.length >= 9) fitnessCasesFileName = args[8];
+        if (args.length >= 10) logFolderPath = args[9];
     }
 }
