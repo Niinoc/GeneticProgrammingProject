@@ -54,8 +54,7 @@ public class GeneticProgramming extends Global {
         // System.out.println(population);
 
         // Logging ----
-        Log.println("initialbehavior",
-                fitnessFunction.evalInputOutputBehavior(first.getProgram()));
+        Log.println("initialbehavior", fitnessFunction.evalInputOutputBehavior(first.getProgram()));
         Log.println("initialpopulation", "" + population + "\n" + "startDiversity: " + startDiversity);
         Log.println("fitnessFunction", "" + fitnessFunction);
 

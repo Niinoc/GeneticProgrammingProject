@@ -29,8 +29,8 @@ public class Log extends Global{
     static Map<String, PrintWriter> writers = new HashMap<>();
 
 
-    public static String fileNameEnding2fileName(String fileName){
-        return logFileNamePrefix + fileName + logFileNamePostfix;
+    public static String fileNameEnding2fileName(String fileNameEnding){
+        return logFolderPath + logFileNamePrefix + fileNameEnding + logFileNamePostfix;
     }
 
     public static void createLogFolder() {
@@ -46,33 +46,31 @@ public class Log extends Global{
 
     public static PrintWriter writer(String fileNameEnding) {
         String fileName = fileNameEnding2fileName(fileNameEnding);
-        String filePath = Paths.get(logFolderPath, fileName).toString();
-
-        if (writers.containsKey(filePath)) {
-            return writers.get(filePath);
+        if (writers.containsKey(fileName)) {
+            return writers.get(fileName);
         }
         try {
             // else open the new file
-            writers.put(filePath, new PrintWriter(filePath, "UTF-8"));
+            writers.put(fileName, new PrintWriter(fileName, "UTF-8"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return writers.get(filePath);
-    }
+        return writers.get(fileName);
 
+    }
     /***
      * Write a string to a log-file.
      * The actual file name depends on fileNamePrefix and fileNameSuffix.
-     * @param fileNameEnding 
+     * @param fileNameEnding
      * @param message to be written to the file.
      */
     public static void println(String fileNameEnding, String message){
         writer(fileNameEnding).println(message);
         flush(fileNameEnding);  // brutal, but that's how it is ...
     }
-    
+
     public static void close(String fileNameEnding){
         String fileName = fileNameEnding2fileName(fileNameEnding);
         if (writers.containsKey(fileName)) {
