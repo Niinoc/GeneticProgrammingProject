@@ -34,6 +34,9 @@ public class Log extends Global{
     }
 
     public static void createLogFolder() {
+        if (!logFolderPath.endsWith("/")) {
+            logFolderPath += "/";
+        }
         Path logFolder = Paths.get(logFolderPath);
         if (!Files.exists(logFolder)) {
             try {
