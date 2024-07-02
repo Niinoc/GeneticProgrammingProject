@@ -40,7 +40,7 @@ public class MyRandom extends Global{
      * @return 
      */
     public static int nextInt(int origin, int bound) {
-        return random.nextInt(origin, bound);
+        return origin + random.nextInt(bound - origin);
     }
     
     /***

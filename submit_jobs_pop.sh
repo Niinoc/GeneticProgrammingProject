@@ -5,7 +5,7 @@
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # kompilieren
-javac -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
+javac -source 11 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Parameterwert
 NUM_RUNS=2

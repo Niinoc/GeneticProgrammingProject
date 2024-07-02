@@ -5,7 +5,7 @@
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # kompilieren
-javac -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
+javac -source 11 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Test
 NUM_RUNS=2
@@ -28,10 +28,10 @@ input_file_name=I.11.19
 
 # erstelle Verzeichnis
 log_dir=log
-mkdir -p log_dir
+mkdir -p $log_dir
 
 test_dir="$log_dir/test_mutation_rate"
-mkdir -p test_dir
+mkdir -p $test_dir
 
 # erzeuge Git Version txt in log
 git -C /home/stud/other/pi96dal/GeneticProgrammingProject/ rev-parse HEAD > "$test_dir/git_version.txt"
