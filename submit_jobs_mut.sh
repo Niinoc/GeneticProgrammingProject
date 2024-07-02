@@ -5,10 +5,10 @@
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # kompilieren
-javac -source 11 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
+javac -source 17 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Test
-NUM_RUNS=2
+NUM_RUNS=20
 
 # Anzahl der Tests
 # hier durch param6 list gegeben
@@ -17,10 +17,9 @@ NUM_RUNS=2
 param2=5
 param3=15
 param4=100
-param5=5000
+param5=100000
 # Liste der param6 Werte
-param6_list="0.01 0.05 0.1"
-# 0.15 0.2 0.25 0.3 0.35
+param6_list="0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4"
 param7=0.3
 param8=0.2
 
