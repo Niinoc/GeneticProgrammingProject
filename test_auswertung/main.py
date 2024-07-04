@@ -1,16 +1,45 @@
-# This is a sample Python script.
+import os
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import matplotlib.pyplot as plt
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
+from FitnessDataAnalyzer import FitnessDataAnalyzer
 
 
-# Press the green button in the gutter to run the script.
+def main():
+    # Der relative Pfad vom aktuellen Arbeitsverzeichnis zu 'test_mutation_rate' im 'log' Ordner
+    base_dir = os.path.join('..', 'log', 'test_mutation_rate')
+
+    # Beispiel der Nutzung:
+    analyzer = FitnessDataAnalyzer(base_dir, max_generations=10000)
+    analyzer2 = FitnessDataAnalyzer(base_dir, max_generations=500000)
+
+
+    # # Statistiken berechnen und ausgeben
+    # stats = analyzer.calculate_statistics()
+    # print("Statistiken für alle Parameter:")
+    # for param, stat in stats.items():
+    #     print(f"{param}: Mean={stat['mean']}, Std={stat['std']}, Min={stat['min']}, Max={stat['max']}")
+
+    # Durchschnittliche Fitnessverläufe für alle Parameter plotten
+    # analyzer.plot_average_fitness()
+
+    # analyzer.plot_violin()
+    #
+    analyzer.plot_boxplot()
+    analyzer2.plot_boxplot()
+    #
+    # analyzer.plot_heatmap()
+    #
+    # analyzer.perform_anova()
+    #
+    # analyzer.perform_tukey_test()
+    #
+    # analyzer.perform_mannwhitneyu_test("0.01", "0.05")
+
+    # analyzer.plot_all()
+
+    plt.show()
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
