@@ -5,10 +5,10 @@
 cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 
 # kompilieren
-javac -source 17 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
+# javac -source 17 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Parameterwert
-NUM_RUNS=20
+NUM_RUNS=30
 
 # Anzahl der Tests
 # hier durch param4 list gegeben
@@ -16,41 +16,48 @@ NUM_RUNS=20
 # Manuell festgelegte Parameter
 param2=5
 param3=15
-param4_list="10 30 50 70 90 110 130 150 170 190 210"
-param5=100000
-param6=0.1
+param4_list="30 50 70 90 110 130 150 170 190 210 230 250"
+param5=25000
+param6=0.05
 param7=0.3
 param8=0.2
 
-input_file_name=I.11.19
+input_file_list="I.11.19 I.29.4 I.39.1 I.8.14"
 
 # erstelle Verzeichnis
 log_dir=log
 mkdir -p "$log_dir"
 
-test_dir="$log_dir/test_population_size"
+test_dir="$log_dir/test_population_size_multi"
 mkdir -p "$test_dir"
 
 # erzeuge Git Version txt in log
 git -C /home/stud/other/pi96dal/GeneticProgrammingProject/ rev-parse HEAD > "$test_dir/git_version.txt"
 
-# Äußere Schleife für Parameterwerte
-for param4 in $param4_list; do
+for input_file_name in $input_file_list; do
 
-    param_dir="$test_dir/pop_size_$param4"
-    mkdir -p "$param_dir"
+    # Äußere Schleife für Parameterwerte
+    for param4 in $param4_list; do
 
-    # Innere Schleife für Durchläufe
-    for i in $(seq 1 $NUM_RUNS); do
-        # ändere nur Seed
-        param1=$i
+        param_dir="$test_dir/$param4"
+        mkdir -p "$param_dir"
 
-        # erstelle Ordner für jeden spezifischen Durchlauf (run_k_i)
-        seed_dir="$param_dir/seed_${i}"
-        mkdir -p "$seed_dir"
+        # Innere Schleife für Durchläufe
+        for i in $(seq 1 $NUM_RUNS); do
+            # ändere nur Seed
+            param1=$i
 
-        # übergebe Job an SGE
-        qsub -v param1="$param1",param2="$param2",param3="$param3",param4="$param4",param5="$param5",param6="$param6",param7="$param7",param8="$param8",input_file_name="$input_file_name",log_dir="$seed_dir" job_script.sh
+            # erstelle Ordner für jeden spezifischen Durchlauf (run_k_i)
+            seed_dir="$param_dir/seed_${i}"
+            mkdir -p "$seed_dir"
+
+            # erstelle Ordner für die spezifische Input Funktion
+            function_dir="$seed_dir/$input_file_name"
+            mkdir -p "$function_dir"
+
+            # übergebe Job an SGE
+            qsub -v param1="$param1",param2=$param2,param3=$param3,param4=$param4,param5=$param5,param6=$param6,param7=$param7,param8=$param8,input_file_name=$input_file_name,log_dir="$function_dir", job_script.sh
+        done
     done
 done
 
