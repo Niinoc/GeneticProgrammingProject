@@ -8,7 +8,7 @@ cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 javac -source 17 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Test
-NUM_RUNS=100
+NUM_RUNS=50
 
 # Anzahl der Tests
 # hier durch param6 list gegeben
@@ -16,21 +16,21 @@ NUM_RUNS=100
 # Manuell festgelegte Parameter
 param2=5
 param3=15
-param4=130
-param5=25000
+param4=250
+param5=35000
 # Liste der param6 Werte
-param6_list="0.01 0.03 0.05 0.07 0.09 0.15 0.2 0.25 0.3 0.35"
+param6_list="0.01 0.02 0.03 0.04 0.05 0.07 0.09 0.15 0.2 0.25 0.3 0.35"
 # "0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09"
 param7=0.3
 param8=0.2
 
-input_file_list="I.27.6 I.50.26 II.3.24 II.11.28 II.38.14"
+input_file_list="I.8.14 I.11.19 I.27.6 I.29.4 I.39.1 I.50.26 II.3.24 II.11.28 II.38.14"
 
 # erstelle Verzeichnis
 log_dir=log
 mkdir -p $log_dir
 
-test_dir="$log_dir/test_mutation_rate_multi"
+test_dir="$log_dir/test_mutation_rate_NEW"
 mkdir -p $test_dir
 
 # erzeuge Git Version txt in log
