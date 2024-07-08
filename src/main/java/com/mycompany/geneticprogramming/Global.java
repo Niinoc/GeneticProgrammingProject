@@ -33,7 +33,7 @@ public class Global {
     }
 
     static int numberOfFreeRegisters = 5;           // Must be greater equal to the number of inputs, so this will now be added to numberOfInputs
-    static int initialProgramLength = 15;        // In the current version, the length of a program is fixed. (new Mutation already implemented)
+    static int addedProgramLength = 15;        // Length is fixed, this will also be added to numberOfInputs (new Mutation already implemented)
 
     static int maxProgramLength = 100;
 
@@ -59,7 +59,7 @@ public class Global {
         return "Parameters:\n" +
                 "seed: " + seed + "\n" +
                 "numberOfRegisters: " + numberOfFreeRegisters + "\n" +
-                "initialProgramLength: " + initialProgramLength + "\n" +
+                "initialProgramLength: " + addedProgramLength + "\n" +
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
@@ -74,7 +74,7 @@ public class Global {
     static String parametersToCSV() {
         return "seed," + seed + "\n" +
                 "numberOfRegisters," + numberOfFreeRegisters + "\n" +
-                "initialProgramLength," + initialProgramLength + "\n" +
+                "initialProgramLength," + addedProgramLength + "\n" +
                 "populationSize," + populationSize + "\n" +
                 "numberOfGenerations," + numberOfGenerations + "\n" +
                 "numberOfFitnessCases," + numberOfFitnessCases + "\n" +
@@ -90,7 +90,7 @@ public class Global {
         return "["
                 +seed +"|"
                 + numberOfFreeRegisters +"|"
-                +initialProgramLength +"|"
+                + addedProgramLength +"|"
                 +populationSize +"|"
                 +numberOfGenerations +"|"
                 +numberOfFitnessCases +"|"

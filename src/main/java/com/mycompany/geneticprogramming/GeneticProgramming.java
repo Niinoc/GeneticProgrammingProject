@@ -133,7 +133,7 @@ public class GeneticProgramming extends Global {
     Population newRandomPopulation() {
         Population population = new Population();
         for (int i = 0; i < populationSize; i++) {
-            Program program = Program.random(initialProgramLength);
+            Program program = Program.random(addedProgramLength);
             population.add(new Individual(program,
                     fitnessFunction.evalMSE(program)
 //                    ,fitnessFunction.evalMAPE(program)
@@ -275,7 +275,7 @@ public class GeneticProgramming extends Global {
     private static void parseAndSetArguments(String[] args) {
         if (args.length >= 1) seed = Long.parseLong(args[0]);
         if (args.length >= 2 && Integer.parseInt(args[1]) >= 1) numberOfFreeRegisters = Integer.parseInt(args[1]);
-        if (args.length >= 3 && Integer.parseInt(args[2]) >= 1) initialProgramLength = Integer.parseInt(args[2]);
+        if (args.length >= 3 && Integer.parseInt(args[2]) >= 1) addedProgramLength = Integer.parseInt(args[2]);
         if (args.length >= 4 && Integer.parseInt(args[3]) >= 1) populationSize = Integer.parseInt(args[3]);
         if (args.length >= 5) numberOfGenerations = Integer.parseInt(args[4]);
         if (args.length >= 6 && Double.parseDouble(args[5]) >= 0 && Double.parseDouble(args[5]) <= 1) mutationProbabiltyInstructions = Double.parseDouble(args[5]);

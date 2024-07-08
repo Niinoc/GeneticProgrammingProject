@@ -67,6 +67,7 @@ public class FitnessRegression extends FitnessFunction {
             Global.numberOfFitnessCases = fitnessCasesInput.size();
             Global.numberOfInputs = fitnessCasesInput.get(0).size();
             Global.numberOfFreeRegisters += numberOfInputs;
+            Global.addedProgramLength += numberOfInputs;
         } catch (IOException e) {
             e.printStackTrace();
         }
