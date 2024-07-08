@@ -8,7 +8,7 @@ cd /home/stud/other/pi96dal/GeneticProgrammingProject/
 # javac -source 17 -target 11 -d out -sourcepath src/main/java src/main/java/com/mycompany/geneticprogramming/*.java
 
 # Anzahl der Durchläufe pro Test
-NUM_RUNS=100
+NUM_RUNS=50
 
 # Anzahl der Tests
 # hier durch param3 list gegeben
@@ -16,14 +16,14 @@ NUM_RUNS=100
 # Manuell festgelegte Parameter
 param2=5
 # Liste der param3 Werte
-param3_list="5 10 15 20 50 100"
+param3_list="0 5 10 15 20 30 40 50 100"
 param4=130
-param5=25000
+param5=50000
 param6=0.03
 param7=0.3
 param8=0.2
 
-input_file_list="I.8.14 I.11.19 I.29.4 I.39.1"
+input_file_list="I.8.14 I.11.19 I.29.4 I.39.1 I.50.26 II.3.24 II.11.28 II.38.14"
 
 # erstelle Verzeichnis
 log_dir=log

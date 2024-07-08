@@ -23,13 +23,13 @@ param6=0.03
 param7_list="0.01 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.99"
 param8=0.2
 
-input_file_list="I.8.14 I.11.19 I.29.4 I.39.1"
+input_file_list="I.50.26 II.3.24 II.11.28 II.38.14"
 
 # erstelle Verzeichnis
 log_dir=log
 mkdir -p $log_dir
 
-test_dir="$log_dir/test_param7_multi"
+test_dir="$log_dir/test_register_mutation_rate_multi"
 mkdir -p $test_dir
 
 # erzeuge Git Version txt in log
