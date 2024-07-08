@@ -24,7 +24,7 @@ param6_list="0.01 0.03 0.05 0.07 0.09 0.15 0.2 0.25 0.3 0.35"
 param7=0.3
 param8=0.2
 
-input_file_list="I.50.26 II.3.24 II.11.28 II.38.14"
+input_file_list="I.27.6 I.50.26 II.3.24 II.11.28 II.38.14"
 
 # erstelle Verzeichnis
 log_dir=log
