@@ -3,41 +3,33 @@ import os
 import matplotlib.pyplot as plt
 
 from FitnessDataAnalyzer import FitnessDataAnalyzer
+from FitnessDataAnalyzerOverhaul import FitnessDataAnalyzerOverhaul
 
 
 def main():
     # Der relative Pfad vom aktuellen Arbeitsverzeichnis zu 'test_mutation_rate' im 'log' Ordner
     base_dir = os.path.join('..', 'log', 'test_mutation_rate')
+    analyzer = FitnessDataAnalyzerOverhaul(base_dir)
+    print(analyzer.df)
+    print(analyzer.average_df)
 
-    # Beispiel der Nutzung:
-    analyzer = FitnessDataAnalyzer(base_dir, max_generations=10000)
-    analyzer2 = FitnessDataAnalyzer(base_dir, max_generations=500000)
+    functions1 = ['I.8.14', 'I.11.19', 'I.27.6', 'I.29.4']
+    functions2 = ['I.39.1', 'I.50.26', 'II.3.24', 'II.11.28', 'II.38.14']
 
+    for function in functions1:
+        analyzer.plot_fitness_for_multiple_parameters(function)
+    plt.show()
 
-    # # Statistiken berechnen und ausgeben
-    # stats = analyzer.calculate_statistics()
-    # print("Statistiken für alle Parameter:")
-    # for param, stat in stats.items():
-    #     print(f"{param}: Mean={stat['mean']}, Std={stat['std']}, Min={stat['min']}, Max={stat['max']}")
+    for function in functions2:
+        analyzer.plot_fitness_for_multiple_parameters(function)
+    plt.show()
 
-    # Durchschnittliche Fitnessverläufe für alle Parameter plotten
-    # analyzer.plot_average_fitness()
+    for function in functions1:
+        analyzer.plot_boxplot(function)
+    plt.show()
 
-    # analyzer.plot_violin()
-    #
-    analyzer.plot_boxplot()
-    analyzer2.plot_boxplot()
-    #
-    # analyzer.plot_heatmap()
-    #
-    # analyzer.perform_anova()
-    #
-    # analyzer.perform_tukey_test()
-    #
-    # analyzer.perform_mannwhitneyu_test("0.01", "0.05")
-
-    # analyzer.plot_all()
-
+    for function in functions2:
+        analyzer.plot_boxplot(function)
     plt.show()
 
 
