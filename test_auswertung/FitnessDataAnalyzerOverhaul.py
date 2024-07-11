@@ -10,6 +10,10 @@ class FitnessDataAnalyzerOverhaul:
         self.root_dir = root_dir
         self.test_name = self._get_test_name()
         self.df, self.average_df = self._process_directory()
+        self.function_subsets = {}
+        self.function_average_subsets = {}
+        self.parameter_average_subsets = {}
+        self._initialize_subsets()
 
     def _process_directory(self):
         df_list = []
@@ -40,20 +44,36 @@ class FitnessDataAnalyzerOverhaul:
             'fitness'].mean().reset_index()
 
     def _get_test_name(self):
-        # Extrahieren des Testordnernamens ohne das Präfix 'test_'
+        # extract testname without prefix 'test_'
         return os.path.basename(self.root_dir).replace('test_', '')
+    
+    def _initialize_subsets(self):
+        # Initialize function_subsets
+        for function in self.df['function'].unique():
+            subset = self.df[self.df['function'] == function].copy()
+            subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
+            self.function_subsets[function] = subset
+
+        # Initialize function_average_subsets
+        for function in self.average_df['function'].unique():
+            subset = self.average_df[self.average_df['function'] == function].copy()
+            subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
+            self.function_average_subsets[function] = subset
+
+        # Initialize parameter_average_subsets
+        for parameter in self.average_df['parameter'].unique():
+            self.parameter_average_subsets[parameter] = self.average_df[self.average_df['parameter'] == parameter]
     
     def _save_plot(self, plt, function, plot_type):
         output_dir = os.path.join(self.root_dir, function)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
             print("Speicherort existierte nicht")
-        plot_path = os.path.join(output_dir, f'{function}_{plot_type}.png')
-        plt.savefig(plot_path)
+        plot_path = os.path.join(output_dir, f'{function}_{plot_type}.svg')
+        plt.savefig(plot_path, format='svg')
 
     def plot_boxplot(self, function):
-        subset = self.df[self.df['function'] == function].copy()
-        subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
+        subset = self.function_subsets[function]
         plt.figure(figsize=(15, 10))
         sns.boxplot(x='parameter', y='fitness', data=subset)
         plt.title(f'Fitness Distribution of {function} per {self.test_name}')
@@ -63,9 +83,9 @@ class FitnessDataAnalyzerOverhaul:
         self._save_plot(plt, function, 'boxplot')
 
     def plot_heatmap(self, function):
-        subset = self.df[self.df['function'] == function]
+        subset = self.function_subsets[function]
         # Pivot the table to get a matrix format for the heatmap
-        heatmap_data = subset.pivot_table(index='parameter', columns='generation', values='fitness')
+        heatmap_data = subset.pivot_table(index='parameter', columns='generation', values='fitness', observed=False)
         plt.figure(figsize=(15, 10))
         sns.heatmap(heatmap_data, cmap="viridis")
         plt.title(f'Heatmap of Fitness (MSE) over Generations for {function} per {self.test_name}')
@@ -75,8 +95,7 @@ class FitnessDataAnalyzerOverhaul:
 
 
     def plot_violin(self, function):
-        subset = self.df[self.df['function'] == function].copy()
-        subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
+        subset = self.function_subsets[function]
         plt.figure(figsize=(15, 10))
         sns.violinplot(x='parameter', y='fitness', data=subset)
         plt.title(f'Violin Plot of {function} per {self.test_name}')
@@ -86,7 +105,7 @@ class FitnessDataAnalyzerOverhaul:
 
 
     def plot_fitness_for_multiple_parameters(self, function):
-        subset = self.average_df[self.average_df['function'] == function]
+        subset = self.function_average_subsets[function]
         plt.figure(figsize=(12, 8))
         sns.lineplot(data=subset, x='generation', y='fitness', hue='parameter')
         plt.title(f'Fitness Trajectories of {function} for Multiple Parameters per {self.test_name}')
@@ -97,7 +116,7 @@ class FitnessDataAnalyzerOverhaul:
 
 
     def plot_fitness_for_multiple_functions(self, parameter):
-        subset = self.average_df[self.average_df['parameter'] == parameter]
+        subset = self.parameter_average_subsets[parameter]
         plt.figure(figsize=(12, 8))
         sns.lineplot(data=subset, x='generation', y='fitness', hue='function')
         plt.title(f'Fitness Trajectories for Multiple Functions of Parameter {parameter} per {self.test_name}')
