@@ -42,46 +42,76 @@ class FitnessDataAnalyzerOverhaul:
     def _get_test_name(self):
         # Extrahieren des Testordnernamens ohne das Präfix 'test_'
         return os.path.basename(self.root_dir).replace('test_', '')
+    
+    def _save_plot(self, plt, function, plot_type):
+        output_dir = os.path.join(self.root_dir, function)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print("Speicherort existierte nicht")
+        plot_path = os.path.join(output_dir, f'{function}_{plot_type}.png')
+        plt.savefig(plot_path)
 
     def plot_boxplot(self, function):
-        subset = self.df[self.df['function'] == function]
+        subset = self.df[self.df['function'] == function].copy()
+        subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
         plt.figure(figsize=(15, 10))
         sns.boxplot(x='parameter', y='fitness', data=subset)
-        plt.title(f'Fitness Distribution per {self.test_name}')
+        plt.title(f'Fitness Distribution of {function} per {self.test_name}')
         plt.xlabel('Parameter')
         plt.ylabel('Fitness (MSE)')
         plt.grid(True)
+        self._save_plot(plt, function, 'boxplot')
 
     def plot_heatmap(self, function):
         subset = self.df[self.df['function'] == function]
+        # Pivot the table to get a matrix format for the heatmap
+        heatmap_data = subset.pivot_table(index='parameter', columns='generation', values='fitness')
         plt.figure(figsize=(15, 10))
-        sns.heatmap(subset, cmap="viridis")
-        plt.title(f'Heatmap of Fitness (MSE) over Generations for {self.test_name}')
+        sns.heatmap(heatmap_data, cmap="viridis")
+        plt.title(f'Heatmap of Fitness (MSE) over Generations for {function} per {self.test_name}')
         plt.xlabel('Generation')
         plt.ylabel('Parameter')
+        self._save_plot(plt, function, 'heatmap')
+
 
     def plot_violin(self, function):
-        subset = self.df[self.df['function'] == function]
+        subset = self.df[self.df['function'] == function].copy()
+        subset['parameter'] = pd.Categorical(subset['parameter'], categories=sorted(subset['parameter'].unique()), ordered=True)
         plt.figure(figsize=(15, 10))
-        sns.violinplot(x='Parameter', y='FitnessMSE', data=subset)
-        plt.title(f'Violin Plot of Fitness (MSE) per {self.test_name}')
-        plt.xlabel(f'{self.test_name}')
+        sns.violinplot(x='parameter', y='fitness', data=subset)
+        plt.title(f'Violin Plot of {function} per {self.test_name}')
+        plt.xlabel('Parameter')
         plt.ylabel('Fitness (MSE)')
+        self._save_plot(plt, function, 'violinplot')
+
 
     def plot_fitness_for_multiple_parameters(self, function):
         subset = self.average_df[self.average_df['function'] == function]
         plt.figure(figsize=(12, 8))
         sns.lineplot(data=subset, x='generation', y='fitness', hue='parameter')
-        plt.title(f'Fitness Trajectories for Multiple Parameters of {function}')
+        plt.title(f'Fitness Trajectories of {function} for Multiple Parameters per {self.test_name}')
         plt.xlabel('Generation')
         plt.ylabel('Fitness')
         plt.legend(title='Parameter')
+        self._save_plot(plt, function, 'average_fitness')
+
 
     def plot_fitness_for_multiple_functions(self, parameter):
         subset = self.average_df[self.average_df['parameter'] == parameter]
         plt.figure(figsize=(12, 8))
         sns.lineplot(data=subset, x='generation', y='fitness', hue='function')
-        plt.title(f'Fitness Trajectories for Multiple Functions of Parameter {parameter}')
+        plt.title(f'Fitness Trajectories for Multiple Functions of Parameter {parameter} per {self.test_name}')
         plt.xlabel('Generation')
         plt.ylabel('Fitness')
         plt.legend(title='Function')
+        
+    def plot_all(self, functions):
+        for function in functions:
+            self.plot_fitness_for_multiple_parameters(function)
+            plt.close()
+            self.plot_boxplot(function)
+            plt.close()
+            self.plot_heatmap(function)
+            plt.close()
+            self.plot_violin(function)
+            plt.close()
