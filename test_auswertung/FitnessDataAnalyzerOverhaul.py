@@ -50,16 +50,16 @@ class FitnessDataAnalyzerOverhaul:
 
                     df_list.append(temp_df)
 
-                    if temp_df['fitness'].iloc[-1] < 1e-12:
+                    if temp_df['fitness'].iloc[-1] < 1e-11:
                         finalbehavior_path = os.path.join(root, 'out.finalbehavior.txt')
                         if os.path.exists(finalbehavior_path):
                             with open(finalbehavior_path, 'r') as f:
                                 first_line = f.readline().strip()
                                 if '# final function: ' in first_line:
                                     final_function = first_line.split('# final function: ')[1]
-                                    sympy_expr = sp.sympify(final_function)
-                                    simplified_expr = sp.simplify(sympy_expr)
-                                    final_functions_data.append([function_dir, simplified_expr])
+                                    # sympy_expr = sp.sympify(final_function)
+                                    # simplified_expr = sp.simplify(sympy_expr)
+                                    final_functions_data.append([function_dir, final_function]) #TODO wieder entkommentieren
 
         final_functions_df = pd.DataFrame(final_functions_data, columns=['function_dir', 'final_function'])
 
