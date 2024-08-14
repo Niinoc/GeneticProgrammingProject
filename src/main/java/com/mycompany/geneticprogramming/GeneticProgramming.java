@@ -55,7 +55,7 @@ public class GeneticProgramming extends Global {
 
         // Logging ----
         Log.println("initialbehavior", fitnessFunction.evalInputOutputBehavior(first.getProgram()));
-        Log.println("initialpopulation", "" + population + "\n" + "startDiversity: " + startDiversity);
+        Log.println("initialpopulation", "" + "startDiversity: " + startDiversity +"\n" + population);
         Log.println("fitnessFunction", "" + fitnessFunction);
 
         Log.println("bestfitness", "generation,FitnessMSE"); //bestfitness file header
@@ -111,7 +111,7 @@ public class GeneticProgramming extends Global {
 
         double endDiversity = population.diversity * 100;
 
-        Log.println("finalpopulation", "" + population + "\n" + "endDiversity: " + endDiversity);  // Store final population
+        Log.println("finalpopulation", "" + "endDiversity: " + endDiversity +"\n" + population);  // Store final population
 
         System.out.println("startDiversity: " + startDiversity +"\n"
                             +"endDiversity: " + endDiversity);
