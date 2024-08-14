@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib
+
 matplotlib.use('Agg')  # Use a non-GUI backend
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -11,67 +12,111 @@ class FitnessDataAnalyzerOverhaul:
     def __init__(self, root_dir):
         self.root_dir = root_dir
         self.test_name = self._get_test_name()
-        self.df, self.average_df, self.final_functions_df = self._process_directory()
+        self.df, self.average_df, self.test_data_df = self._process_directory()
         self.function_subsets = {}
         self.function_average_subsets = {}
         self.parameter_average_subsets = {}
         self._initialize_subsets()
 
     def _process_directory(self):
+        print('processing directory')
         df_list = []
-        final_functions_data = []
+        test_data = []
         files_to_delete = [
-            'out.initialbehavior.txt',
-            'out.initialpopulation.txt',
-            'out.finalpopulation.txt',
-            'out.fitnessFunction.txt'
+            # 'out.initialbehavior.txt',
+            # 'out.fitnessFunction.txt'
         ]
         for root, dirs, files in os.walk(self.root_dir):
+            start_diversity = 'notfound'
+            end_diversity = 'notfound'
+            final_function = None
+            function_dir = ""
+            param_dir = ""
+            seed_dir = ""
+
             for file in files:
                 if file in files_to_delete:
                     os.remove(os.path.join(root, file))
-                if file == 'out.bestfitness.txt':
-                    file_path = os.path.join(root, file)
-                    relative_path = os.path.relpath(root, self.root_dir)
 
-                    try:
-                        function_dir, param_dir, seed_dir = relative_path.split(os.sep)
-                    except ValueError:
-                        print(f"Skipping invalid directory structure: {relative_path}")
-                        continue
+            good_fitness = False
 
-                    temp_df = pd.read_csv(file_path)
+            if 'out.bestfitness.txt' in files:
+                file_path = os.path.join(root, 'out.bestfitness.txt')
+                relative_path = os.path.relpath(root, self.root_dir)
 
-                    # Append each row to the main DataFrame
-                    temp_df['function'] = function_dir
-                    temp_df['parameter'] = param_dir
-                    temp_df['seed'] = seed_dir
-                    temp_df.rename(columns={'FitnessMSE': 'fitness'}, inplace=True)
+                try:
+                    function_dir, param_dir, seed_dir = relative_path.split(os.sep)
+                except ValueError:
+                    print(f"Skipping invalid directory structure: {relative_path}")
+                    continue
 
-                    df_list.append(temp_df)
+                temp_df = pd.read_csv(file_path)
 
-                    if temp_df['fitness'].iloc[-1] < 1e-11:
-                        finalbehavior_path = os.path.join(root, 'out.finalbehavior.txt')
-                        if os.path.exists(finalbehavior_path):
-                            with open(finalbehavior_path, 'r') as f:
-                                first_line = f.readline().strip()
-                                if '# final function: ' in first_line:
-                                    final_function = first_line.split('# final function: ')[1]
-                                    # sympy_expr = sp.sympify(final_function)
-                                    # simplified_expr = sp.simplify(sympy_expr)
-                                    final_functions_data.append([function_dir, final_function]) #TODO wieder entkommentieren
+                # Append each row to the main DataFrame
+                temp_df['function'] = function_dir
+                temp_df['parameter'] = param_dir
+                temp_df['seed'] = seed_dir
+                temp_df.rename(columns={'FitnessMSE': 'fitness'}, inplace=True)
 
-        final_functions_df = pd.DataFrame(final_functions_data, columns=['function_dir', 'final_function'])
+                df_list.append(temp_df)
+
+                if temp_df['fitness'].iloc[-1] < 1e-11:
+                    good_fitness = True
+                    finalbehavior_path = os.path.join(root, 'out.finalbehavior.txt')
+                    if os.path.exists(finalbehavior_path):
+                        with open(finalbehavior_path, 'r') as f:
+                            first_line = f.readline().strip()
+                            if '# final function: ' in first_line:
+                                final_function = first_line.split('# final function: ')[1]
+                                # sympy_expr = sp.sympify(final_function)
+                                # final_function = sp.simplify(sympy_expr)
+                                # TODO simplified function wieder einfügen
+
+            if good_fitness and 'out.initialpopulation.txt' in files:
+                initialpopulation_path = os.path.join(root, 'out.initialpopulation.txt')
+                if os.path.exists(initialpopulation_path):
+                    with open(initialpopulation_path, 'r') as f:
+                        first_line = f.readline().strip()
+                        if 'startDiversity: ' in first_line:
+                            start_diversity = first_line.split('startDiversity: ')[1]
+                        else:
+                            lines = f.readlines()
+                            last_line = lines[-1].strip()
+                            if 'startDiversity: ' in last_line:
+                                start_diversity = last_line.split('startDiversity: ')[1]
+
+            if good_fitness and 'out.finalpopulation.txt' in files:
+                finalpopulation_path = os.path.join(root, 'out.finalpopulation.txt')
+                if os.path.exists(finalpopulation_path):
+                    with open(finalpopulation_path, 'r') as f:
+                        first_line = f.readline().strip()
+                        if 'endDiversity: ' in first_line:
+                            end_diversity = first_line.split('endDiversity: ')[1]
+                        else:
+                            lines = f.readlines()
+                            last_line = lines[-1].strip()
+                            if 'endDiversity: ' in last_line:
+                                end_diversity = last_line.split('endDiversity: ')[1]
+
+            if good_fitness and final_function is not None:
+                test_data.append(
+                    [function_dir, param_dir, seed_dir, final_function, f"{round(float(start_diversity), 2)} ",
+                     f"{round(float(end_diversity), 2)} "])  # " " am ende damit excel kein datum draus macht ...
+
+        test_data_df = pd.DataFrame(test_data,
+                                    columns=['function_dir', 'param_dir', 'seed_dir', 'final_function',
+                                             'start_diversity', 'end_diversity'])
 
         return pd.concat(df_list, ignore_index=True), \
             pd.concat(df_list, ignore_index=True).groupby(['function', 'parameter', 'generation'])[
-                'fitness'].mean().reset_index(), final_functions_df
+                'fitness'].mean().reset_index(), test_data_df
 
     def _get_test_name(self):
         # extract testname without prefix 'test_'
         return os.path.basename(self.root_dir).replace('test_', '')
 
     def _initialize_subsets(self):
+        print('initializing subsets')
         # Initialize function_subsets
         for function in self.df['function'].unique():
             subset = self.df[self.df['function'] == function].copy()
@@ -104,18 +149,20 @@ class FitnessDataAnalyzerOverhaul:
             plot_path = os.path.join(output_dir, f'{function}_{plot_type}.svg')
             plt.savefig(plot_path, format='svg', dpi=300)
 
-    def save_functions(self):
-        for row in self.final_functions_df[['function_dir', 'final_function']].itertuples(index=False):
-            function_dir, final_function = row
+    def save_test_data(self):
+        for function_dir in self.test_data_df['function_dir'].unique():
+            filtered_df = self.test_data_df[self.test_data_df['function_dir'] == function_dir]
 
             output_dir = os.path.join(self.root_dir, function_dir)
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
                 print(f"Speicherort existierte nicht: {output_dir}")
 
-            final_functions_path = os.path.join(output_dir, 'finalFunctions.txt')
-            with open(final_functions_path, 'a') as file:
-                file.write(str(final_function) + '\n')
+            filename = f"{function_dir}_testdata.csv"
+            testdata_path = os.path.join(output_dir, filename)
+
+            filtered_df.to_csv(testdata_path, index=False, sep=';')
+            print(f"Datei wurde gespeichert: {filename}")
 
     def plot_boxplot(self, function):
         print(f'boxplot {function}')
