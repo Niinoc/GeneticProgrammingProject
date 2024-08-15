@@ -95,22 +95,19 @@ public class FitnessRegression extends FitnessFunction {
         interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
 
         double errorSum = 0.0;    // here we collect the error the program makes on the fitness cases
-        try {
-            for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
-                double result = interpreter.run(fitnessCasesInput.get(i));
-                if (Double.isNaN(result) || Double.isInfinite(result)) {
-                    // Penalize heavily for invalid results
-                    errorSum += 1e8;  // or any large penalty value
-                    break;
-                } else {
-                    // Normal fitness calculation
-                    result -= fitnessCasesOutput.get(i);   // Run the program
-                    errorSum += result * result;  // And compare the output of the program with the desired output.
-                }
+
+        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
+            double result = interpreter.run(fitnessCasesInput.get(i));
+            if (Double.isFinite(result)) {
+                // Normal fitness calculation
+                result -= fitnessCasesOutput.get(i);   // Run the program
+                errorSum += result * result;  // And compare the output of the program with the desired output.
+            } else {
+                // Penalize heavily for invalid results
+                return Double.POSITIVE_INFINITY;
             }
-        } catch (Exception e) {
-            errorSum += 1e9;
         }
+
         return errorSum / numberOfFitnessCases;     //return the average error as the fitness
     }*/
 
