@@ -9,12 +9,13 @@ import java.util.function.Function;
 /**
  * Operators used by the GP system to make a Program.
  * You can add new operators here, but note that in the current version three operands are expected.
- * One for target register and two the computing the new value.
+ * One for target register and two for computing the new value.
  * An operator might only use a single input.
- * But, if you need three inputs also the interpreter must be changed.
+ * But, if you need one or three inputs also the interpreter must be changed.
  * @author Peter & Nicholas
  */
 public enum Operator {
+    /*
     ADD("+", input -> input[0] + input[1], 3),
     SUB("-", input -> input[0] - input[1], 3),
     MUL("*", input -> input[0] * input[1], 3),
@@ -45,8 +46,9 @@ public enum Operator {
 
     //mehr mit konstanten
     ;
-
-    /*ADD("+", input -> input[0] + input[1], 3),
+    */
+    
+    ADD("+", input -> input[0] + input[1], 3),
     SUB("-", input -> input[0] - input[1], 3),
     MUL("*", input -> input[0] * input[1], 3),
     DIV("/", input -> input[0] / input[1], 3),
@@ -63,13 +65,13 @@ public enum Operator {
     COS("cos", input -> Math.cos(input[0]), 2),
     //    ARCCOS("arccos", input -> Math.acos(input[0]), 2),
     TAN("tan", input -> Math.tan(input[0]), 2),
-//    ARCTAN("arctan", input -> Math.atan(input[0]), 2),
+    //    ARCTAN("arctan", input -> Math.atan(input[0]), 2),
 
     PI("3.141592*", input -> Math.PI*(input[0]), 2),
     EUL("e^", input -> Math.exp(input[0]), 2),
 
     //mehr mit konstanten
-    ;*/
+    ;
 
     final String name;
     final Function<Double [],Double> function;

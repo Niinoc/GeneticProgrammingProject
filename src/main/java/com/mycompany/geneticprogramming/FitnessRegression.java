@@ -79,6 +79,7 @@ public class FitnessRegression extends FitnessFunction {
      * @return The fitness of the program.
      */
     @Override
+    /*
     public Double evalMSE(Program program) {
         interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
 
@@ -89,9 +90,10 @@ public class FitnessRegression extends FitnessFunction {
         }
         return errorSum / numberOfFitnessCases;     //return the average error as the fitness
     }
-
+    */
+    
     //TODO: alternative evalMSE methode für ungeschützte Operatoren
-    /*public Double evalMSE(Program program) {
+    public Double evalMSE(Program program) {
         interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
 
         double errorSum = 0.0;    // here we collect the error the program makes on the fitness cases
@@ -109,7 +111,7 @@ public class FitnessRegression extends FitnessFunction {
         }
 
         return errorSum / numberOfFitnessCases;     //return the average error as the fitness
-    }*/
+    }
 
     //region R2 Score, Explained Varianz Score, MAPE
     @Override
