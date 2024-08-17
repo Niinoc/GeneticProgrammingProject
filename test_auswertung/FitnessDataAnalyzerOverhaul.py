@@ -14,14 +14,13 @@ class FitnessDataAnalyzerOverhaul:
         self.plot_dir_name = plot_dir_name
         self.allowed_functions = allowed_functions
         self.allowed_params = allowed_params
-        
+
         self.test_name = self._get_test_name()
         self.df, self.average_df, self.test_data_df = self._process_directory()
         self.function_subsets = {}
         self.function_average_subsets = {}
         self.parameter_average_subsets = {}
         self._initialize_subsets()
-        
 
     def _process_directory(self):
         print('processing directories')
@@ -50,23 +49,24 @@ class FitnessDataAnalyzerOverhaul:
             self._delete_unnecessary_files(root, files, files_to_delete)
 
             # Process the best fitness file
-            temp_df, final_function, good_fitness = self._process_best_fitness(root, files, function_dir, param_dir, seed_dir)
-            
+            temp_df, final_function, function_generation, good_fitness = self._process_best_fitness(root, files,
+                                                                                                    function_dir,
+                                                                                                    param_dir, seed_dir)
+
             if temp_df is not None:
                 df_list.append(temp_df)
 
-            # Extract diversity data
-            start_diversity = self._extract_diversity(root, files, 'initialpopulation', good_fitness)
-            end_diversity = self._extract_diversity(root, files, 'finalpopulation', good_fitness)
+            if good_fitness and final_function is not None and function_generation is not None:
+                # Extract diversity data
+                start_diversity = self._extract_diversity(root, files, 'initialpopulation')
+                end_diversity = self._extract_diversity(root, files, 'finalpopulation')
 
-            # Compile test data if all conditions are met
-            if good_fitness and final_function is not None:
-                test_data.append([function_dir, param_dir, seed_dir, final_function, 
-                                f"{round(float(start_diversity), 2)} ",
-                                f"{round(float(end_diversity), 2)} "]) 
+                # Compile test data if all conditions are met
+                test_data.append([function_dir, param_dir, seed_dir, final_function,
+                                  f"{round(float(start_diversity), 2)} ",
+                                  f"{round(float(end_diversity), 2)} ", function_generation])
 
         return self._compile_final_data(df_list, test_data)
-
 
     def _get_test_name(self):
         # extract testname without prefix 'test_'
@@ -108,8 +108,8 @@ class FitnessDataAnalyzerOverhaul:
 
             # Laden der CSV-Datei mit der spezifischen skiprows-Funktion
             # TODO: Sinnhaftigkeit überprüfen ^
-            temp_df = pd.read_csv(file_path)
-            
+            temp_df = pd.read_csv(file_path) #,skiprows = skip_rows
+
             temp_df['function'] = function_dir
             temp_df['parameter'] = param_dir
             temp_df['seed'] = seed_dir
@@ -117,14 +117,18 @@ class FitnessDataAnalyzerOverhaul:
 
             good_fitness = temp_df['fitness'].iloc[-1] < 1e-11
             final_function = None
+            function_generation = None
 
             if good_fitness:
-                final_function = self._simplify_final_function(root)
+                final_function = self._extract_and_simplify_final_function(root)
+                # Since good_fitness is True, we can safely use the last index as the generation
+                function_generation = temp_df.index[-1] + 1 # generation starts on 1, index on 0
 
-            return temp_df, final_function, good_fitness
+            return temp_df, final_function, function_generation, good_fitness
         return None, None, False
-    
-    def _simplify_final_function(self, root):
+
+    @staticmethod
+    def _extract_and_simplify_final_function(root):
         finalbehavior_path = os.path.join(root, 'out.finalbehavior.txt')
         if os.path.exists(finalbehavior_path):
             with open(finalbehavior_path, 'r') as f:
@@ -135,9 +139,10 @@ class FitnessDataAnalyzerOverhaul:
                     return sp.simplify(sympy_expr)
         return None
 
-    def _extract_diversity(self, root, files, population_type, good_fitness):
+    @staticmethod
+    def _extract_diversity(root, files, population_type):
         diversity = 'notfound'
-        if good_fitness and f'out.{population_type}.txt' in files:
+        if f'out.{population_type}.txt' in files:
             population_path = os.path.join(root, f'out.{population_type}.txt')
             if os.path.exists(population_path):
                 with open(population_path, 'r') as f:
@@ -151,10 +156,10 @@ class FitnessDataAnalyzerOverhaul:
                             diversity = last_line.split('Diversity: ')[1]
         return diversity
 
-
-    def _compile_final_data(self, df_list, test_data):
+    @staticmethod
+    def _compile_final_data(df_list, test_data):
         test_data_df = pd.DataFrame(test_data, columns=['function_dir', 'param_dir', 'seed_dir', 'final_function',
-                                                        'start_diversity', 'end_diversity'])
+                                                        'start_diversity', 'end_diversity', 'generation'])
         print(test_data_df)
         combined_df = pd.concat(df_list, ignore_index=True)
         print(combined_df)
@@ -188,7 +193,6 @@ class FitnessDataAnalyzerOverhaul:
         output_dir = os.path.join(self.root_dir, function_dir, self.plot_dir_name)
         os.makedirs(output_dir, exist_ok=True)
         return output_dir
-
 
     def _save_plot(self, plt, function, plot_type):
         output_dir = self._get_output_dir(function)      
@@ -269,7 +273,8 @@ class FitnessDataAnalyzerOverhaul:
         plt.legend(title='Function')
 
     def save_all_plots(self):
-        functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df['function'].unique()
+        functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df[
+            'function'].unique()
         for function in functions_to_process:
             self.plot_fitness_for_multiple_parameters(function)
             plt.close()
@@ -281,6 +286,7 @@ class FitnessDataAnalyzerOverhaul:
             plt.close()
             
     def save_all_test_data(self):
-        functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df['function'].unique()
+        functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df[
+            'function'].unique()
         for function in functions_to_process:
             self.save_test_data_for_function(function)
