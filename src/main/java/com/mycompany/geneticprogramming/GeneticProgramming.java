@@ -205,6 +205,11 @@ public class GeneticProgramming extends Global {
         // we do a tournament selection, tournament size 2
         Individual parent1 = population.get(MyRandom.nextInt(population.size()));
         Individual parent2 = population.get(MyRandom.nextInt(population.size()));
+        /*Individual parent3 = population.get(MyRandom.nextInt(population.size()));
+        Individual parent4 = population.get(MyRandom.nextInt(population.size()));
+        Individual parent5 = parent1.getFitnessMSE() < parent2.getFitnessMSE() ? parent1 : parent2;
+        Individual parent6 =  parent3.getFitnessMSE() < parent4.getFitnessMSE() ? parent3 : parent4;
+        return parent5.getFitnessMSE() < parent6.getFitnessMSE() ? parent5 : parent6;*/
         return parent1.getFitnessMSE() < parent2.getFitnessMSE() ? parent1 : parent2;
     }
 
