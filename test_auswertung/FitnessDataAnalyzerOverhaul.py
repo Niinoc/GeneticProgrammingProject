@@ -9,11 +9,12 @@ import sympy as sp
 
 
 class FitnessDataAnalyzerOverhaul:
-    def __init__(self, root_dir, plot_dir_name, allowed_functions=None, allowed_params=None):
+    def __init__(self, root_dir, plot_dir_name, allowed_functions=None, allowed_params=None, allowed_seeds=None):
         self.root_dir = root_dir
         self.plot_dir_name = plot_dir_name
         self.allowed_functions = allowed_functions
         self.allowed_params = allowed_params
+        self.allowed_seeds = allowed_seeds
 
         self.test_name = self._get_test_name()
         self.df, self.average_df, self.test_data_df = self._process_directory()
@@ -71,34 +72,37 @@ class FitnessDataAnalyzerOverhaul:
     def _get_test_name(self):
         # extract testname without prefix 'test_'
         return os.path.basename(self.root_dir).replace('test_', '')
-    
+
     def _delete_unnecessary_files(self, root, files, files_to_delete):
         for file in files:
             if file in files_to_delete:
                 os.remove(os.path.join(root, file))
-                
+
     def _extract_directory_info(self, root):
         relative_path = os.path.relpath(root, self.root_dir)
         try:
             function_dir, param_dir, seed_dir = relative_path.split(os.sep)
-            
+
             # Überprüfen, ob die Funktion in der Liste der erlaubten Funktionen enthalten ist
             if self.allowed_functions is not None and function_dir not in self.allowed_functions:
                 return None, None, None
-        
+
             # Überprüfen, ob der Parameter in der Liste der erlaubten Parameter enthalten ist
             if self.allowed_params is not None and param_dir not in self.allowed_params:
                 return None, None, None
-        
+
+            if self.allowed_seeds is not None and seed_dir not in self.allowed_seeds:
+                return None, None, None
+
             return function_dir, param_dir, seed_dir
         except ValueError:
             # print(f"Skipping invalid directory structure: {relative_path}")
             return None, None, None
-        
+
     def _process_best_fitness(self, root, files, function_dir, param_dir, seed_dir):
         if 'out.bestfitness.txt' in files:
             file_path = os.path.join(root, 'out.bestfitness.txt')
-            
+
             def skip_rows(index):
                 # Lade alle Zeilen für die ersten 1000 Generationen
                 if index < 1000:
@@ -108,7 +112,7 @@ class FitnessDataAnalyzerOverhaul:
 
             # Laden der CSV-Datei mit der spezifischen skiprows-Funktion
             # TODO: Sinnhaftigkeit überprüfen ^
-            temp_df = pd.read_csv(file_path) #,skiprows = skip_rows
+            temp_df = pd.read_csv(file_path)  # ,skiprows = skip_rows
 
             temp_df['function'] = function_dir
             temp_df['parameter'] = param_dir
@@ -122,7 +126,7 @@ class FitnessDataAnalyzerOverhaul:
             if good_fitness:
                 final_function = self._extract_and_simplify_final_function(root)
                 # Since good_fitness is True, we can safely use the last index as the generation
-                function_generation = temp_df.index[-1] + 1 # generation starts on 1, index on 0
+                function_generation = temp_df.index[-1] + 1  # generation starts on 1, index on 0
 
             return temp_df, final_function, function_generation, good_fitness
         return None, None, False
@@ -161,12 +165,14 @@ class FitnessDataAnalyzerOverhaul:
         test_data_df = pd.DataFrame(test_data, columns=['function_dir', 'param_dir', 'seed_dir', 'final_function',
                                                         'start_diversity', 'end_diversity', 'generation'])
         print(test_data_df)
+
         combined_df = pd.concat(df_list, ignore_index=True)
         print(combined_df)
+
         mean_fitness_df = combined_df.groupby(['function', 'parameter', 'generation'])['fitness'].mean().reset_index()
         print(mean_fitness_df)
         return combined_df, mean_fitness_df, test_data_df
-    
+
     def _initialize_subsets(self):
         print('initializing subsets')
         # Initialize function_subsets
@@ -188,15 +194,15 @@ class FitnessDataAnalyzerOverhaul:
         # Initialize parameter_average_subsets
         for parameter in self.average_df['parameter'].unique():
             self.parameter_average_subsets[parameter] = self.average_df[self.average_df['parameter'] == parameter]
-            
+
     def _get_output_dir(self, function_dir):
         output_dir = os.path.join(self.root_dir, function_dir, self.plot_dir_name)
         os.makedirs(output_dir, exist_ok=True)
         return output_dir
 
     def _save_plot(self, plt, function, plot_type):
-        output_dir = self._get_output_dir(function)      
-        
+        output_dir = self._get_output_dir(function)
+
         if plot_type in ['heatmap', 'boxplot']:
             file_extension, dpi_value = 'png', 500
         else:
@@ -213,6 +219,17 @@ class FitnessDataAnalyzerOverhaul:
 
         filtered_df.to_csv(testdata_path, index=False, sep=';')
         print(f"Datei wurde gespeichert: {filename}")
+
+    def save_test_data(self):
+        try:
+            output_dir = self.root_dir
+            filename = f"{os.path.basename(self.root_dir)}_testdata.csv"
+            testdata_path = os.path.join(output_dir, filename)
+
+            self.test_data_df.to_csv(testdata_path, index=False, sep=';')
+            print(f"Datei wurde gespeichert: {filename}")
+        except Exception as e:
+            print(f"Fehler beim Speichern der Datei: {e}")
 
     def plot_boxplot(self, function):
         print(f'boxplot {function}')
@@ -261,6 +278,24 @@ class FitnessDataAnalyzerOverhaul:
         plt.legend(title='Parameter')
         self._save_plot(plt, function, 'average_fitness')
 
+    def plot_individual_fitness_for_multiple_parameters(self, function):
+        print(f'individual_fitness {function}')
+        subset = self.function_subsets[function]
+        plt.figure(figsize=(12, 8))
+        if len(self.allowed_seeds) > 10:
+            sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', legend=False)
+        elif len(self.allowed_params) > 10:
+            sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', style='parameter', legend=False)
+        else:
+            sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', style='parameter')
+            plt.legend(title='Parameter / Seed')
+
+        plt.title(f'Fitness Trajectories of {function} for Multiple Runs and Parameters per {self.test_name}')
+        plt.yscale('log')
+        plt.xlabel('Generation')
+        plt.ylabel('Fitness')
+        self._save_plot(plt, function, 'individual_fitness')
+
     def plot_fitness_for_multiple_functions(self, parameter):
         print(f'avg_fitness {parameter}')
         subset = self.parameter_average_subsets[parameter]
@@ -278,15 +313,24 @@ class FitnessDataAnalyzerOverhaul:
         for function in functions_to_process:
             self.plot_fitness_for_multiple_parameters(function)
             plt.close()
+
             self.plot_boxplot(function)
             plt.close()
             self.plot_heatmap(function)
             plt.close()
             self.plot_violin(function)
             plt.close()
-            
+
+    def save_individual_fitness_plot(self):
+        functions_to_prozess = self.allowed_functions if self.allowed_functions is not None else self.df[
+            'function'].unique()
+        for function in functions_to_prozess:
+            self.plot_individual_fitness_for_multiple_parameters(function)
+            plt.close()
+
     def save_all_test_data(self):
         functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df[
             'function'].unique()
         for function in functions_to_process:
             self.save_test_data_for_function(function)
+        self.save_test_data()
