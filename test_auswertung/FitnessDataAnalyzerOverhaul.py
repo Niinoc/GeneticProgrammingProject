@@ -56,16 +56,19 @@ class FitnessDataAnalyzerOverhaul:
 
             if temp_df is not None:
                 df_list.append(temp_df)
+            else:
+                print('temp_df None')
 
             if good_fitness and final_function is not None and function_generation is not None:
                 # Extract diversity data
                 start_diversity = self._extract_diversity(root, files, 'initialpopulation')
+                if start_diversity != 'notfound': start_diversity = f"'{round(float(start_diversity), 2)}"
                 end_diversity = self._extract_diversity(root, files, 'finalpopulation')
+                if end_diversity != 'notfound': end_diversity = f"'{round(float(end_diversity), 2)}"
 
                 # Compile test data if all conditions are met
-                test_data.append([function_dir, param_dir, seed_dir, final_function,
-                                  f"{round(float(start_diversity), 2)} ",
-                                  f"{round(float(end_diversity), 2)} ", function_generation])
+                test_data.append([function_dir, param_dir, seed_dir, final_function, start_diversity,
+                                  end_diversity, function_generation])
 
         return self._compile_final_data(df_list, test_data)
 
@@ -81,17 +84,28 @@ class FitnessDataAnalyzerOverhaul:
     def _extract_directory_info(self, root):
         relative_path = os.path.relpath(root, self.root_dir)
         try:
-            function_dir, param_dir, seed_dir = relative_path.split(os.sep)
+            parts = relative_path.split(os.sep)
+            # print(f"Relative Path: {relative_path}")
+            if len(parts) < 3:
+                # print(f"Skipping invalid directory structure: {relative_path}")
+                return None, None, None
+
+            function_dir, param_dir, seed_dir = parts[-3], parts[-2], parts[-1]
+
+            # print(f"Extracted: function_dir={function_dir}, param_dir={param_dir}, seed_dir={seed_dir}")
 
             # Überprüfen, ob die Funktion in der Liste der erlaubten Funktionen enthalten ist
             if self.allowed_functions is not None and function_dir not in self.allowed_functions:
+                # print(f"Function {function_dir} not allowed")
                 return None, None, None
 
             # Überprüfen, ob der Parameter in der Liste der erlaubten Parameter enthalten ist
             if self.allowed_params is not None and param_dir not in self.allowed_params:
+                # print(f"Parameter {param_dir} not allowed")
                 return None, None, None
 
             if self.allowed_seeds is not None and seed_dir not in self.allowed_seeds:
+                # print(f"Seed {seed_dir} not allowed")
                 return None, None, None
 
             return function_dir, param_dir, seed_dir
@@ -162,6 +176,9 @@ class FitnessDataAnalyzerOverhaul:
 
     @staticmethod
     def _compile_final_data(df_list, test_data):
+        if not df_list:
+            print("Warnung: df_list ist leer, es wurden keine gültigen DataFrames gefunden.")
+
         test_data_df = pd.DataFrame(test_data, columns=['function_dir', 'param_dir', 'seed_dir', 'final_function',
                                                         'start_diversity', 'end_diversity', 'generation'])
         print(test_data_df)
@@ -278,6 +295,51 @@ class FitnessDataAnalyzerOverhaul:
         plt.legend(title='Parameter')
         self._save_plot(plt, function, 'average_fitness')
 
+    def plot_fitness_for_multiple_parameters_scaled(self, function):
+        print(f'avg_fitness {function}')
+        subset = self.function_average_subsets[function]
+
+        # Finde den kleinsten Parameterwert
+        min_param = subset['parameter'].astype(float).min()
+        median_param = subset['parameter'].astype(float).median()
+
+        # Finde die maximale Generation
+        max_generation = subset['generation'].max()
+
+        # Neue Spalte für skalierte maximale Generationen
+        subset['scaled_max_generation'] = subset['parameter'].astype(float).apply(
+            lambda x: max_generation * (min_param / x)
+        )
+
+        # Ausgabe der berechneten maximalen Generationen für jeden Parameter
+        for param in subset['parameter'].unique():
+            max_gen = subset[subset['parameter'] == param]['scaled_max_generation'].iloc[0]
+
+        # Berechnung des prozentualen Fortschritts auf Basis der skalierten maximalen Generationen
+        subset['progress'] = subset['generation'] / subset['scaled_max_generation']
+
+        plt.figure(figsize=(12, 8))
+
+        # Für jeden Parameter einen eigenen Plot mit einer eigenen Farbe
+        colors = sns.color_palette("husl", len(subset['parameter'].unique()))
+
+        for i, (param, group) in enumerate(subset.groupby('parameter', observed=True)):
+            # Filterung der Daten, um nur bis zur berechneten maximalen Generation zu plotten
+            max_gen_for_param = group['scaled_max_generation'].iloc[0]
+            filtered_group = group[group['generation'] <= max_gen_for_param]
+
+            # Hinzufügen der Generationsgrenze zur Legende
+            sns.lineplot(data=filtered_group, x='progress', y='fitness', color=colors[i],
+                         label=f'Param {param} (Max Gen: {max_gen_for_param:.0f})')
+
+        plt.title(
+            f'Fitness Trajectories of {function} for Multiple Parameters (Scaled by Progress) per {self.test_name}')
+        plt.yscale('log')
+        plt.xlabel('Progress (%)')
+        plt.ylabel('Fitness')
+        plt.legend(title='Parameter')
+        self._save_plot(plt, function, 'average_fitness_scaled')
+
     def plot_individual_fitness_for_multiple_parameters(self, function):
         print(f'individual_fitness {function}')
         subset = self.function_subsets[function]
@@ -313,13 +375,15 @@ class FitnessDataAnalyzerOverhaul:
         for function in functions_to_process:
             self.plot_fitness_for_multiple_parameters(function)
             plt.close()
+            self.plot_fitness_for_multiple_parameters_scaled(function)
+            plt.close()
 
-            self.plot_boxplot(function)
-            plt.close()
-            self.plot_heatmap(function)
-            plt.close()
-            self.plot_violin(function)
-            plt.close()
+            # self.plot_boxplot(function)
+            # plt.close()
+            # self.plot_heatmap(function)
+            # plt.close()
+            # self.plot_violin(function)
+            # plt.close()
 
     def save_individual_fitness_plot(self):
         functions_to_prozess = self.allowed_functions if self.allowed_functions is not None else self.df[
