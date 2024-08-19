@@ -18,7 +18,7 @@ public class Individual {
     public Double fitnessEVS;
     public Double fitnessMAPE;
 
-public Individual(Program program, Double fitnessMSE, Double fitnessR2, Double fitnessEVS, Double fitnessMAPE) {
+    public Individual(Program program, Double fitnessMSE, Double fitnessR2, Double fitnessEVS, Double fitnessMAPE) {
         this.program = program;
         this.fitnessMSE = fitnessMSE;
         this.fitnessR2 = fitnessR2;
