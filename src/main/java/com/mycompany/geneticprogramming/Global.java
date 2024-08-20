@@ -14,6 +14,8 @@ package com.mycompany.geneticprogramming;
 public class Global {
     // Do NOT add non-static variables here!
 
+    static int randomMigrantAmount = 5;
+
     static String logFileNamePrefix = "out.";   // Here you can change the prefix of the log-files
 
     static String inputFileNamePrefix = "in.";

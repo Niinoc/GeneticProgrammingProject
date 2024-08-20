@@ -157,6 +157,10 @@ public class GeneticProgramming extends Global {
 //                        ,fitnessFunction.evalEVS(offspring)   //TODO entkommentieren für weitere Maße
             )); // Compute fitness (takes a lot of time)
         }
+        for (int i = 0; i < randomMigrantAmount; i++) {
+            Program randomMigrant = Program.random(addedProgramLength);
+            nextPopulation.add(new Individual(randomMigrant, fitnessFunction.evalMSE(randomMigrant)));
+        }
         nextPopulation.computeDiversityMap();
         nextPopulation.computeDiversity();
 
