@@ -348,9 +348,9 @@ class FitnessDataAnalyzerOverhaul:
         print(f'individual_fitness {function}')
         subset = self.function_subsets[function]
         plt.figure(figsize=(12, 8))
-        if len(self.allowed_seeds) > 10:
+        if self.allowed_seeds is not None and len(self.allowed_seeds) > 10:
             sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', legend=False)
-        elif len(self.allowed_params) > 10:
+        elif self.allowed_params is not None and len(self.allowed_params) > 10:
             sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', style='parameter', legend=False)
         else:
             sns.lineplot(data=subset, x='generation', y='fitness', hue='seed', style='parameter')
