@@ -143,6 +143,7 @@ public class GeneticProgramming extends Global {
         }
         population.computeDiversityMap();
         population.computeDiversity();
+        population.applyFitnessSharing();
         return population;
     }
 
@@ -163,6 +164,7 @@ public class GeneticProgramming extends Global {
         }
         nextPopulation.computeDiversityMap();
         nextPopulation.computeDiversity();
+        nextPopulation.applyFitnessSharing();
 
         return nextPopulation;
     }

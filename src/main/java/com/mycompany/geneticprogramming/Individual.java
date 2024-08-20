@@ -14,6 +14,8 @@ import java.util.Objects;
 public class Individual {
     public Program program;
     public Double fitnessMSE;
+    public Double fitnessShared;
+
     public Double fitnessR2;
     public Double fitnessEVS;
     public Double fitnessMAPE;
@@ -39,6 +41,10 @@ public class Individual {
         return fitnessMSE;
     }
 
+    public Double getFitnessShared() {
+        return fitnessShared;
+    }
+    public void setFitnessShared(Double fitnessShared) {this.fitnessShared = fitnessShared;}
     public Double getFitnessR2() {
         return fitnessR2;
     }
