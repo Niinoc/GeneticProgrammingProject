@@ -9,12 +9,15 @@ import sympy as sp
 
 
 class FitnessDataAnalyzerOverhaul:
-    def __init__(self, root_dir, plot_dir_name, allowed_functions=None, allowed_params=None, allowed_seeds=None):
+    def __init__(self, root_dir, plot_dir_name, allowed_functions=None, allowed_params=None, allowed_seeds=None,
+                 scaled=None):
         self.root_dir = root_dir
         self.plot_dir_name = plot_dir_name
         self.allowed_functions = allowed_functions
         self.allowed_params = allowed_params
         self.allowed_seeds = allowed_seeds
+        self.scaled = scaled
+        if scaled is None: scaled = False
 
         self.test_name = self._get_test_name()
         self.df, self.average_df, self.test_data_df = self._process_directory()
@@ -376,8 +379,9 @@ class FitnessDataAnalyzerOverhaul:
         for function in functions_to_process:
             self.plot_fitness_for_multiple_parameters(function)
             plt.close()
-            self.plot_fitness_for_multiple_parameters_scaled(function)
-            plt.close()
+            if self.scaled:
+                self.plot_fitness_for_multiple_parameters_scaled(function)
+                plt.close()
 
             # self.plot_boxplot(function)
             # plt.close()
