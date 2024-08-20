@@ -89,10 +89,10 @@ public class GeneticProgramming extends Global {
                     lastPrintedProgress = progress;
                 }
 
-            if (best.getFitnessMSE() < 1e-11) {
+            /*if (best.getFitnessMSE() < 1e-11) {
                 Global.numberOfGenerations = generation;   //setzt numOfGens auf Gen in der Funktion gefunden wurde
                 break;    //früher Abbruch falls Funktion gefunden
-            }
+            }*/
         }
 
         Log.println("parameters", parametersToCSV());
