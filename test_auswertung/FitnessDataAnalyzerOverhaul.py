@@ -140,7 +140,8 @@ class FitnessDataAnalyzerOverhaul:
             if good_fitness:
                 final_function = self._extract_and_simplify_final_function(root)
                 # Since good_fitness is True, we can safely use the last index as the generation
-                function_generation = temp_df.index[-1] + 1  # generation starts on 1, index on 0
+                function_generation = temp_df[temp_df['fitness'] < 1e-11].index[0] + 1  # generation starts on
+                # 1, index on 0
 
             return temp_df, final_function, function_generation, good_fitness
         return None, None, False
