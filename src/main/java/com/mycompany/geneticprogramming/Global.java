@@ -50,6 +50,10 @@ public class Global {
 
 
     static double mutationProbabiltyInstructions = 0.1;
+    static double crossoverProbabiltyInstructions = 0.2;
+
+
+    //kommen bald raus
     static double mutationProbabiltyInitialRegisterStates = 0.3;
     static double mutationStrengthInitialRegisterStates = 0.2;
     static double mutationProbabiltyInstructionInsertion = 0.0;

@@ -149,19 +149,28 @@ public class GeneticProgramming extends Global {
 
     Population nextGenPopulation(Population oldPopulation) {
         Population nextPopulation = new Population(); // Create a new empty population
-        for (int i = 0; i < populationSize; i++) { // and fill it with mutated offsprings.
-            Program offspring = makeOffspring(oldPopulation);  //Create offprint program
-            nextPopulation.add(new Individual(offspring,
-                    fitnessFunction.evalMSE(offspring)
-//                        ,fitnessFunction.evalMAPE(offspring)
-//                        ,fitnessFunction.evalR2(offspring)
-//                        ,fitnessFunction.evalEVS(offspring)   //TODO entkommentieren für weitere Maße
-            )); // Compute fitness (takes a lot of time)
+        for (int i = 0; i < populationSize/2; i++) { // and fill it with recombined and mutated offsprings.
+            Program[] offsprings = makeOffsprings(oldPopulation);  //Create offprint program
+            nextPopulation.add(new Individual(offsprings[0],
+                    fitnessFunction.evalMSE(offsprings[0]))); // Compute fitness (takes a lot of time)
+            nextPopulation.add(new Individual(offsprings[1],
+                    fitnessFunction.evalMSE(offsprings[1]) )); // Compute fitness (takes a lot of time)
         }
+
+        // Check if the population size is less than the desired size due to rounding
+        if (nextPopulation.size() < populationSize) {
+            // Generate one more offspring
+            Program extraOffspring = selectParent(oldPopulation).getProgram();
+            extraOffspring = mutate(extraOffspring);
+            nextPopulation.add(new Individual(extraOffspring,
+                    fitnessFunction.evalMSE(extraOffspring)));
+        }
+
         /*for (int i = 0; i < randomMigrantAmount; i++) {
             Program randomMigrant = Program.random(addedProgramLength);
             nextPopulation.add(new Individual(randomMigrant, fitnessFunction.evalMSE(randomMigrant)));
         }*/
+
         nextPopulation.computeDiversityMap();
         nextPopulation.computeDiversity();
         nextPopulation.applyFitnessSharing();
@@ -180,10 +189,15 @@ public class GeneticProgramming extends Global {
      * @param population
      * @return An offspring program.
      */
-    public Program makeOffspring(Population population) {
-        Individual parent = selectParent(population); // select a parent based on fitness
-        Program offspringProgram = mutate(parent.getProgram()); // generate offspring by copying and mutating the parent
-        return offspringProgram;
+    public Program[] makeOffsprings(Population population) {
+        Individual parent1 = selectParent(population); // select a parent based on fitness
+        Individual parent2 = selectParent(population); // select a parent based on fitness
+        // generate offsprings by copying and recombine the parents
+        Program[] offspringPrograms = crossover(parent1.getProgram(), parent2.getProgram());
+        // mutate offsprings
+        offspringPrograms[0] = mutate(offspringPrograms[0]);
+        offspringPrograms[1] = mutate(offspringPrograms[1]);
+        return offspringPrograms;
     }
 
     /**
@@ -287,6 +301,28 @@ public class GeneticProgramming extends Global {
 
         return offspring;
     }
+
+    public Program[] crossover(Program parentProgram1, Program parentProgram2) {
+        Program offspring1 = new Program(parentProgram1);
+        Program offspring2 = new Program(parentProgram2);
+
+        int size = offspring1.instructions.size();
+
+        // Select two crossover points
+        int crossoverPoint1 = MyRandom.nextInt(size);
+        int crossoverPoint2 = MyRandom.nextInt(size - crossoverPoint1) + crossoverPoint1;
+
+        // Perform crossover based on probability
+        if (MyRandom.nextDouble() < crossoverProbabiltyInstructions) {
+            for (int i = crossoverPoint1; i <= crossoverPoint2; i++) {
+                offspring1.instructions.set(i, parentProgram2.instructions.get(i));
+                offspring2.instructions.set(i, parentProgram1.instructions.get(i));
+            }
+        }
+
+        return new Program[]{offspring1, offspring2};  // Return both offspring
+    }
+
 
     /**
      * *
