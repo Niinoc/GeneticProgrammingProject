@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class Program extends Global {
 
-    double[] initialRegisterStates;
+    int[] initialRegisterStates;
 
     List<Instruction> instructions = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class Program extends Global {
      * @param numberOfRegisters
      */
     public Program() {
-        initialRegisterStates = new double[numberOfFreeRegisters];
+        initialRegisterStates = new int[numberOfFreeRegisters];
     }
 
     /**
@@ -36,7 +36,7 @@ public class Program extends Global {
      * @param program
      */
     public Program(Program program) {
-        initialRegisterStates = new double[program.getNumberOfRegisters()];
+        initialRegisterStates = new int[program.getNumberOfRegisters()];
         for (int i = 0; i < initialRegisterStates.length; i++) {
             initialRegisterStates[i] = program.initialRegisterStates[i];
         }
@@ -68,7 +68,7 @@ public class Program extends Global {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
         for (int i = 0; i < numberOfFreeRegisters; i++) {
-            program.initialRegisterStates[i] = randomRegisterValue(-1.0, 1.0);
+            program.initialRegisterStates[i] = randomRegisterValue();
         }
         // Generate random instructions
         for (int i = 0; i < size; i++) {
@@ -83,11 +83,8 @@ public class Program extends Global {
      *
      * @return Random value to be used to initialize a register.
      */
-    public static Double randomRegisterValue() {
-        return MyRandom.nextDouble() * 2.0 - 1.0;  // TODO: SHOULD BE A PARAMETER
-    }
-    public static Double randomRegisterValue(double minValue, double maxValue) {
-        return minValue + (MyRandom.nextDouble() * (maxValue - minValue));
+    public static int randomRegisterValue() {
+        return MyRandom.nextInt(11) -5;
     }
 
     /**

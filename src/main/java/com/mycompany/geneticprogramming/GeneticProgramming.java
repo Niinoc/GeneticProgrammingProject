@@ -274,7 +274,7 @@ public class GeneticProgramming extends Global {
         for (int i = 0; i < offspring.initialRegisterStates.length; i++) {
             if (MyRandom.nextDouble() < mutationProbabiltyInitialRegisterStates) {  // mutation rate
                 offspring.initialRegisterStates[i]
-                        += (MyRandom.nextDouble() - 0.5) * mutationStrengthInitialRegisterStates;
+                        += (MyRandom.nextInt(3)-1);
             }
         }
 
@@ -286,7 +286,7 @@ public class GeneticProgramming extends Global {
             }
         }
 
-        if (parentProgram.instructions.size() < maxProgramLength && parentProgram.instructions.size() > 1) {
+        /*if (parentProgram.instructions.size() < maxProgramLength && parentProgram.instructions.size() > 1) {
             // insert random instruction
             if ( MyRandom.nextDouble() < mutationProbabiltyInstructionInsertion) {
                 offspring.instructions.add(Instruction.random());
@@ -295,7 +295,7 @@ public class GeneticProgramming extends Global {
             if (MyRandom.nextDouble() < mutationProbabiltyInstructionDeletion) {
                 offspring.instructions.remove(MyRandom.nextInt(parentProgram.instructions.size()));
             }
-        }
+        }*/
 
         //TODO: neue Mutationen hier
 
