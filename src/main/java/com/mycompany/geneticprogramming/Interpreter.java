@@ -16,16 +16,20 @@ import java.util.ArrayList;
 public class Interpreter {
 
     Program program;
-    double[] registers;
 
+    double[] registers;
     /***
      * Instantiate an interpreter (CPU) for a given program.
      * This includes the generation of the required registers.
-     * @param program 
+     * @param program
      */
     public Interpreter(Program program) {
         this.program = program;
         this.registers = new double[program.getNumberOfRegisters()];
+    }
+
+    public Program getProgram() {
+        return program;
     }
 
     /***

@@ -79,22 +79,10 @@ public class FitnessRegression extends FitnessFunction {
      * @return The fitness of the program.
      */
     @Override
-    /*
     public Double evalMSE(Program program) {
-        interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
-
-        double errorSum = 0;    // here we collect the error the program makes on the fitness cases
-        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
-            double error = interpreter.run(fitnessCasesInput.get(i)) - fitnessCasesOutput.get(i);   // Run the program
-            errorSum += error * error;  // And compare the output of the program with the desired output.
-        }
-        return errorSum / numberOfFitnessCases;     //return the average error as the fitness
-    }
-    */
-    
-    //TODO: alternative evalMSE methode für ungeschützte Operatoren
-    public Double evalMSE(Program program) {
-        interpreter = new Interpreter(program); // instantiate an interpreter that runs the program
+        if (interpreter == null || !interpreter.getProgram().equals(program)) {
+            interpreter = new Interpreter(program);
+        } // instantiate an interpreter that runs the program, if necessary
 
         double errorSum = 0.0;    // here we collect the error the program makes on the fitness cases
 
@@ -191,29 +179,6 @@ public class FitnessRegression extends FitnessFunction {
      * @param program
      * @return All input output pairs used for fitness calculation. The last column is the target value.
      */
-
-    /*public String evalInputOutputBehavior(Program program) {
-        StringBuilder result = new StringBuilder();
-        interpreter = new Interpreter(program);     // instantiate an interpreter that runs the program
-
-        //        double[] inputs = new double[numberOfFitnessCases];     //für plotter
-        //        double[] outputs = new double[numberOfFitnessCases];    //für plotter
-
-        for (int i = 0; i < numberOfFitnessCases; i++) {    // For each fitness case
-            ArrayList<Double> inputList = fitnessCasesInput.get(i);
-            for (double input : inputList) {
-        //                result.append(input).append("\t");
-            }
-            double output = interpreter.run(inputList);
-            result.append(output).append("\t").append(fitnessCasesOutput.get(i)).append("\n");
-        //            inputs[i] = inputList.get(0);
-        //          outputs[i] = output;
-        }
-
-        //        new GraphPlotter(inputs, outputs, fitnessCasesOutput);  //TODO für java plot entkommentieren
-
-        return result.toString();  //return the average error as the fitness
-    }*/
 
     @Override
     public String evalInputOutputBehavior(Program program) {
