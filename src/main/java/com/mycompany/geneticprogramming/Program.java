@@ -91,18 +91,31 @@ public class Program extends Global {
      * provides important functionality for HashMap
      * @return
      */
+
+    private String cachedArithmeticForm;
+    private Integer cachedHashCode;
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Program that = (Program) obj;
-        return Objects.equals(this.toArithmetic(), that.toArithmetic());    //just evaluates the symbolic form -> no introns
+        return Objects.equals(this.getArithmeticForm(), that.getArithmeticForm());
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(this.toArithmetic());
-        return result;
+        if (cachedHashCode == null) {
+            cachedHashCode = Objects.hash(this.getArithmeticForm());
+        }
+        return cachedHashCode;
+    }
+
+    private String getArithmeticForm() {
+        if (cachedArithmeticForm == null) {
+            cachedArithmeticForm = this.toArithmetic();
+        }
+        return cachedArithmeticForm;
     }
 
 
@@ -124,49 +137,49 @@ public class Program extends Global {
      * @author Nicholas
      */
     public String toArithmetic() {
-        StringBuilder function = new StringBuilder();
+        StringBuilder function = new StringBuilder(256);
 
         // Mapping für die Registerausdrücke
-        Map<Integer, String> registerExpressions = new HashMap<>();
+        Map<Integer, String> registerExpressions = new HashMap<>(this.getNumberOfRegisters());
 
         // Initialisierung der Ausdrücke für die Eingaberegister
         for (int i = 0; i < numberOfInputs; i++) {
             registerExpressions.put(i, "x_" + i);
         }
         for (int i = numberOfInputs; i < this.getNumberOfRegisters(); i++) {
-            registerExpressions.put(i, String.valueOf((this.initialRegisterStates[i])));
+            registerExpressions.put(i, Integer.toString(this.initialRegisterStates[i]));
         }
 
         int lastWrittenRegister = 0;
 
         // Auswertung der Anweisungen
         for (Instruction instruction : this.instructions) {
-
             int targetRegister = instruction.operands[0];
             lastWrittenRegister = targetRegister;
-            //region baut Ausdruck
-            Operator operator = instruction.operator;
-            String operation = operator.toString();
+
+            // Operator-String erstellen
+            String operation = instruction.operator.toString();
 
             // Ausdrücke für Operanden
-            String operand1Expression = "";
-            String operand2Expression = "";
-            String expression = "";
-            if (operator.numberOfOperands == 2) {
-                operand1Expression = registerExpressions.get(instruction.operands[1]);
-                expression = String.format("%s(%s)", operation, operand1Expression);
+            String operand1Expression = registerExpressions.get(instruction.operands[1]);
+            String operand2Expression = null; // Nur initialisieren, wenn notwendig
+            StringBuilder expressionBuilder = new StringBuilder();
 
+            if (instruction.operator.numberOfOperands == 2) {
+                expressionBuilder.append(operation).append("(").append(operand1Expression).append(")");
             } else {
-                operand1Expression = registerExpressions.get(instruction.operands[1]);
                 operand2Expression = registerExpressions.get(instruction.operands[2]);
-                expression = String.format("(%s %s %s)", operand1Expression, operation, operand2Expression);
+                expressionBuilder.append("(")
+                        .append(operand1Expression)
+                        .append(" ")
+                        .append(operation)
+                        .append(" ")
+                        .append(operand2Expression)
+                        .append(")");
             }
 
-            //endregion
-
-
-            // aktualisiert Registerausdruck
-            registerExpressions.put(targetRegister, expression);
+            // Speichern des erstellten Ausdrucks in der Register-Map
+            registerExpressions.put(targetRegister, expressionBuilder.toString());
         }
 
         // Das letzte Zielregister enthält das Endergebnis
@@ -175,5 +188,6 @@ public class Program extends Global {
 
         return function.toString();
     }
+
 
 }
