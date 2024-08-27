@@ -67,7 +67,7 @@ public enum Operator {
     TAN("tan", input -> Math.tan(input[0]), 2),
     //    ARCTAN("arctan", input -> Math.atan(input[0]), 2),
 
-    PI("3.141592*", input -> Math.PI * input[0], 2),
+    /*PI("3.141592*", input -> Math.PI * input[0], 2),
     EUL("e*", input -> Math.E * input[0], 2),
     HALF("0.5*", input -> 0.5 * input[0], 2),
     negHALF("-0.5*", input -> 0.5 * input[0], 2),
@@ -76,7 +76,7 @@ public enum Operator {
     TWO("2*", input -> 2.0 * input[0], 2),
     negTWO("-2*", input -> 2.0 * input[0], 2),
     THREE("3*", input -> 3.0 * input[0], 2),
-    negTHREE("-3*", input -> 3.0 * input[0], 2),
+    negTHREE("-3*", input -> 3.0 * input[0], 2),*/
 
     //mehr mit konstanten
     ;

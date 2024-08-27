@@ -16,6 +16,21 @@ public class Program extends Global {
 
     double[] initialRegisterStates;
 
+    static double[] constants = {
+            -5.0, -4.0, -3.0, -2.0, -1.0, -0.5, 0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0,
+            Math.PI, Math.E, Math.sqrt(2), Math.sqrt(3), Math.log(2), Math.log(10),
+            Math.log10(Math.E), (1 + Math.sqrt(5)) / 2, // phi
+            0.25, 0.75, 1.5, -1.5, 1/Math.sqrt(2),
+            0.5772, // Euler's constant
+            Math.PI * Math.PI / 6, // zeta(2)
+            1.20206, // zeta(3)
+            3e8, // c - Lichtgeschwindigkeit
+            6.674e-11, // G - Gravitationskonstante
+            6.626e-34, // h - Plancksches Wirkungsquantum
+            1.381e-23, // k_B - Boltzmann-Konstante
+            8.854e-12  // epsilon_0 - Elektrische Feldkonstante
+    };
+
     List<Instruction> instructions = new ArrayList<>();
 
     /**
@@ -68,7 +83,7 @@ public class Program extends Global {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
         for (int i = 0; i < numberOfFreeRegisters; i++) {
-            program.initialRegisterStates[i] = 1.0;
+            program.initialRegisterStates[i] = randomRegisterValue();
         }
         // Generate random instructions
         for (int i = 0; i < size; i++) {
@@ -83,8 +98,8 @@ public class Program extends Global {
      *
      * @return Random value to be used to initialize a register.
      */
-    public static int randomRegisterValue() {
-        return MyRandom.nextInt(11) -5;
+    public static double randomRegisterValue() {
+        return constants[(MyRandom.nextInt(constants.length))];
     }
 
     /**
