@@ -83,7 +83,7 @@ public class Program extends Global {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
         for (int i = 0; i < numberOfFreeRegisters; i++) {
-            program.initialRegisterStates[i] = randomRegisterValue();
+            program.initialRegisterStates[i] = randomRegisterValue(-1.0, 1.0);
         }
         // Generate random instructions
         for (int i = 0; i < size; i++) {
@@ -100,6 +100,10 @@ public class Program extends Global {
      */
     public static double randomRegisterValue() {
         return constants[(MyRandom.nextInt(constants.length))];
+    }
+
+    public static Double randomRegisterValue(double minValue, double maxValue) {
+        return minValue + (MyRandom.nextDouble() * (maxValue - minValue));
     }
 
     /**

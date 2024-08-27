@@ -325,8 +325,8 @@ public class GeneticProgramming extends Global {
 
         // Mutate initial register states
         for (int i = 0; i < offspring.initialRegisterStates.length; i++) {
-            if (MyRandom.nextDouble() < mutationProbabiltyInstructions) {  // mutation rate
-                offspring.initialRegisterStates[i] = Program.randomRegisterValue();
+            if (MyRandom.nextDouble() < mutationProbabiltyInitialRegisterStates) {  // mutation rate
+                offspring.initialRegisterStates[i] += (MyRandom.nextDouble() - 0.5) * mutationStrengthInitialRegisterStates;
             }
         }
 
