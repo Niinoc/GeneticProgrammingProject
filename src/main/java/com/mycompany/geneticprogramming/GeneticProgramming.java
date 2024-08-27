@@ -6,6 +6,10 @@ package com.mycompany.geneticprogramming;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -115,12 +119,60 @@ public class GeneticProgramming extends Global {
 
         System.out.println("startDiversity: " + startDiversity +"\n"
                             +"endDiversity: " + endDiversity);
+
+        validateFitnessConsistency(population);
+
 //        System.out.println("HashMap:");
 //        for (Map.Entry<Individual, Integer> entry : population.diversIndividulas.entrySet()) {
 //            if (entry.getValue() > 1) System.out.println(entry.getKey() + ": " + entry.getValue());
 //        }
 
     }
+
+    private void validateFitnessConsistency(Population population) {
+        Map<String, List<Individual>> individualsByArithmeticForm = new HashMap<>();
+
+        for (Individual individual : population) {
+            Program program = individual.getProgram();
+            String arithmeticForm = program.getArithmeticForm();
+
+            // Gruppiere Individuen nach ihrer arithmetischen Form
+            individualsByArithmeticForm.computeIfAbsent(arithmeticForm, k -> new ArrayList<>()).add(individual);
+        }
+
+        int pairsFound = 0;
+
+        for (Map.Entry<String, List<Individual>> entry : individualsByArithmeticForm.entrySet()) {
+            List<Individual> individuals = entry.getValue();
+
+            if (individuals.size() > 1) {
+                for (int i = 0; i < individuals.size(); i++) {
+                    for (int j = i + 1; j < individuals.size(); j++) {
+                        Individual ind1 = individuals.get(i);
+                        Individual ind2 = individuals.get(j);
+
+                        // Überprüfe, ob die Instruktionen unterschiedlich sind
+                        if (!ind1.getProgram().instructions.equals(ind2.getProgram().instructions)) {
+                            // Drucke die arithmetische Form und die Fitnesswerte der zwei Programme
+                            System.out.println("Arithmetische Form: " + entry.getKey());
+                            System.out.println("Individuum 1 Fitness: " + ind1.getFitnessMSE());
+                            System.out.println("Individuum 2 Fitness: " + ind2.getFitnessMSE());
+                            System.out.println("Individuum 1 Instruktionen: " + ind1.getProgram().instructions);
+                            System.out.println("Individuum 2 Instruktionen: " + ind2.getProgram().instructions);
+                            System.out.println("------------------------");
+
+                            pairsFound++;
+                            if (pairsFound >= 2) {
+                                return;  // Stoppe nach 2 Paaren
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     /**
      * *
