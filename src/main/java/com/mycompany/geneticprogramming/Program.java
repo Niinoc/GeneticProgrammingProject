@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class Program extends Global {
 
-    int[] initialRegisterStates;
+    double[] initialRegisterStates;
 
     List<Instruction> instructions = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class Program extends Global {
      * @param numberOfRegisters
      */
     public Program() {
-        initialRegisterStates = new int[numberOfFreeRegisters];
+        initialRegisterStates = new double[numberOfFreeRegisters];
     }
 
     /**
@@ -36,7 +36,7 @@ public class Program extends Global {
      * @param program
      */
     public Program(Program program) {
-        initialRegisterStates = new int[program.getNumberOfRegisters()];
+        initialRegisterStates = new double[program.getNumberOfRegisters()];
         for (int i = 0; i < initialRegisterStates.length; i++) {
             initialRegisterStates[i] = program.initialRegisterStates[i];
         }
@@ -68,7 +68,7 @@ public class Program extends Global {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
         for (int i = 0; i < numberOfFreeRegisters; i++) {
-            program.initialRegisterStates[i] = randomRegisterValue();
+            program.initialRegisterStates[i] = 1.0;
         }
         // Generate random instructions
         for (int i = 0; i < size; i++) {
@@ -111,7 +111,7 @@ public class Program extends Global {
         return cachedHashCode;
     }
 
-    private String getArithmeticForm() {
+    public String getArithmeticForm() {
         if (cachedArithmeticForm == null) {
             cachedArithmeticForm = this.toArithmetic();
         }
@@ -147,7 +147,7 @@ public class Program extends Global {
             registerExpressions.put(i, "x_" + i);
         }
         for (int i = numberOfInputs; i < this.getNumberOfRegisters(); i++) {
-            registerExpressions.put(i, Integer.toString(this.initialRegisterStates[i]));
+            registerExpressions.put(i, Double.toString(this.initialRegisterStates[i]));
         }
 
         int lastWrittenRegister = 0;

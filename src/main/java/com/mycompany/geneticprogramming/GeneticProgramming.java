@@ -270,13 +270,14 @@ public class GeneticProgramming extends Global {
      */
     public Program mutate(Program parentProgram) {
         Program offspring = new Program(parentProgram); // copy the parent
+
         // Mutate initial register states
-        for (int i = 0; i < offspring.initialRegisterStates.length; i++) {
+        /*for (int i = 0; i < offspring.initialRegisterStates.length; i++) {
             if (MyRandom.nextDouble() < mutationProbabiltyInitialRegisterStates) {  // mutation rate
                 offspring.initialRegisterStates[i]
                         += (MyRandom.nextInt(3)-1);
             }
-        }
+        }*/
 
         // Mutate instructions
         for (int i = 0; i < offspring.instructions.size(); i++) {
