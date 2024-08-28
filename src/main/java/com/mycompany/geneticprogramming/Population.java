@@ -15,7 +15,37 @@ import java.util.HashMap;
  */
 public class Population extends ArrayList<Individual> {
     double diversity;
-    HashMap<Individual, Integer> diverseIndividuals;
+    HashMap<Individual, FitnessCacheEntry> diverseIndividuals;
+
+    /**
+     * computes the HashMap of every different Individual, their amount and fitness
+     * equality is checked with toArithmetic() (--> Program)
+     *
+     * @return
+     */
+    public void computeFitnessAndDiversity(FitnessFunction fitnessFunction) {
+        // Verwende diverseIndividuals, um Fitness und Vorkommen zu speichern
+        this.diverseIndividuals = new HashMap<>();
+
+        for (Individual individual : this) {
+            // Überprüfe, ob das Programm bereits berechnet wurde
+            if (diverseIndividuals.containsKey(individual)) {
+                FitnessCacheEntry entry = diverseIndividuals.get(individual);
+                individual.setFitnessMSE(entry.getFitness());
+                entry.incrementCount();
+            } else {
+                // Berechne die Fitness und speichere sie im Cache
+                double fitness = fitnessFunction.evalMSE(individual.getProgram());
+                individual.setFitnessMSE(fitness);
+                diverseIndividuals.put(individual, new FitnessCacheEntry(fitness));
+            }
+        }
+
+        // Berechne die Diversity der Population
+        this.computeDiversity();
+    }
+
+
 
     @Override
     public String toString() {
@@ -38,25 +68,6 @@ public class Population extends ArrayList<Individual> {
         return bestIndividual;
     }
 
-
-    /**
-     * sets the HashMap of every different Individual and their amount
-     * equality is checked with toArithmetic() (--> Program)
-     *
-     * @return
-     */
-    public void computeDiversityMap() {
-        HashMap<Individual, Integer> diversPrograms = new HashMap<>();
-        for (Individual individual : this) {
-            if (diversPrograms.containsKey(individual)) {
-                diversPrograms.put(individual, diversPrograms.get(individual) + 1);
-            } else {
-                diversPrograms.put(individual, 1);
-            }
-        }
-        diverseIndividuals = diversPrograms;
-    }
-
     /**
      * sets the Diversity of the Population
      *
@@ -66,12 +77,12 @@ public class Population extends ArrayList<Individual> {
         diversity = (double) diverseIndividuals.size() / this.size();
     }
 
-    public void applyFitnessSharing() {
+    /*public void applyFitnessSharing() {
         for (Individual individual : this) {
             int nicheCount = diverseIndividuals.get(individual); // Get how many times this individual appears
             double originalFitness = individual.getFitnessMSE(); // Assume getFitnessMSE() returns the fitness
             double sharedFitness = originalFitness * (double) nicheCount; // Apply fitness sharing
             individual.setFitnessShared(sharedFitness); // Store the shared fitness in the individual
         }
-    }
+    }*/
 }

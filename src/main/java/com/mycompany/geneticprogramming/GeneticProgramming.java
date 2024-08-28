@@ -72,21 +72,15 @@ public class GeneticProgramming extends Global {
 
             //TODO Note that the best individual can die. To avoid this you can uncomment the following line.
             nextPopulation.set(0, best); // Survival of the best ("elitist strategy")
+
             population = nextPopulation;
-            population.diverseIndividuals = nextPopulation.diverseIndividuals;
-            population.diversity = nextPopulation.diversity;
 
             best = population.best();
             // --- Write log data after each generation ---
-            Log.println("bestfitness", generation + ","
-                                + best.getFitnessMSE()
-        //                    + "," + best.getFitnessMAPE()
-        //                    + "," + best.getFitnessR2()
-        //                    + "," + best.getFitnessEVS()    //TODO entkommentieren für weitere Maße
-                );
+            Log.println("bestfitness", generation + "," + best.getFitnessMSE());
 
             //print progress in %
-            int progress = (int) (100.0 * generation / numberOfGenerations);
+                int progress = (int) (100.0 * generation / numberOfGenerations);
 
                 if (progress % 5 == 0 && progress != lastPrintedProgress) {
                     System.out.println(progress + "%");
@@ -186,27 +180,21 @@ public class GeneticProgramming extends Global {
         Population population = new Population();
         for (int i = 0; i < populationSize; i++) {
             Program program = Program.random(addedProgramLength);
-            population.add(new Individual(program,
-                    fitnessFunction.evalMSE(program)
-//                    ,fitnessFunction.evalMAPE(program)
-//                    ,fitnessFunction.evalR2(program)
-//                    ,fitnessFunction.evalEVS(program)     //TODO entkommentieren für weitere Maße
-            ));
+            population.add(new Individual(program));
         }
-        population.computeDiversityMap();
-        population.computeDiversity();
-//        population.applyFitnessSharing();
+        population.computeFitnessAndDiversity(fitnessFunction);
         return population;
     }
 
     Population nextGenPopulation(Population oldPopulation) {
         Population nextPopulation = new Population(); // Create a new empty population
+
         for (int i = 0; i < populationSize/2; i++) { // and fill it with recombined and mutated offsprings.
             Program[] offsprings = makeOffsprings(oldPopulation);  //Create offprint program
-            nextPopulation.add(new Individual(offsprings[0],
-                    fitnessFunction.evalMSE(offsprings[0]))); // Compute fitness (takes a lot of time)
-            nextPopulation.add(new Individual(offsprings[1],
-                    fitnessFunction.evalMSE(offsprings[1]) )); // Compute fitness (takes a lot of time)
+
+            nextPopulation.add(new Individual(offsprings[0])); // Compute fitness (takes a lot of time)
+
+            nextPopulation.add(new Individual(offsprings[1])); // Compute fitness (takes a lot of time)
         }
 
         // Check if the population size is less than the desired size due to rounding
@@ -214,19 +202,10 @@ public class GeneticProgramming extends Global {
             // Generate one more offspring
             Program extraOffspring = selectParent(oldPopulation).getProgram();
             extraOffspring = mutate(extraOffspring);
-            nextPopulation.add(new Individual(extraOffspring,
-                    fitnessFunction.evalMSE(extraOffspring)));
+            nextPopulation.add(new Individual(extraOffspring));
         }
 
-        /*for (int i = 0; i < randomMigrantAmount; i++) {
-            Program randomMigrant = Program.random(addedProgramLength);
-            nextPopulation.add(new Individual(randomMigrant, fitnessFunction.evalMSE(randomMigrant)));
-        }*/
-
-        nextPopulation.computeDiversityMap();
-        nextPopulation.computeDiversity();
-//        nextPopulation.applyFitnessSharing();
-
+        nextPopulation.computeFitnessAndDiversity(fitnessFunction);
         return nextPopulation;
     }
 

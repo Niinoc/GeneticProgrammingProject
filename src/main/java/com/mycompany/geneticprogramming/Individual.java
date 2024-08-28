@@ -28,9 +28,8 @@ public class Individual {
         this.fitnessMAPE = fitnessMAPE;
     }
 
-    public Individual(Program program, Double fitnessMSE) {
+    public Individual(Program program) {
         this.program = program;
-        this.fitnessMSE = fitnessMSE;
     }
 
     public Program getProgram() {
@@ -39,6 +38,9 @@ public class Individual {
 
     public Double getFitnessMSE() {
         return fitnessMSE;
+    }
+    public void setFitnessMSE(double fitness) {
+        this.fitnessMSE = fitness;
     }
 
     public Double getFitnessShared() {
