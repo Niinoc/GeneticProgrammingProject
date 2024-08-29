@@ -152,8 +152,6 @@ public class Program extends Global {
      * @author Nicholas
      */
     public String toArithmetic() {
-        StringBuilder function = new StringBuilder(256);
-
         // Mapping für die Registerausdrücke
         Map<Integer, String> registerExpressions = new HashMap<>(this.getNumberOfRegisters());
 
@@ -197,11 +195,7 @@ public class Program extends Global {
             registerExpressions.put(targetRegister, expressionBuilder.toString());
         }
 
-        // Das letzte Zielregister enthält das Endergebnis
-        String finalExpression = registerExpressions.get(lastWrittenRegister);
-        function.append(finalExpression);
-
-        return function.toString();
+        return registerExpressions.get(lastWrittenRegister);
     }
 
 
