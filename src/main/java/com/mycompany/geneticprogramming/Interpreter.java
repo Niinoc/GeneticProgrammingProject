@@ -43,32 +43,40 @@ public class Interpreter {
         for (int i = 0; i < program.getNumberOfRegisters(); i++) {
             registers[i] = program.initialRegisterStates[i];
         }
-        // Write input into registers (hoping that there are enough registers :-)
+        // Write input into registers
         for (int i = 0; i < input.size(); i++) {
             registers[i] = input.get(i);
         }
-        // Run instructions
-        int targetRegister = 0;  // just some initialization so that empty programs can be exectuted.
-        for (Instruction instruction : program.instructions) {
-            Operator operator = instruction.operator;
-            targetRegister = instruction.operands[0];
-            Double[] operandValues;
-            //for unary operator
-            if (operator.numberOfOperands == 2) {
-                operandValues = new Double[]{
-                        registers[instruction.operands[1]]
-                };
-            //for binary operator
-            } else {
-                operandValues = new Double[]{
-                        registers[instruction.operands[1]],
-                        registers[instruction.operands[2]]
-                };
-            }
-            registers[targetRegister] = instruction.operator.function.apply(operandValues);
 
+        int targetRegister = 0;  // initialization
+        for (Instruction instruction : program.instructions) {
+            targetRegister = instruction.operands[0];
+            Operator operator = instruction.operator;
+
+            switch (operator) {
+                case ADD ->
+                        registers[targetRegister] = registers[instruction.operands[1]] + registers[instruction.operands[2]];
+                case SUB ->
+                        registers[targetRegister] = registers[instruction.operands[1]] - registers[instruction.operands[2]];
+                case MUL ->
+                        registers[targetRegister] = registers[instruction.operands[1]] * registers[instruction.operands[2]];
+                case DIV ->
+                        registers[targetRegister] = registers[instruction.operands[1]] / registers[instruction.operands[2]];
+                case NEG -> registers[targetRegister] = -registers[instruction.operands[1]];
+                case INV -> registers[targetRegister] = 1.0 / registers[instruction.operands[1]];
+                case SQRT -> registers[targetRegister] = Math.sqrt(registers[instruction.operands[1]]);
+                case EXP ->
+                        registers[targetRegister] = Math.pow(registers[instruction.operands[1]], registers[instruction.operands[2]]);
+                case LN -> registers[targetRegister] = Math.log(registers[instruction.operands[1]]);
+                case SIN -> registers[targetRegister] = Math.sin(registers[instruction.operands[1]]);
+                case COS -> registers[targetRegister] = Math.cos(registers[instruction.operands[1]]);
+                case TAN -> registers[targetRegister] = Math.tan(registers[instruction.operands[1]]);
+
+                // Füge weitere Operatoren hier hinzu
+                default -> throw new UnsupportedOperationException("Unknown operator: " + operator);
+            }
         }
-        return registers[targetRegister]; // Return the value from the last target register written to.
+        return registers[targetRegister];
     }
 
 
