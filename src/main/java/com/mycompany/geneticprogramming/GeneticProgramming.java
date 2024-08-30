@@ -304,14 +304,14 @@ public class GeneticProgramming extends Global {
 
         // Mutate initial register states
         for (int i = 0; i < offspring.initialRegisterStates.length; i++) {
-            if (MyRandom.nextDouble() < mutationProbabiltyInstructions) {  // mutation rate
+            if (MyRandom.nextDouble() < mutationProbabilityInitialRegisterStates) {  // mutation rate
                 offspring.initialRegisterStates[i] = Program.randomRegisterValue();
             }
         }
 
         // Mutate instructions
         for (int i = 0; i < offspring.instructions.size(); i++) {
-            if (MyRandom.nextDouble() < mutationProbabiltyInstructions) {  // mutation rate
+            if (MyRandom.nextDouble() < mutationProbabilityInstructions) {  // mutation rate
                 // replace instruction by a random instruction
                 offspring.instructions.set(i, Instruction.random());
             }
@@ -344,7 +344,7 @@ public class GeneticProgramming extends Global {
         int crossoverPoint2 = MyRandom.nextInt(size - crossoverPoint1) + crossoverPoint1;
 
         // Perform crossover based on probability
-        if (MyRandom.nextDouble() < crossoverProbabiltyInstructions) {
+        if (MyRandom.nextDouble() < crossoverProbability) {
             for (int i = crossoverPoint1; i <= crossoverPoint2; i++) {
                 offspring1.instructions.set(i, parentProgram2.instructions.get(i));
                 offspring2.instructions.set(i, parentProgram1.instructions.get(i));
@@ -367,9 +367,9 @@ public class GeneticProgramming extends Global {
         if (args.length >= 3 && Integer.parseInt(args[2]) >= 1) addedProgramLength = Integer.parseInt(args[2]);
         if (args.length >= 4 && Integer.parseInt(args[3]) >= 1) populationSize = Integer.parseInt(args[3]);
         if (args.length >= 5) numberOfGenerations = Integer.parseInt(args[4]);
-        if (args.length >= 6 && Double.parseDouble(args[5]) >= 0 && Double.parseDouble(args[5]) <= 1) mutationProbabiltyInstructions = Double.parseDouble(args[5]);
-        if (args.length >= 7 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabiltyInitialRegisterStates = Double.parseDouble(args[6]);
-        if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) mutationStrengthInitialRegisterStates = Double.parseDouble(args[7]);
+        if (args.length >= 6 && Double.parseDouble(args[5]) >= 0 && Double.parseDouble(args[5]) <= 1) mutationProbabilityInstructions = Double.parseDouble(args[5]);
+        if (args.length >= 7 && Double.parseDouble(args[6]) >= 0 && Double.parseDouble(args[6]) <= 1) mutationProbabilityInitialRegisterStates = Double.parseDouble(args[6]);
+        if (args.length >= 8 && Double.parseDouble(args[7]) >= 0 && Double.parseDouble(args[7]) <= 1) crossoverProbability = Double.parseDouble(args[7]);
         if (args.length >= 9) fitnessCasesFileName = args[8];
         if (args.length >= 10) logFolderPath = args[9];
     }

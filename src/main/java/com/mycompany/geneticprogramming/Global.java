@@ -13,9 +13,6 @@ package com.mycompany.geneticprogramming;
  */
 public class Global {
     // Do NOT add non-static variables here!
-
-    static int randomMigrantAmount = 5;
-
     static String logFileNamePrefix = "out.";   // Here you can change the prefix of the log-files
 
     static String inputFileNamePrefix = "in.";
@@ -37,29 +34,43 @@ public class Global {
     static int numberOfFreeRegisters = 5;           // Must be greater equal to the number of inputs, so this will now be added to numberOfInputs
     static int addedProgramLength = 15;        // Length is fixed, this will also be added to numberOfInputs (new Mutation already implemented)
 
+
+    static int populationSize = 200;
+
+    static int numberOfGenerations = 10000;
+
+    static int numberOfFitnessCases = 100;   //wird als Variable nur für alternativen Konstruktor verwendet
+    static double stepSize = 1;             //wird nur für alternativen Konstruktor verwendet
+
+    static int numberOfInputs = 1;          //wird als Variable nur für alternativen Konstruktor verwendet
+
+
+    static double mutationProbabilityInstructions = 0.1;
+    static double mutationProbabilityInitialRegisterStates = 0.3;
+    static double crossoverProbability = 0.2;
+
+
+    //Mutationen werden nicht verwendet
+    static double mutationProbabilityInstructionInsertion = 0.0;
+    static double mutationProbabilityInstructionDeletion = 0.0;
     static int maxProgramLength = 100;
 
-    static int populationSize = 120;
-
-    static int numberOfGenerations = 1000;
-
-    static int numberOfFitnessCases = 50;
-    static double stepSize = 1;
-
-    static int numberOfInputs = 1;
-
-
-    static double mutationProbabiltyInstructions = 0.1;
-    static double crossoverProbabiltyInstructions = 0.2;
-
-
-    //kommen bald raus
-    static double mutationProbabiltyInitialRegisterStates = 0.3;
-    static double mutationStrengthInitialRegisterStates = 0.2;
-    static double mutationProbabiltyInstructionInsertion = 0.0;
-    static double mutationProbabiltyInstructionDeletion = 0.0;
-
     static FitnessFunction fitnessFunction;
+
+    static String parametersToCSV() {
+        return "seed," + seed + "\n" +
+                "numberOfRegisters," + numberOfFreeRegisters + "\n" +
+                "initialProgramLength," + addedProgramLength + "\n" +
+                "populationSize," + populationSize + "\n" +
+                "numberOfGenerations," + numberOfGenerations + "\n" +
+                "numberOfFitnessCases," + numberOfFitnessCases + "\n" +
+                "mutationProbabilityInstructions," + mutationProbabilityInstructions + "\n" +
+                "mutationProbabilityInitialRegisterStates," + mutationProbabilityInitialRegisterStates + "\n" +
+                "mutationStrengthInitialRegisterStates," + crossoverProbability + "\n" +
+                "FitnessCasesFileName," + fitnessCasesFileName + "\n" +
+                "logFileNamePrefix," + logFileNamePrefix + "\n" +
+                "logFileNamePostfix," + logFileNamePostfix;
+    }
 
     static String parametersToString() {
         return "Parameters:\n" +
@@ -69,27 +80,12 @@ public class Global {
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
-                "mutationProbabilityInstructions: " + mutationProbabiltyInstructions + "\n" +
-                "mutationProbabilityInitialRegisterStates: " + mutationProbabiltyInitialRegisterStates + "\n" +
-                "mutationStrengthInitialRegisterStates: " + mutationStrengthInitialRegisterStates + "\n" +
+                "mutationProbabilityInstructions: " + mutationProbabilityInstructions + "\n" +
+                "mutationProbabilityInitialRegisterStates: " + mutationProbabilityInitialRegisterStates + "\n" +
+                "mutationStrengthInitialRegisterStates: " + crossoverProbability + "\n" +
                 "FitnessCasesFileName: " + fitnessCasesFileName + "\n" +
                 "logFileNamePrefix: " + logFileNamePrefix + "\n" +
                 "logFileNamePostfix: " + logFileNamePostfix;
-    }
-
-    static String parametersToCSV() {
-        return "seed," + seed + "\n" +
-                "numberOfRegisters," + numberOfFreeRegisters + "\n" +
-                "initialProgramLength," + addedProgramLength + "\n" +
-                "populationSize," + populationSize + "\n" +
-                "numberOfGenerations," + numberOfGenerations + "\n" +
-                "numberOfFitnessCases," + numberOfFitnessCases + "\n" +
-                "mutationProbabilityInstructions," + mutationProbabiltyInstructions + "\n" +
-                "mutationProbabilityInitialRegisterStates," + mutationProbabiltyInitialRegisterStates + "\n" +
-                "mutationStrengthInitialRegisterStates," + mutationStrengthInitialRegisterStates + "\n" +
-                "FitnessCasesFileName," + fitnessCasesFileName + "\n" +
-                "logFileNamePrefix," + logFileNamePrefix + "\n" +
-                "logFileNamePostfix," + logFileNamePostfix;
     }
 
     static String parametersToStringShort(){
@@ -100,9 +96,9 @@ public class Global {
                 +populationSize +"|"
                 +numberOfGenerations +"|"
                 +numberOfFitnessCases +"|"
-                +mutationProbabiltyInstructions +"|"
-                +mutationProbabiltyInitialRegisterStates +"|"
-                +mutationStrengthInitialRegisterStates +"|"
+                + mutationProbabilityInstructions +"|"
+                + mutationProbabilityInitialRegisterStates +"|"
+                + crossoverProbability +"|"
                 +fitnessCasesFileName
                 +"]";
     }
