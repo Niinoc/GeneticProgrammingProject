@@ -59,6 +59,7 @@ public class Global {
 
     static String parametersToCSV() {
         return "seed," + seed + "\n" +
+                "numberOfInputs," + numberOfInputs + "\n" +
                 "numberOfRegisters," + numberOfFreeRegisters + "\n" +
                 "initialProgramLength," + addedProgramLength + "\n" +
                 "populationSize," + populationSize + "\n" +
@@ -75,6 +76,7 @@ public class Global {
     static String parametersToString() {
         return "Parameters:\n" +
                 "seed: " + seed + "\n" +
+                "numberOfInputs: " + numberOfInputs + "\n" +
                 "numberOfRegisters: " + numberOfFreeRegisters + "\n" +
                 "initialProgramLength: " + addedProgramLength + "\n" +
                 "populationSize: " + populationSize + "\n" +
@@ -90,16 +92,17 @@ public class Global {
 
     static String parametersToStringShort(){
         return "["
-                +seed +"|"
+                + seed +"|"
+                + numberOfInputs +"|"
                 + numberOfFreeRegisters +"|"
                 + addedProgramLength +"|"
-                +populationSize +"|"
-                +numberOfGenerations +"|"
-                +numberOfFitnessCases +"|"
+                + populationSize +"|"
+                + numberOfGenerations +"|"
+                + numberOfFitnessCases +"|"
                 + mutationProbabilityInstructions +"|"
                 + mutationProbabilityInitialRegisterStates +"|"
                 + crossoverProbability +"|"
-                +fitnessCasesFileName
+                + fitnessCasesFileName
                 +"]";
     }
 
