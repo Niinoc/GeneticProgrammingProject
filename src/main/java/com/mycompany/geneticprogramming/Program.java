@@ -18,17 +18,17 @@ public class Program extends Global {
 
     static double[] constants = {
             -5.0, -4.0, -3.0, -2.0, -1.0, -0.5, 0, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0,
-            Math.PI, Math.E, Math.sqrt(2), Math.sqrt(3), Math.log(2), Math.log(10),
+            Math.PI, Math.E, Math.sqrt(2), 1/Math.sqrt(2), Math.sqrt(3), Math.log(2), Math.log(10),
             Math.log10(Math.E), (1 + Math.sqrt(5)) / 2, // phi
-            0.25, 0.75, 1.5, -1.5, 1/Math.sqrt(2),
+            -0.25, 0.25, -0.75, 0.75, -1.5, 1.5,
             0.5772,         // Euler's constant
             Math.PI * Math.PI / 6, // zeta(2)
             1.20206,        // zeta(3)
-            3e8,            // c - Lichtgeschwindigkeit
+            /*3e8,            // c - Lichtgeschwindigkeit
             6.674e-11,      // G - Gravitationskonstante
             6.626e-34,      // h - Plancksches Wirkungsquantum
             1.381e-23,      // k_B - Boltzmann-Konstante
-            8.854e-12       // epsilon_0 - Elektrische Feldkonstante
+            8.854e-12       // epsilon_0 - Elektrische Feldkonstante*/
     };
 
     List<Instruction> instructions = new ArrayList<>();
