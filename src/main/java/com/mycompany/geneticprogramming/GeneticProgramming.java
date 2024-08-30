@@ -346,8 +346,9 @@ public class GeneticProgramming extends Global {
         // Perform crossover based on probability
         if (MyRandom.nextDouble() < crossoverProbability) {
             for (int i = crossoverPoint1; i <= crossoverPoint2; i++) {
+                Instruction temp = offspring1.instructions.get(i);
                 offspring1.instructions.set(i, parentProgram2.instructions.get(i));
-                offspring2.instructions.set(i, parentProgram1.instructions.get(i));
+                offspring2.instructions.set(i, temp);
             }
         }
 
