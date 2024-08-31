@@ -54,27 +54,47 @@ public class Interpreter {
             Operator operator = instruction.operator;
 
             switch (operator) {
-                case ADD ->
-                        registers[targetRegister] = registers[instruction.operands[1]] + registers[instruction.operands[2]];
-                case SUB ->
-                        registers[targetRegister] = registers[instruction.operands[1]] - registers[instruction.operands[2]];
-                case MUL ->
-                        registers[targetRegister] = registers[instruction.operands[1]] * registers[instruction.operands[2]];
-                case DIV ->
-                        registers[targetRegister] = registers[instruction.operands[1]] / registers[instruction.operands[2]];
-                case NEG -> registers[targetRegister] = -registers[instruction.operands[1]];
-                case INV -> registers[targetRegister] = 1.0 / registers[instruction.operands[1]];
-                case SQRT -> registers[targetRegister] = Math.sqrt(registers[instruction.operands[1]]);
-                case EXP ->
-                        registers[targetRegister] = Math.pow(registers[instruction.operands[1]], registers[instruction.operands[2]]);
-                case LN -> registers[targetRegister] = Math.log(registers[instruction.operands[1]]);
-                case SIN -> registers[targetRegister] = Math.sin(registers[instruction.operands[1]]);
-                case COS -> registers[targetRegister] = Math.cos(registers[instruction.operands[1]]);
-                case TAN -> registers[targetRegister] = Math.tan(registers[instruction.operands[1]]);
-
+                case ADD:
+                    registers[targetRegister] = registers[instruction.operands[1]] + registers[instruction.operands[2]];
+                    break;
+                case SUB:
+                    registers[targetRegister] = registers[instruction.operands[1]] - registers[instruction.operands[2]];
+                    break;
+                case MUL:
+                    registers[targetRegister] = registers[instruction.operands[1]] * registers[instruction.operands[2]];
+                    break;
+                case DIV:
+                    registers[targetRegister] = registers[instruction.operands[1]] / registers[instruction.operands[2]];
+                    break;
+                case NEG:
+                    registers[targetRegister] = -registers[instruction.operands[1]];
+                    break;
+                case INV:
+                    registers[targetRegister] = 1.0 / registers[instruction.operands[1]];
+                    break;
+                case SQRT:
+                    registers[targetRegister] = Math.sqrt(registers[instruction.operands[1]]);
+                    break;
+                case EXP:
+                    registers[targetRegister] = Math.pow(registers[instruction.operands[1]], registers[instruction.operands[2]]);
+                    break;
+                case LN:
+                    registers[targetRegister] = Math.log(registers[instruction.operands[1]]);
+                    break;
+                case SIN:
+                    registers[targetRegister] = Math.sin(registers[instruction.operands[1]]);
+                    break;
+                case COS:
+                    registers[targetRegister] = Math.cos(registers[instruction.operands[1]]);
+                    break;
+                case TAN:
+                    registers[targetRegister] = Math.tan(registers[instruction.operands[1]]);
+                    break;
                 // Füge weitere Operatoren hier hinzu
-                default -> throw new UnsupportedOperationException("Unknown operator: " + operator);
+                default:
+                    throw new UnsupportedOperationException("Unknown operator: " + operator);
             }
+
         }
         return registers[targetRegister];
     }
