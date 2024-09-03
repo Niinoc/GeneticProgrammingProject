@@ -39,9 +39,8 @@ except subprocess.CalledProcessError as e:
 # Anzahl der Läufe pro Parameterkombination
 NUM_RUNS = 10
 # Anzahl der Parameterkombinationen, die getestet werden sollen
-num_combinations = 350
+num_combinations = 700
 # Manuell festgelegte Parameterbereiche
-numOfRegisters = [10, 15, 20, 25, 30, 35, 40, 50, 100]
 numOfInstructions = [10, 15, 20, 25, 30, 35, 40, 50, 100]
 populationSize = [50, 100, 150, 200, 250, 300, 500, 1000, 2500, 5000]
 mutationRate = [0.05, 0.07, 0.09, 0.15, 0.2, 0.3, 0.4, 0.5]
@@ -66,8 +65,8 @@ with open(os.path.join(test_dir, "git_version.txt"), "w") as git_file:
 
 # Zufällige Parameterkombinationen generieren und Jobs einreichen
 for _ in range(num_combinations):
-    numOfRegisters_val = random.choice(numOfRegisters)
     numOfInstructions_val = random.choice(numOfInstructions)
+    numOfRegisters_val = numOfInstructions_val
     populationSize_val = random.choice(populationSize)
     mutationRate_val = random.choice(mutationRate)
     mutationRateRegisters_val = random.choice(mutationRateRegisters)
