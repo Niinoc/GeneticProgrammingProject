@@ -26,8 +26,10 @@ public enum Operator {
     EXP("**", 3),
     LN("ln", 2),
     SIN("sin", 2),
+    ARCSIN("asin", 2),
     COS("cos", 2),
-    TAN("tan", 2);
+    TAN("tan", 2),
+    TANH("tanh", 2);
 
     final String name;
     final int numberOfOperands;

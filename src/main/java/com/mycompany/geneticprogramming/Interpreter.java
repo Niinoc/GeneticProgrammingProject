@@ -84,11 +84,17 @@ public class Interpreter {
                 case SIN:
                     registers[targetRegister] = Math.sin(registers[instruction.operands[1]]);
                     break;
+                case ARCSIN:
+                    registers[targetRegister] = Math.asin(registers[instruction.operands[1]]);
+                    break;
                 case COS:
                     registers[targetRegister] = Math.cos(registers[instruction.operands[1]]);
                     break;
                 case TAN:
                     registers[targetRegister] = Math.tan(registers[instruction.operands[1]]);
+                    break;
+                case TANH:
+                    registers[targetRegister] = Math.tanh(registers[instruction.operands[1]]);
                     break;
                 // Füge weitere Operatoren hier hinzu
                 default:
