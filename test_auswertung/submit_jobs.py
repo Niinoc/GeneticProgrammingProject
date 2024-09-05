@@ -11,7 +11,7 @@ os.chdir("/home/stud/other/pi96dal/GeneticProgrammingProject/")
 log_dir = "log"
 os.makedirs(log_dir, exist_ok=True)
 
-test_dir = os.path.join(log_dir, "test_randomsearchV1")
+test_dir = os.path.join(log_dir, "test_randomsearchV3")
 os.makedirs(test_dir, exist_ok=True)
 
 # Datei zur Speicherung der bereits getesteten Kombinationen
@@ -36,16 +36,17 @@ except subprocess.CalledProcessError as e:
     print(f"Compilation failed with error: {e}")
     exit(1)
 
+num_tests = 2
 # Anzahl der Läufe pro Parameterkombination
-NUM_RUNS = 10
+NUM_RUNS = 5
 # Anzahl der Parameterkombinationen, die getestet werden sollen
-num_combinations = 700
+num_combinations = 650  #total 1300
 # Manuell festgelegte Parameterbereiche
-numOfInstructions = [10, 15, 20, 25, 30, 35, 40, 50, 100]
-populationSize = [50, 100, 150, 200, 250, 300, 500, 1000, 2500, 5000]
-mutationRate = [0.05, 0.07, 0.09, 0.15, 0.2, 0.3, 0.4, 0.5]
-mutationRateRegisters = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
-crossoverRate = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.7]
+numOfInstructions = [10, 20, 30, 40, 50, 100]
+populationSize = [50, 100, 150, 200, 250, 1250, 2500]
+mutationRate = [0.05, 0.07, 0.09, 0.15, 0.25, 0.5]
+mutationRateRegisters = [0.1, 0.2, 0.3, 0.4, 0.5, 0.7]
+crossoverRate = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7]
 maxFitnessEvals = 5000000
 
 input_file_list = [
@@ -62,6 +63,31 @@ input_file_list = [
 with open(os.path.join(test_dir, "git_version.txt"), "w") as git_file:
     subprocess.run(["git", "rev-parse", "HEAD"], stdout=git_file)
     print("Git version logged successfully.")
+    
+# Speichere den Parameter-Suchraum in einer menschenlesbaren Datei
+search_space_file = os.path.join(test_dir, "search_space_info.txt")
+with open(search_space_file, "w") as space_file:
+    space_file.write("Parameter Search Space and Test Configuration\n")
+    space_file.write("============================================\n\n")
+    space_file.write(f"Number of Runs per Combination: {NUM_RUNS}\n")
+    space_file.write(f"Total Number of Combinations: {num_combinations*num_tests}\n\n")
+    
+    space_file.write("Parameter Ranges:\n")
+    space_file.write(f"numOfInstructions: {numOfInstructions}\n")
+    space_file.write(f"populationSize: {populationSize}\n")
+    space_file.write(f"mutationRate: {mutationRate}\n")
+    space_file.write(f"mutationRateRegisters: {mutationRateRegisters}\n")
+    space_file.write(f"crossoverRate: {crossoverRate}\n")
+    space_file.write(f"maxFitnessEvals: {maxFitnessEvals}\n\n")
+    
+    space_file.write(f"Calculated Generations: {maxFitnessEvals} / populationSize\n")
+    space_file.write(f"Register Count (equal to numOfInstructions): {numOfInstructions}\n\n")
+    
+    space_file.write("Functions Tested:\n")
+    for function in input_file_list:
+        space_file.write(f"- {function}\n")
+    print("Search space information saved successfully.")
+
 
 # Zufällige Parameterkombinationen generieren und Jobs einreichen
 for _ in range(num_combinations):

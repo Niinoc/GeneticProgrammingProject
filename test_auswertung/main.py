@@ -6,7 +6,7 @@ from RandomSearchAnalyzer import RandomSearchAnalyzer
 
 
 def main():
-    base_dir = os.path.join('..', 'log', 'test_mutation_rate_new_analyzer_test')
+    base_dir = os.path.join('..', 'log', 'test_v4')
     # Name des Ordners in den gespeichert werden soll
     plot_dir_name = "auswertung_alles"
     # Funktionen welche berücksichtigt werden sollen, wenn None -> alle
@@ -14,7 +14,7 @@ def main():
 
     # ['I.8.14', 'I.11.19', 'I.27.6', 'I.29.4', 'I.39.1', 'I.50.26', 'II.3.24', 'II.11.28', 'II.38.14']
     # Parameterwerte welche berücksichtigt werden sollen, wenn None -> alle
-    # parameters = None
+    parameters = None
     # # seeds = pick_seeds(10)
     # # seeds = ['seed_1', 'seed_2', 'seed_3']
     # seeds = None
