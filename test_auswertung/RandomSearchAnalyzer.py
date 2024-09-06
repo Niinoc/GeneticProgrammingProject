@@ -47,6 +47,7 @@ class RandomSearchAnalyzer:
             )
 
             if temp_df is not None:
+                print(f"DataFrame gefunden: {temp_df.head()}")  # Debug-Ausgabe
                 df_list.append(temp_df)
             else:
                 print('temp_df None')

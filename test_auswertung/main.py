@@ -7,13 +7,14 @@ from ProgressManager import ProgressManager
 
 
 def main():
-    base_dir = os.path.join('..', 'log', 'test_randomsearchV4')
+    base_dir = os.path.join('..', 'log', 'test_randomsearchV3')
 
-    tested_file = '/path/to/tested_combinations.json'
-    processed_file = '/path/to/processed_combinations.json'
+    tested_file = os.path.join('..', 'log', 'test_randomsearchV3', 'tested_combinations.json')
+    processed_file = os.path.join('..', 'log', 'test_randomsearchV3', 'processed_combinations.json')
 
     progress_manager = ProgressManager(tested_file, processed_file)
     unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=100)
+    print('combination processing finished')
 
     # Name des Ordners in den gespeichert werden soll
     plot_dir_name = "auswertung_alles"
