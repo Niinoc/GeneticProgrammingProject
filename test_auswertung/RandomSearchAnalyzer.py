@@ -1,45 +1,50 @@
 import os
+import re
+
 import pandas as pd
 import matplotlib
-import re
 
 matplotlib.use('Agg')  # Use a non-GUI backend
 import sympy as sp
 
 
 class RandomSearchAnalyzer:
-    def __init__(self, root_dir, allowed_functions=None):
+    def __init__(self, root_dir, unprocessed_combinations, allowed_functions=None):
+        self.unprocessed_combinations = unprocessed_combinations
         self.root_dir = root_dir
         self.allowed_functions = allowed_functions
-
         self.df, self.average_df, self.test_data_df = self._process_directory()
-        self.function_subsets = {}
-        self.function_average_subsets = {}
-        self.parameter_average_subsets = {}
-        self._initialize_subsets()
 
     def _process_directory(self):
         print('processing directories')
         df_list = []
         test_data = []
         last_dir = ""  # Initialize to track changes in function_dir
+        param_pattern = r"regs(\d+)_inst(\d+)_popS(\d+)_gen(\d+)_mutInst([\d\.]+)_mutRegs([\d\.]+)_cross([\d\.]+)"
 
         for root, dirs, files in os.walk(self.root_dir):
-            # Initialize directory-related variables before processing files
-            function_dir, param_dir, seed_dir = self._extract_directory_info(root)
+            # param_dir wird weiterhin extrahiert
+            param_dir, function_dir, seed_dir = self._extract_directory_info(root)
 
-            if function_dir is None:
+            if param_dir is None:
                 continue  # Skip if the directory structure is invalid
 
-            # Display progress by printing the current function_dir if it has changed
-            if function_dir != last_dir:
-                last_dir = function_dir
+            # Split param_dir in seine Bestandteile
+            match = re.findall(param_pattern, param_dir)
+            if match:
+                regs, inst, popS, gen, mutInst, mutRegs, cross = match[0]
+            else:
+                regs, inst, popS, gen, mutInst, mutRegs, cross = [None] * 7  # Fallback für unerwartete Ordnernamen
+
+            # Zeige Fortschritt an, wenn sich das Verzeichnis ändert
+            if param_dir != last_dir:
+                last_dir = param_dir
                 print(f"Processing directory: {last_dir}")
 
-            # Process the best fitness file
-            temp_df, final_function, function_generation, good_fitness = self._process_best_fitness(root, files,
-                                                                                                    function_dir,
-                                                                                                    param_dir, seed_dir)
+            # Verarbeite die best fitness Datei
+            temp_df, final_function, function_generation, good_fitness = self._process_best_fitness(
+                root, files, function_dir, regs, inst, popS, gen, mutInst, mutRegs, cross, seed_dir
+            )
 
             if temp_df is not None:
                 df_list.append(temp_df)
@@ -49,13 +54,15 @@ class RandomSearchAnalyzer:
             if good_fitness and final_function is not None and function_generation is not None:
                 # Extract diversity data
                 start_diversity = self._extract_diversity(root, files, 'initialpopulation')
-                if start_diversity != 'notfound': start_diversity = f"'{round(float(start_diversity), 2)}"
+                if start_diversity != 'notfound':
+                    start_diversity = f"'{round(float(start_diversity), 2)}"
                 end_diversity = self._extract_diversity(root, files, 'finalpopulation')
-                if end_diversity != 'notfound': end_diversity = f"'{round(float(end_diversity), 2)}"
+                if end_diversity != 'notfound':
+                    end_diversity = f"'{round(float(end_diversity), 2)}"
 
-                # Compile test data if all conditions are met
-                test_data.append([function_dir, param_dir, seed_dir, final_function, start_diversity,
-                                  end_diversity, function_generation])
+                # Die extrahierten Parameter werden in test_data eingefügt
+                test_data.append([function_dir, seed_dir, final_function, start_diversity,
+                                  end_diversity, function_generation, regs, inst, popS, gen, mutInst, mutRegs, cross])
 
         return self._compile_final_data(df_list, test_data)
 
@@ -68,64 +75,52 @@ class RandomSearchAnalyzer:
 
             param_dir, function_dir, seed_dir = parts[-3], parts[-2], parts[-1]
 
-            # Extract parameter values from the param_dir name using regex
-            param_pattern = r'regs(\d+)_inst(\d+)_popS(\d+)_gen(\d+)_mutInst([0-9.]+)_mutRegs([0-9.]+)_cross([0-9.]+)'
-            match = re.match(param_pattern, param_dir)
-            if match:
-                regs, inst, pop_size, gen, mut_inst, mut_regs, cross_rate = match.groups()
-                param_values = {
-                    'regs': int(regs),
-                    'inst': int(inst),
-                    'pop_size': int(pop_size),
-                    'gen': int(gen),
-                    'mut_inst': float(mut_inst),
-                    'mut_regs': float(mut_regs),
-                    'cross_rate': float(cross_rate)
-                }
-            else:
-                print(f"Warning: Could not extract parameters from directory name {param_dir}")
-                return None, None, None
-
             if self.allowed_functions is not None and function_dir not in self.allowed_functions:
                 return None, None, None
 
-            return function_dir, param_values, seed_dir  # Return param_values as a dictionary
+            if param_dir not in self.unprocessed_combinations:
+                return None, None, None
+
+            return param_dir, function_dir, seed_dir
+
         except ValueError:
             return None, None, None
 
-
-    def _process_best_fitness(self, root, files, function_dir, param_values, seed_dir):
+    def _process_best_fitness(self, root, files, function_dir, regs, inst, popS, gen, mutInst, mutRegs, cross,
+                              seed_dir):
         if 'out.bestfitness.txt' in files:
             file_path = os.path.join(root, 'out.bestfitness.txt')
 
-            # Load the fitness data
+            # Lese die Datei ein und verarbeite sie
             temp_df = pd.read_csv(file_path)
+
+            # Statt 'param_dir' fügen wir jetzt die extrahierten Parameter hinzu
+            temp_df['regs'] = regs
+            temp_df['inst'] = inst
+            temp_df['popS'] = popS
+            temp_df['gen'] = gen
+            temp_df['mutInst'] = mutInst
+            temp_df['mutRegs'] = mutRegs
+            temp_df['cross'] = cross
             temp_df['function'] = function_dir
-
-            # Use param_values dict to add each parameter column
-            temp_df['regs'] = param_values['regs']
-            temp_df['inst'] = param_values['inst']
-            temp_df['pop_size'] = param_values['pop_size']
-            temp_df['gen'] = param_values['gen']
-            temp_df['mut_inst'] = param_values['mut_inst']
-            temp_df['mut_regs'] = param_values['mut_regs']
-            temp_df['cross_rate'] = param_values['cross_rate']
-
             temp_df['seed'] = seed_dir
             temp_df.rename(columns={'FitnessMSE': 'fitness'}, inplace=True)
 
+            # Bestimme, ob der letzte Fitness-Wert unter dem Schwellenwert liegt
             good_fitness = temp_df['fitness'].iloc[-1] < 1e-11
             final_function = None
             function_generation = None
 
             if good_fitness:
+                # Extrahiere die finale Funktion, wenn der Fitnesswert gut ist
                 final_function = self._extract_and_simplify_final_function(root)
-                function_generation = temp_df[temp_df['fitness'] < 1e-11].index[0] + 1  # generation starts on 1, index on 0
+
+                # Bestimme die Generation basierend auf dem ersten Fitness-Wert, der den Schwellenwert unterschreitet
+                function_generation = temp_df[temp_df['fitness'] < 1e-11].index[0] + 1  # Generation beginnt bei 1
 
             return temp_df, final_function, function_generation, good_fitness
 
-        return None, None, False
-
+        return None, None, None, False
 
     @staticmethod
     def _extract_and_simplify_final_function(root):
@@ -144,16 +139,15 @@ class RandomSearchAnalyzer:
         diversity = 'notfound'
         if f'out.{population_type}.txt' in files:
             population_path = os.path.join(root, f'out.{population_type}.txt')
-            if os.path.exists(population_path):
-                with open(population_path, 'r') as f:
-                    first_line = f.readline().strip()
-                    if 'Diversity: ' in first_line:
-                        diversity = first_line.split('Diversity: ')[1]
-                    else:
-                        lines = f.readlines()
-                        last_line = lines[-1].strip()
-                        if 'Diversity: ' in last_line:
-                            diversity = last_line.split('Diversity: ')[1]
+            with open(population_path, 'r') as f:
+                first_line = f.readline().strip()
+                if 'Diversity: ' in first_line:
+                    diversity = first_line.split('Diversity: ')[1]
+                else:
+                    lines = f.readlines()
+                    last_line = lines[-1].strip()
+                    if 'Diversity: ' in last_line:
+                        diversity = last_line.split('Diversity: ')[1]
         return diversity
 
     @staticmethod
@@ -161,18 +155,22 @@ class RandomSearchAnalyzer:
         if not df_list:
             print("Warnung: df_list ist leer, es wurden keine gültigen DataFrames gefunden.")
 
-        test_data_df = pd.DataFrame(test_data, columns=['function_dir', 'param_dir', 'seed_dir', 'final_function',
-                                                        'start_diversity', 'end_diversity', 'generation'])
+        # DataFrame erstellen mit den extrahierten Parametern statt 'param_dir'
+        test_data_df = pd.DataFrame(test_data, columns=[
+            'function_dir', 'seed_dir', 'final_function', 'start_diversity',
+            'end_diversity', 'generation', 'regs', 'inst', 'popS', 'gen',
+            'mutInst', 'mutRegs', 'cross'
+        ])
+
         print(test_data_df)
 
         combined_df = pd.concat(df_list, ignore_index=True)
         print(combined_df)
 
-        # Group by the extracted parameter columns and calculate mean fitness
-        mean_fitness_df = combined_df.groupby(
-            ['function', 'regs', 'inst', 'pop_size', 'mut_inst', 'mut_regs', 'cross_rate', 'generation']
-        )['fitness'].mean().reset_index()
-        
+        # Berechne den Mittelwert der Fitness-Werte und gruppiere nach den Parametern
+        mean_fitness_df = \
+            combined_df.groupby(['function', 'regs', 'inst', 'popS', 'gen', 'mutInst', 'mutRegs', 'cross'])[
+                'fitness'].mean().reset_index()
         print(mean_fitness_df)
         return combined_df, mean_fitness_df, test_data_df
 
@@ -323,28 +321,17 @@ class RandomSearchAnalyzer:
             filename = f"{os.path.basename(self.root_dir)}_testdata.csv"
             testdata_path = os.path.join(output_dir, filename)
 
-            # Unpack the 'param_dir' column (which contains a dictionary) into separate columns
-            if 'param_dir' in self.test_data_df.columns:
-                params = pd.json_normalize(self.test_data_df['param_dir'])
-                # Combine the unpacked parameter columns with the original DataFrame
-                self.test_data_df = pd.concat([self.test_data_df.drop(columns=['param_dir']), params], axis=1)
+            # Prüfe, ob die Datei bereits existiert
+            file_exists = os.path.isfile(testdata_path)
 
-            # Clean up 'start_diversity' and 'end_diversity' by removing quotes and converting to float
-            if 'start_diversity' in self.test_data_df.columns:
-                self.test_data_df['start_diversity'] = self.test_data_df['start_diversity'].str.replace("'", "").astype(float)
-            if 'end_diversity' in self.test_data_df.columns:
-                self.test_data_df['end_diversity'] = self.test_data_df['end_diversity'].str.replace("'", "").astype(float)
+            # Speichere die Daten; falls die Datei bereits existiert, ohne Header anhängen
+            self.test_data_df.to_csv(testdata_path, mode='a' if file_exists else 'w', header=not file_exists,
+                                     index=False, sep=';')
 
-            # Save the DataFrame to CSV
-            self.test_data_df.to_csv(testdata_path, index=False, sep=';')
-            print(f"Datei wurde gespeichert: {filename}")
+            if file_exists:
+                print(f"Daten wurden an die Datei angehängt: {filename}")
+            else:
+                print(f"Datei wurde neu erstellt: {filename}")
         except Exception as e:
             print(f"Fehler beim Speichern der Datei: {e}")
 
-
-    def save_all_test_data(self):
-        functions_to_process = self.allowed_functions if self.allowed_functions is not None else self.df[
-            'function'].unique()
-        for function in functions_to_process:
-            self.save_test_data_for_function(function)
-        self.save_test_data()
