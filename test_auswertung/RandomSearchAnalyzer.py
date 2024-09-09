@@ -1,6 +1,7 @@
 import os
 import re
 import math
+import signal
 
 import seaborn as sns
 import pandas as pd
@@ -22,7 +23,7 @@ class RandomSearchAnalyzer:
         self.param_pattern = r"regs(\d+)_inst(\d+)_popS(\d+)_gen(\d+)_mutInst([\d\.]+)_mutRegs([\d\.]+)_cross([\d\.]+)"
         self.root_dir = root_dir
         self.allowed_functions = allowed_functions
-        self.df, self.average_df, self.test_data_df = self._process_directory()
+        self.test_data_df = self._process_directory()
 
     def _process_directory(self):
         print('processing directories')
@@ -50,10 +51,10 @@ class RandomSearchAnalyzer:
             )
             # print(function_dir)
 
-            if temp_df is not None:
-                df_list.append(temp_df)
-            else:
-                print('temp_df None')
+            #if temp_df is not None:
+                #df_list.append(temp_df)
+            #else:
+                #print('temp_df None')
 
             # if not good_fitness:
             #     final_function = 'noSolution'
@@ -61,10 +62,10 @@ class RandomSearchAnalyzer:
             # Extract diversity data
             start_diversity = self._extract_diversity(root, files, 'initialpopulation')
             if start_diversity != 'notfound':
-                start_diversity = {round(float(start_diversity), 2)}
+                start_diversity = round(float(start_diversity), 2)
             end_diversity = self._extract_diversity(root, files, 'finalpopulation')
             if end_diversity != 'notfound':
-                end_diversity = {round(float(end_diversity), 2)}
+                end_diversity = round(float(end_diversity), 2)
 
             # Die extrahierten Parameter werden in test_data eingefügt
             test_data.append(
@@ -72,7 +73,7 @@ class RandomSearchAnalyzer:
                  end_diversity, function_generation, param_values[0], param_values[1], param_values[2],
                  param_values[3], param_values[4], param_values[5], param_values[6], seed_dir])
 
-        return self._compile_final_data(df_list, test_data)
+        return self._compile_final_data(test_data)
 
     def _extract_directory_info(self, root):
         relative_path = os.path.relpath(root, self.root_dir)
@@ -171,6 +172,11 @@ class RandomSearchAnalyzer:
             return temp_df, final_function, function_generation, good_fitness, final_fitness, stagnation_percentage
 
         return None, None, None, False, None, None
+    
+    def handler(signum, frame):
+        raise TimeoutError("Die Vereinfachung dauert zu lange")
+    
+    signal.signal(signal.SIGALRM, handler)
 
     @staticmethod
     def _extract_and_simplify_final_function(root):
@@ -180,8 +186,31 @@ class RandomSearchAnalyzer:
                 first_line = f.readline().strip()
                 if '# final function: ' in first_line:
                     final_function = first_line.split('# final function: ')[1]
-                    sympy_expr = sp.sympify(final_function)
-                    return sp.simplify(sympy_expr)
+                    try:
+                        # Timeout auf 10 Sekunden setzen
+                        signal.alarm(60)
+
+                        # Versuch, den Ausdruck zu sympify-en und zu simplifizieren
+                        sympy_expr = sp.sympify(final_function)
+                        result = sp.simplify(sympy_expr)
+
+                        # Timeout deaktivieren, falls der Prozess erfolgreich war
+                        signal.alarm(0)
+                        return result
+                    
+                    except TimeoutError:
+                        # Timeout erreicht, gebe die Originalfunktion zurück
+                        print("Timeout: Die Vereinfachung hat zu lange gedauert.")
+                        return final_function
+
+                    except (ZeroDivisionError, sp.SympifyError, ValueError, TypeError, OverflowError) as e:
+                        # Bei mathematischen Fehlern die Originalfunktion zurückgeben
+                        print(f"Fehler beim Vereinfachen: {e}. Gebe die Originalfunktion zurück.")
+                        return final_function
+
+                    finally:
+                        # Timeout deaktivieren, um sicherzustellen, dass keine weiteren Alarme gesetzt sind
+                        signal.alarm(0)
         return None
 
     @staticmethod
@@ -201,19 +230,19 @@ class RandomSearchAnalyzer:
         return diversity
 
     @staticmethod
-    def _compile_final_data(df_list, test_data):
-        if not df_list:
-            print("Warnung: df_list ist leer, es wurden keine gültigen DataFrames gefunden.")
+    def _compile_final_data(test_data):
+        #if not df_list:
+            #print("Warnung: df_list ist leer, es wurden keine gültigen DataFrames gefunden.")
 
-        combined_df = pd.concat(df_list, ignore_index=True)
+        #combined_df = pd.concat(df_list, ignore_index=True)
 
-        print(combined_df)
+        #print(combined_df)
         # Berechne den Mittelwert der Fitness-Werte und gruppiere nach den Parametern
-        mean_fitness_df = \
-            combined_df.groupby(['function', 'regs', 'inst', 'popS', 'gen', 'mutInst', 'mutRegs', 'cross'])[
-                'fitness'].mean().reset_index()
+        #mean_fitness_df = \
+            #combined_df.groupby(['function', 'regs', 'inst', 'popS', 'gen', 'mutInst', 'mutRegs', 'cross'])[
+                #'fitness'].mean().reset_index()
 
-        print(mean_fitness_df)
+        #print(mean_fitness_df)
 
         # DataFrame erstellen mit den extrahierten Parametern statt 'param_dir'
         test_data_df = pd.DataFrame(test_data, columns=[
@@ -225,7 +254,7 @@ class RandomSearchAnalyzer:
         # print(test_data_df)
         # print(combined_df)
         # print(mean_fitness_df)
-        return combined_df, mean_fitness_df, test_data_df
+        return test_data_df
 
     def _get_output_dir(self, param_dir):
         return os.path.join(self.root_dir, param_dir)

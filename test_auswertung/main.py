@@ -13,7 +13,7 @@ def main():
     processed_file = os.path.join('..', 'log', 'test_randomsearchV3', 'processed_combinations.json')
 
     progress_manager = ProgressManager(tested_file, processed_file)
-    unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=50)
+    unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=550)
     # unprocessed_combinations = [10, 10, 50, 100000, 0.07, 0.5, 0.15]
 
     print(unprocessed_combinations)
