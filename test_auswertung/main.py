@@ -7,10 +7,10 @@ from ProgressManager import ProgressManager
 
 
 def main():
-    base_dir = os.path.join('..', 'log', 'test_randomsearchV3')
+    base_dir = os.path.join('..', 'log', 'test_randomsearchV3_2')
 
-    tested_file = os.path.join('..', 'log', 'test_randomsearchV3', 'tested_combinations.json')
-    processed_file = os.path.join('..', 'log', 'test_randomsearchV3', 'processed_combinations.json')
+    tested_file = os.path.join('..', 'log', 'test_randomsearchV3', 'tested_combinations_2.json')
+    processed_file = os.path.join('..', 'log', 'test_randomsearchV3', 'processed_combinations_2.json')
 
     progress_manager = ProgressManager(tested_file, processed_file)
     unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=550)
