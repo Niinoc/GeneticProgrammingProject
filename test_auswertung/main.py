@@ -13,7 +13,10 @@ def main():
     processed_file = os.path.join('..', 'log', 'test_randomsearchV3', 'processed_combinations.json')
 
     progress_manager = ProgressManager(tested_file, processed_file)
-    unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=100)
+    unprocessed_combinations = progress_manager.get_unprocessed_combinations(batch_size=50)
+    # unprocessed_combinations = [10, 10, 50, 100000, 0.07, 0.5, 0.15]
+
+    print(unprocessed_combinations)
     print('combination processing finished')
 
     # Name des Ordners in den gespeichert werden soll
@@ -40,9 +43,18 @@ def main():
     # analyzer.save_individual_fitness_plot()
 
     rs_analyzer = RandomSearchAnalyzer(base_dir, unprocessed_combinations, functions)
-    print(rs_analyzer.df)
-    print(rs_analyzer.average_df)
     rs_analyzer.save_test_data()
+    # Annahme: 'combined_df' enthält alle Daten
+    # rs_analyzer.plot_fitness_for_function_and_params(
+    #     function='I.11.19',
+    #     regs=10,
+    #     inst=10,
+    #     popS=50,
+    #     gen=100000,
+    #     mutInst=0.09,
+    #     mutRegs=0.2,
+    #     cross=0.15
+    # )
 
     progress_manager.mark_as_processed(unprocessed_combinations)
 
