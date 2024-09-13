@@ -150,7 +150,7 @@ def run_random_mode():
                     seed_dir_path = os.path.join(function_dir_path, f"seed_{i}")
                     os.makedirs(seed_dir_path, exist_ok=True)
 
-                    # submit_job(seed, param_combination, input_file_name, seed_dir_path)
+                    submit_job(seed, param_combination, input_file_name, seed_dir_path)
 
             # Kombination zur getesteten Menge hinzufügen
             tested_combinations.add(param_combination)
@@ -176,19 +176,19 @@ def run_csv_mode(csv_file_path):
                     mutationRate_val, mutationRateRegisters_val, crossoverRate_val = map(float, params)
             else:
                 # Ansonsten, wenn jede Spalte einzeln vorliegt:
-                numOfRegisters_val = float(row['regs'])
-                numOfInstructions_val = float(row['inst'])
-                populationSize_val = float(row['popS'])
-                numOfGenerations = float(row['gen'])
+                numOfRegisters_val = int(row['regs'])
+                numOfInstructions_val = int(row['inst'])
+                populationSize_val = int(row['popS'])
+                numOfGenerations = int(row['gen'])
                 mutationRate_val = float(row['mutInst'])
                 mutationRateRegisters_val = float(row['mutRegs'])
                 crossoverRate_val = float(row['cross'])
 
             param_combination = (
-                numOfRegisters_val,
-                numOfInstructions_val,
-                populationSize_val,
-                numOfGenerations,
+                int(numOfRegisters_val),
+                int(numOfInstructions_val),
+                int(populationSize_val),
+                int(numOfGenerations),
                 mutationRate_val,
                 mutationRateRegisters_val,
                 crossoverRate_val
@@ -207,7 +207,7 @@ def run_csv_mode(csv_file_path):
                         seed_dir_path = os.path.join(function_dir_path, f"seed_{i}")
                         os.makedirs(seed_dir_path, exist_ok=True)
 
-                        # submit_job(seed, param_combination, input_file_name, seed_dir_path)
+                        submit_job(seed, param_combination, input_file_name, seed_dir_path)
 
                 # Kombination zur getesteten Menge hinzufügen
                 tested_combinations.add(param_combination)
