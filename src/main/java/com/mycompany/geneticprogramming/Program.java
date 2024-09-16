@@ -38,7 +38,7 @@ public class Program extends Global {
      * Instantiate a program with no instructions.
      * Registers are created and initialize with 0.0.
      *
-     * @param numberOfRegisters
+     * @param numberOfFreeRegisters
      */
     public Program() {
         initialRegisterStates = new double[numberOfFreeRegisters];
@@ -75,7 +75,7 @@ public class Program extends Global {
      * Returns a random program of a given length.
      *
      * @param size of the program generated.
-     * @param numberOfRegisters the number of registeres that can be used
+     * @param numberOfFreeRegisters the number of registeres that can be used
      * @return The randomly generated program.
      *
      */

@@ -125,6 +125,7 @@ public class GeneticProgramming extends Global {
 
     private void validateFitnessConsistency(Population population) {
         Map<String, List<Individual>> individualsByArithmeticForm = new HashMap<>();
+        double epsilon = 1e-30;  // Small tolerance for floating-point comparison
 
         for (Individual individual : population) {
             Program program = individual.getProgram();
@@ -146,7 +147,7 @@ public class GeneticProgramming extends Global {
                         Individual ind2 = individuals.get(j);
 
                         // Überprüfe, ob die Instruktionen unterschiedlich sind
-                        if (!ind1.getProgram().instructions.equals(ind2.getProgram().instructions)) {
+                        if (Math.abs(ind1.getFitnessMSE() - ind2.getFitnessMSE()) > epsilon) {
                             // Drucke die arithmetische Form und die Fitnesswerte der zwei Programme
                             System.out.println("Arithmetische Form: " + entry.getKey());
                             System.out.println("Individuum 1 Fitness: " + ind1.getFitnessMSE());
