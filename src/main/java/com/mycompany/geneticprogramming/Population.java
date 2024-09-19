@@ -77,12 +77,12 @@ public class Population extends ArrayList<Individual> {
         diversity = (double) diverseIndividuals.size() / this.size();
     }
 
-    /*public void applyFitnessSharing() {
+    public void applyFitnessSharing() {
         for (Individual individual : this) {
             int nicheCount = diverseIndividuals.get(individual).getCount(); // Get how many times this individual appears
             double originalFitness = individual.getFitnessMSE(); // Assume getFitnessMSE() returns the fitness
             double sharedFitness = originalFitness * (double) nicheCount; // Apply fitness sharing
             individual.setFitnessShared(sharedFitness); // Store the shared fitness in the individual
         }
-    }*/
+    }
 }
