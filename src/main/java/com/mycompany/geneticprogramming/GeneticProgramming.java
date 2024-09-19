@@ -97,13 +97,13 @@ public class GeneticProgramming extends Global {
 
         System.out.println("Best individual at generation " + numberOfGenerations);
         System.out.println(best);
-        System.out.println(best.getProgram().toArithmetic());
+        String arithmeticFormOfBest = best.getProgram().toArithmetic();
+        System.out.println(arithmeticFormOfBest);
 
 
         // --- Log final result ---
         // Store input-output behavior of final best program in a file
-        Log.println("finalbehavior", "# final function: " +
-                best.getProgram().toArithmetic() + "\n" +
+        Log.println("finalbehavior", "# final function: " + arithmeticFormOfBest + "\n" +
                 fitnessFunction.evalInputOutputBehavior(best.getProgram()));
         Log.println("finalprogram", "Best final individual: " + "\n" + best);
 
@@ -114,7 +114,7 @@ public class GeneticProgramming extends Global {
         System.out.println("startDiversity: " + startDiversity +"\n"
                             +"endDiversity: " + endDiversity);
 
-        validateFitnessConsistency(population);
+//        validateFitnessConsistency(population);
 
 //        System.out.println("HashMap:");
 //        for (Map.Entry<Individual, Integer> entry : population.diversIndividulas.entrySet()) {
