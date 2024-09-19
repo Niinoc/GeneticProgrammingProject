@@ -66,8 +66,8 @@ public class FitnessRegression extends FitnessFunction {
             //overrides important static variables in Global after Input Read-out
             Global.numberOfFitnessCases = fitnessCasesInput.size();
             Global.numberOfInputs = fitnessCasesInput.get(0).size();
-            Global.numberOfFreeRegisters += numberOfInputs;
-            Global.addedProgramLength += numberOfInputs;
+            Global.numberOfRegisters += numberOfInputs;
+            Global.ProgramLength += numberOfInputs;
         } catch (IOException e) {
             e.printStackTrace();
         }

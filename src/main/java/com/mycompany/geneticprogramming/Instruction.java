@@ -3,8 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.geneticprogramming;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * An Instruction is one row of our program, e.g.  R3 := R0 + R5
@@ -51,15 +49,15 @@ public class Instruction extends Global{
         Operator op = Operator.random();
         if (op.numberOfOperands >= 2) {
             return new Instruction(Operator.random(),
-                    MyRandom.nextInt(numberOfFreeRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
-                    MyRandom.nextInt(numberOfFreeRegisters),
-                    (MyRandom.nextInt(numberOfFreeRegisters))
+                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfRegisters),
+                    (MyRandom.nextInt(numberOfRegisters))
             );
         }
         else {
             return new Instruction(Operator.random(),
-                    MyRandom.nextInt(numberOfFreeRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
-                    MyRandom.nextInt(numberOfFreeRegisters)
+                    MyRandom.nextInt(numberOfRegisters - numberOfInputs) + numberOfInputs, // do not allow the input to be overwritten
+                    MyRandom.nextInt(numberOfRegisters)
             );
         }
     }

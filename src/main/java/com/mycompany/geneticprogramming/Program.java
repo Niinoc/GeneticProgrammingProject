@@ -38,10 +38,10 @@ public class Program extends Global {
      * Instantiate a program with no instructions.
      * Registers are created and initialize with 0.0.
      *
-     * @param numberOfFreeRegisters
+     * @param numberOfRegisters
      */
     public Program() {
-        initialRegisterStates = new double[numberOfFreeRegisters];
+        initialRegisterStates = new double[numberOfRegisters];
     }
 
     /**
@@ -82,7 +82,7 @@ public class Program extends Global {
     public static Program random(int size) {
         Program program = new Program(); // Instantiate an empty program
         // Generate random initial states for the registers of the program
-        for (int i = 0; i < numberOfFreeRegisters; i++) {
+        for (int i = 0; i < numberOfRegisters; i++) {
             program.initialRegisterStates[i] = randomRegisterValue();
         }
         // Generate random instructions

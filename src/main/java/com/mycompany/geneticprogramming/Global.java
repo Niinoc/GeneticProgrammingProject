@@ -31,8 +31,8 @@ public class Global {
         return Long.parseLong(processName.split("@")[0]);
     }
 
-    static int numberOfFreeRegisters = 5;           // Must be greater equal to the number of inputs, so this will now be added to numberOfInputs
-    static int addedProgramLength = 15;        // Length is fixed, this will also be added to numberOfInputs (new Mutation already implemented)
+    static int numberOfRegisters = 10;           // Must be greater equal to the number of inputs, so this will now be added to numberOfInputs
+    static int ProgramLength = 10;        // Length is fixed, this will also be added to numberOfInputs (new Mutation already implemented)
 
 
     static int populationSize = 200;
@@ -60,8 +60,8 @@ public class Global {
     static String parametersToCSV() {
         return "seed," + seed + "\n" +
                 "numberOfInputs," + numberOfInputs + "\n" +
-                "numberOfRegisters," + numberOfFreeRegisters + "\n" +
-                "initialProgramLength," + addedProgramLength + "\n" +
+                "numberOfRegisters," + numberOfRegisters + "\n" +
+                "initialProgramLength," + ProgramLength + "\n" +
                 "populationSize," + populationSize + "\n" +
                 "numberOfGenerations," + numberOfGenerations + "\n" +
                 "numberOfFitnessCases," + numberOfFitnessCases + "\n" +
@@ -77,8 +77,8 @@ public class Global {
         return "Parameters:\n" +
                 "seed: " + seed + "\n" +
                 "numberOfInputs: " + numberOfInputs + "\n" +
-                "numberOfRegisters: " + numberOfFreeRegisters + "\n" +
-                "initialProgramLength: " + addedProgramLength + "\n" +
+                "numberOfRegisters: " + numberOfRegisters + "\n" +
+                "initialProgramLength: " + ProgramLength + "\n" +
                 "populationSize: " + populationSize + "\n" +
                 "numberOfGenerations: " + numberOfGenerations + "\n" +
                 "numberOfFitnessCases: " + numberOfFitnessCases + "\n" +
@@ -94,8 +94,8 @@ public class Global {
         return "["
                 + seed +"|"
                 + numberOfInputs +"|"
-                + numberOfFreeRegisters +"|"
-                + addedProgramLength +"|"
+                + numberOfRegisters +"|"
+                + ProgramLength +"|"
                 + populationSize +"|"
                 + numberOfGenerations +"|"
                 + numberOfFitnessCases +"|"
