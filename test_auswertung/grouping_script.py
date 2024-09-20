@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Load the data
-file_path = os.path.join('..', 'log', 'test_randomsearchV3', 'test_randomsearchV3_testdata.csv')
+file_path = os.path.join('..', 'log', 'test_randomsearchV4_2', 'test_randomsearchV4_2_testdata.csv')
 data = pd.read_csv(file_path, delimiter=';')
 
 # Filter based on good_fitness and final_fitness > threshold
@@ -33,7 +33,7 @@ print('Group 2 (final_fitness > threshold) grouped results:')
 print(group_2_grouped)
 
 # Save the grouped results to CSV files with semicolon as the delimiter
-save_path = os.path.join('..', 'log', 'test_randomsearchV3', 'testdaten_randomsearchV3_gefiltert_1e-11.csv')
-save_path2 = os.path.join('..', 'log', 'test_randomsearchV3', 'testdaten_randomsearchV3_gefiltert_1e-6.csv')
+save_path = os.path.join('..', 'log', 'test_randomsearchV4_2', 'testdaten_randomsearchV4_2_gefiltert_1e-11.csv')
+save_path2 = os.path.join('..', 'log', 'test_randomsearchV4_2', 'testdaten_randomsearchV4_2_gefiltert_1e-6.csv')
 group_1_grouped.to_csv(save_path, index=False, sep=';')
 group_2_grouped.to_csv(save_path2, index=False, sep=';')

@@ -12,10 +12,24 @@ log_dir = "log"
 
 # Erstelle Verzeichnisstruktur
 os.makedirs(log_dir, exist_ok=True)
-test_dir = os.path.join(log_dir, "test_randomsearchV3_2")
+test_dir = os.path.join(log_dir, "test_randomsearchV3_5")
 
 os.makedirs(test_dir, exist_ok=True)
-tested_combinations_file = os.path.join(test_dir, "tested_combinations_2.json")
+tested_combinations_file = os.path.join(test_dir, "tested_combinations_3_5.json")
+
+mode = 'csv'  # Wechseln zwischen 'csv' und 'random'
+csv_file_path = 'log/test_randomsearchV3/testdaten_randomsearchV3_gefiltert_1e-6.csv'  # Den Pfad zur CSV-Datei angeben
+
+input_file_list = [
+    # "I.6.2a",
+    "I.8.14",
+    "I.11.19",
+    "II.11.28",
+    # "III.9.52"
+    #"I.27.6",
+    #"II.3.24",
+    #"II.38.14"
+]
 
 # Datei zur Speicherung der bereits getesteten Kombinationen
 if os.path.exists(tested_combinations_file):
@@ -38,14 +52,6 @@ def compile_java_code():
 
 
 compile_java_code()
-
-input_file_list = [
-    # "I.6.2a",
-    "I.8.14",
-    "I.11.19",
-    "II.11.28",
-    # "III.9.52"
-]
 
 
 def save_git_version():
@@ -84,11 +90,11 @@ def run_random_mode():
     # Anzahl der Läufe pro Parameterkombination
     NUM_RUNS = 5
     # Anzahl der Parameterkombinationen, die getestet werden sollen
-    num_combinations = 2  # total 1300
+    num_combinations = 600  # total 600
     # Manuell festgelegte Parameterbereiche
-    numOfInstructions = [10, 20, 30, 40, 50, 100]
+    numOfInstructions = [10, 20, 30, 40]
     populationSize = [50, 100, 150, 200, 250, 1250, 2500]
-    mutationRate = [0.05, 0.07, 0.09, 0.15, 0.25, 0.5]
+    mutationRate = [0.05, 0.07, 0.09, 0.15]
     mutationRateRegisters = [0.1, 0.2, 0.3, 0.4, 0.5, 0.7]
     crossoverRate = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7]
     maxFitnessEvals = 5000000
@@ -163,8 +169,9 @@ def run_random_mode():
 save_git_version()
 print("All jobs submitted.")
 
-
 def run_csv_mode(csv_file_path):
+    counter = 0
+
     # CSV-Datei einlesen und Parameterkombinationen verarbeiten
     with open(csv_file_path, "r") as file:
         csv_reader = csv.DictReader(file, delimiter=';')
@@ -202,11 +209,11 @@ def run_csv_mode(csv_file_path):
                 for input_file_name in input_file_list:
                     function_dir_path = os.path.join(param_dir_path, input_file_name)
 
-                    for i in range(6, 26):  # Seeds von 6 bis 25
+                    for i in range(26, 76):  # Seeds von 26 bis 75
                         seed = i
                         seed_dir_path = os.path.join(function_dir_path, f"seed_{i}")
                         os.makedirs(seed_dir_path, exist_ok=True)
-
+                        counter = counter +1
                         submit_job(seed, param_combination, input_file_name, seed_dir_path)
 
                 # Kombination zur getesteten Menge hinzufügen
@@ -215,13 +222,12 @@ def run_csv_mode(csv_file_path):
                 # Aktualisiere die Liste der getesteten Kombinationen
                 with open(tested_combinations_file, "w") as file:
                     json.dump(list(tested_combinations), file)
+        print(counter)
+
 
 
 save_git_version()
 print("All CSV jobs submitted.")
-
-mode = 'csv'  # Wechseln zwischen 'csv' und 'random'
-csv_file_path = 'log/test_randomsearchV3/testdaten_randomsearchV3_gefiltert_1e-11.csv'  # Den Pfad zur CSV-Datei angeben
 
 if mode == 'csv':
     run_csv_mode(csv_file_path)
