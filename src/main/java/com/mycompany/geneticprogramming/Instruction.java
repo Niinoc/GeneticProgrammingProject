@@ -64,25 +64,6 @@ public class Instruction extends Global{
         }
     }
 
-    /**
-     * provides important functionality for HashMap
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Instruction that = (Instruction) obj;
-        return operator == that.operator && Arrays.equals(operands, that.operands);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(operator);
-        result = 31 * result + Arrays.hashCode(operands);
-        return result;
-    }
-
     @Override
     public String toString(){
         if (operator.numberOfOperands == 3)
