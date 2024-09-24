@@ -188,7 +188,7 @@ class RandomSearchAnalyzer:
                     final_function = first_line.split('# final function: ')[1]
                     try:
                         # Timeout auf 10 Sekunden setzen
-                        signal.alarm(60)
+                        signal.alarm(45)
 
                         # Versuch, den Ausdruck zu sympify-en und zu simplifizieren
                         sympy_expr = sp.sympify(final_function)
