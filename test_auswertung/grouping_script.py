@@ -2,13 +2,13 @@ import os
 import pandas as pd
 
 # Load the data
-file_path = os.path.join('..', 'log', 'test_randomsearchV6', 'test_randomsearchV6_testdata.csv')
+file_path = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'test_randomsearchVTHE_ONE_testdata.csv')
 data = pd.read_csv(file_path, delimiter=';')
 
 # Save the grouped results to CSV files with semicolon as the delimiter
-save_path = os.path.join('..', 'log', 'test_randomsearchV6', 'testdaten_randomsearchV6_gefiltert_1e-11.csv')
-save_path2 = os.path.join('..', 'log', 'test_randomsearchV6', 'testdaten_randomsearchV6_gefiltert_1e-6.csv')
-save_path3 = os.path.join('..', 'log', 'test_randomsearchV6', 'testdaten_randomsearchV6_gefiltert_1e-11_count_greater_than_1.csv')
+save_path = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-11.csv')
+save_path2 = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-6.csv')
+save_path3 = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-11_count_greater_than_1.csv')
 
 # Filter based on good_fitness and final_fitness > threshold
 threshold = 1e-6

@@ -12,23 +12,27 @@ log_dir = "log"
 
 # Erstelle Verzeichnisstruktur
 os.makedirs(log_dir, exist_ok=True)
-test_dir = os.path.join(log_dir, "test_randomsearchVfinal")
+test_dir = os.path.join(log_dir, "test_randomsearchVTHE_ONE")
 
 os.makedirs(test_dir, exist_ok=True)
-tested_combinations_file = os.path.join(test_dir, "tested_combinations_final.json")
+tested_combinations_file = os.path.join(test_dir, "tested_combinations_THE_ONE.json")
 
 mode = 'random'  # Wechseln zwischen 'csv' und 'random'
 csv_file_path = 'log/test_randomsearchV5/testdaten_randomsearchV5_gefiltert_1e-11_count_greater_than_1.csv'  # Den Pfad zur CSV-Datei angeben
 
 input_file_list = [
-    # "I.6.2a",
+    "I.6.2a",
     "I.8.14",
     "I.11.19",
-    "II.11.28",
-    # "III.9.52"
     "I.27.6",
+    "I.29.4",
+    "I.29.16",
+    "I.39.1",
+    "I.50.26",
     "II.3.24",
-    "II.38.14"
+    "II.11.28",
+    "II.38.14",
+    "III.9.52"
 ]
 
 # Datei zur Speicherung der bereits getesteten Kombinationen
@@ -90,17 +94,17 @@ def run_random_mode():
     skip = 0
     num_tests = 1
     # Anzahl der Läufe pro Parameterkombination
-    NUM_RUNS = 25
+    NUM_RUNS = 50
     # Anzahl der Parameterkombinationen, die getestet werden sollen
-    num_combinations = 90  # total 600
+    num_combinations = 1  # total 600
     # Manuell festgelegte Parameterbereiche
-    numOfInstructions = [1, 5, 10, 30]
-    numOfRegisters = [1, 5, 10]
-    populationSize = [50, 100]
+    numOfInstructions = [10]
+    numOfRegisters = [5]
+    populationSize = [50]
     mutationRate = [0.07]
-    mutationRateRegisters = [0.2, 0.3, 0.7]
-    crossoverRate = [0.0, 0.05, 0.1, 0.15, 0.2, 0.7]
-    maxFitnessEvals_val = [5000000, 10000000]
+    mutationRateRegisters = [0.2]
+    crossoverRate = [0.0]
+    maxFitnessEvals = [5000000]
 
     # Speichere den Parameter-Suchraum in einer menschenlesbaren Datei
     search_space_file = os.path.join(test_dir, "search_space_info.txt")
@@ -112,7 +116,7 @@ def run_random_mode():
 
         space_file.write("Parameter Ranges:\n")
         space_file.write(f"numOfInstructions: {numOfInstructions}\n")
-        space_file.write(f"Register Count: {numOfRegisters}\n\n")
+        space_file.write(f"numOfRegisters: {numOfRegisters}\n\n")
 
         space_file.write(f"populationSize: {populationSize}\n")
         space_file.write(f"mutationRate: {mutationRate}\n")
@@ -135,8 +139,8 @@ def run_random_mode():
         mutationRate_val = random.choice(mutationRate)
         mutationRateRegisters_val = random.choice(mutationRateRegisters)
         crossoverRate_val = random.choice(crossoverRate)
-        maxFitnessEvals = random.choice(maxFitnessEvals_val)
-        numOfGenerations = int(maxFitnessEvals / populationSize_val)
+        maxFitnessEvals_val = random.choice(maxFitnessEvals)
+        numOfGenerations = int(maxFitnessEvals_val / populationSize_val)
 
         param_combination = (
             numOfRegisters_val,
