@@ -2,6 +2,10 @@
 /shelf/
 /workspace.xml
 /log/
+/log/*
+!/log/testdata/
+!/log/testdata/*
+
 /in/
 # IntelliJ IDEA
 .idea/
