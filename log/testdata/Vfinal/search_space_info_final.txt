@@ -1,0 +1,24 @@
+Parameter Search Space and Test Configuration
+============================================
+
+Number of Runs per Combination: 25
+Total Number of Combinations: 90
+
+Parameter Ranges:
+numOfInstructions: [1, 5, 10, 30]
+Register Count: [1, 5, 10]
+
+populationSize: [50, 100]
+mutationRate: [0.07]
+mutationRateRegisters: [0.2, 0.3, 0.7]
+crossoverRate: [0.0, 0.05, 0.1, 0.15, 0.2, 0.7]
+maxFitnessEvals: [5000000, 10000000]
+
+Calculated Generations: [5000000, 10000000] / populationSize
+Functions Tested:
+- I.8.14
+- I.11.19
+- II.11.28
+- I.27.6
+- II.3.24
+- II.38.14
