@@ -12,23 +12,27 @@ log_dir = "log"
 
 # Erstelle Verzeichnisstruktur
 os.makedirs(log_dir, exist_ok=True)
-test_dir = os.path.join(log_dir, "test_randomsearchV3_5")
+test_dir = os.path.join(log_dir, "test_randomsearchVTHE_ONE")
 
 os.makedirs(test_dir, exist_ok=True)
-tested_combinations_file = os.path.join(test_dir, "tested_combinations_3_5.json")
+tested_combinations_file = os.path.join(test_dir, "tested_combinations_THE_ONE.json")
 
-mode = 'csv'  # Wechseln zwischen 'csv' und 'random'
-csv_file_path = 'log/test_randomsearchV3/testdaten_randomsearchV3_gefiltert_1e-6.csv'  # Den Pfad zur CSV-Datei angeben
+mode = 'random'  # Wechseln zwischen 'csv' und 'random'
+csv_file_path = 'log/test_randomsearchV5/testdaten_randomsearchV5_gefiltert_1e-11_count_greater_than_1.csv'  # Den Pfad zur CSV-Datei angeben
 
 input_file_list = [
-    # "I.6.2a",
+    "I.6.2a",
     "I.8.14",
     "I.11.19",
+    "I.27.6",
+    "I.29.4",
+    "I.29.16",
+    "I.39.1",
+    "I.50.26",
+    "II.3.24",
     "II.11.28",
-    # "III.9.52"
-    #"I.27.6",
-    #"II.3.24",
-    #"II.38.14"
+    "II.38.14",
+    "III.9.52"
 ]
 
 # Datei zur Speicherung der bereits getesteten Kombinationen
@@ -86,18 +90,21 @@ def submit_job(seed, param_combination, input_file_name, seed_dir_path):
 
 
 def run_random_mode():
+    counter = 0
+    skip = 0
     num_tests = 1
     # Anzahl der Läufe pro Parameterkombination
-    NUM_RUNS = 5
+    NUM_RUNS = 50
     # Anzahl der Parameterkombinationen, die getestet werden sollen
-    num_combinations = 600  # total 600
+    num_combinations = 1  # total 600
     # Manuell festgelegte Parameterbereiche
-    numOfInstructions = [10, 20, 30, 40]
-    populationSize = [50, 100, 150, 200, 250, 1250, 2500]
-    mutationRate = [0.05, 0.07, 0.09, 0.15]
-    mutationRateRegisters = [0.1, 0.2, 0.3, 0.4, 0.5, 0.7]
-    crossoverRate = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7]
-    maxFitnessEvals = 5000000
+    numOfInstructions = [10]
+    numOfRegisters = [5]
+    populationSize = [50]
+    mutationRate = [0.07]
+    mutationRateRegisters = [0.2]
+    crossoverRate = [0.0]
+    maxFitnessEvals = [5000000]
 
     # Speichere den Parameter-Suchraum in einer menschenlesbaren Datei
     search_space_file = os.path.join(test_dir, "search_space_info.txt")
@@ -109,6 +116,8 @@ def run_random_mode():
 
         space_file.write("Parameter Ranges:\n")
         space_file.write(f"numOfInstructions: {numOfInstructions}\n")
+        space_file.write(f"numOfRegisters: {numOfRegisters}\n\n")
+
         space_file.write(f"populationSize: {populationSize}\n")
         space_file.write(f"mutationRate: {mutationRate}\n")
         space_file.write(f"mutationRateRegisters: {mutationRateRegisters}\n")
@@ -116,7 +125,6 @@ def run_random_mode():
         space_file.write(f"maxFitnessEvals: {maxFitnessEvals}\n\n")
 
         space_file.write(f"Calculated Generations: {maxFitnessEvals} / populationSize\n")
-        space_file.write(f"Register Count (equal to numOfInstructions): {numOfInstructions}\n\n")
 
         space_file.write("Functions Tested:\n")
         for function in input_file_list:
@@ -124,14 +132,15 @@ def run_random_mode():
         print("Search space information saved successfully.")
 
     # Zufällige Parameterkombinationen generieren und Jobs einreichen
-    for _ in range(num_combinations):
+    while (len(tested_combinations) < num_combinations):
         numOfInstructions_val = random.choice(numOfInstructions)
-        numOfRegisters_val = numOfInstructions_val
+        numOfRegisters_val = random.choice(numOfRegisters)
         populationSize_val = random.choice(populationSize)
         mutationRate_val = random.choice(mutationRate)
         mutationRateRegisters_val = random.choice(mutationRateRegisters)
         crossoverRate_val = random.choice(crossoverRate)
-        numOfGenerations = int(maxFitnessEvals / populationSize_val)
+        maxFitnessEvals_val = random.choice(maxFitnessEvals)
+        numOfGenerations = int(maxFitnessEvals_val / populationSize_val)
 
         param_combination = (
             numOfRegisters_val,
@@ -152,6 +161,8 @@ def run_random_mode():
                 function_dir_path = os.path.join(param_dir_path, input_file_name)
 
                 for i in range(1, NUM_RUNS + 1):
+                    counter = counter +1
+
                     seed = i
                     seed_dir_path = os.path.join(function_dir_path, f"seed_{i}")
                     os.makedirs(seed_dir_path, exist_ok=True)
@@ -164,6 +175,10 @@ def run_random_mode():
             # Aktualisiere die Liste der getesteten Kombinationen
             with open(tested_combinations_file, "w") as file:
                 json.dump(list(tested_combinations), file)
+        else:
+            skip = skip+1
+    print(counter)
+    print(skip)
 
 
 save_git_version()
@@ -171,6 +186,21 @@ print("All jobs submitted.")
 
 def run_csv_mode(csv_file_path):
     counter = 0
+    
+    # Speichere den Parameter-Suchraum in einer menschenlesbaren Datei
+    search_space_file = os.path.join(test_dir, "search_space_info.txt")
+    with open(search_space_file, "w") as space_file:
+        space_file.write("Parameter Search Space and Test Configuration\n")
+        space_file.write("============================================\n\n")
+        space_file.write(f"testing extended seed list on {csv_file_path}\n")
+        space_file.write(f"testing seeds 1 to 25\n")
+
+
+        space_file.write("Functions Tested:\n")
+        for function in input_file_list:
+            space_file.write(f"- {function}\n")
+        print("Search space information saved successfully.")
+
 
     # CSV-Datei einlesen und Parameterkombinationen verarbeiten
     with open(csv_file_path, "r") as file:
@@ -209,7 +239,7 @@ def run_csv_mode(csv_file_path):
                 for input_file_name in input_file_list:
                     function_dir_path = os.path.join(param_dir_path, input_file_name)
 
-                    for i in range(26, 76):  # Seeds von 26 bis 75
+                    for i in range(51, 61):  # Seeds von 11 bis 50
                         seed = i
                         seed_dir_path = os.path.join(function_dir_path, f"seed_{i}")
                         os.makedirs(seed_dir_path, exist_ok=True)
