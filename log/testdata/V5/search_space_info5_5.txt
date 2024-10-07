@@ -1,0 +1,9 @@
+Parameter Search Space and Test Configuration
+============================================
+
+testing extended seed list on log/test_randomsearchV5/testdaten_randomsearchV5_gefiltert_1e-11_count_greater_than_1.csv
+testing seeds 11 to 50
+Functions Tested:
+- I.8.14
+- I.11.19
+- II.11.28
