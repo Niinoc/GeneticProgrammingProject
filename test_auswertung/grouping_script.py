@@ -1,19 +1,18 @@
 import os
 import pandas as pd
 
-# Load the data
-file_path = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'test_randomsearchVTHE_ONE_testdata.csv')
-data = pd.read_csv(file_path, delimiter=';')
+base_dir = os.path.join('C:\\', 'Users', 'Nick_', 'Programmieren', 'IdeaProjects', 'GeneticProgramming')
+os.chdir(base_dir)
 
-# Save the grouped results to CSV files with semicolon as the delimiter
-save_path = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-11.csv')
-save_path2 = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-6.csv')
-save_path3 = os.path.join('..', 'log', 'test_randomsearchVTHE_ONE', 'testdaten_randomsearchVTHE_ONE_gefiltert_1e-11_count_greater_than_1.csv')
+# Load the data
+file_path = os.path.join('log', 'testdata', 'test_randomsearchV4_2_testdata.csv')
+data = pd.read_csv(file_path, delimiter=';')
 
 # Filter based on good_fitness and final_fitness > threshold
 threshold = 1e-6
 group_1 = data[data['good_fitness'] == True].copy()  # Use .copy() to avoid warnings
 group_2 = data[data['final_fitness'] < threshold].copy()
+group_3 = data.copy()
 
 # Define the parameter columns to group by
 parameter_columns = ['regs', 'inst', 'popS', 'gen', 'mutInst', 'mutRegs', 'cross']
@@ -21,9 +20,7 @@ parameter_columns = ['regs', 'inst', 'popS', 'gen', 'mutInst', 'mutRegs', 'cross
 # Add a count column before performing groupby
 group_1['count'] = group_1.groupby(parameter_columns)[parameter_columns[0]].transform('size')
 group_2['count'] = group_2.groupby(parameter_columns)[parameter_columns[0]].transform('size')
-
-# Create group_3: good_fitness == True AND count > 1
-group_3 = group_1[group_1['count'] > 1].copy()
+group_3['count'] = group_3.groupby(parameter_columns)[parameter_columns[0]].transform('size')
 
 # Group by the parameter columns (excluding 'seed_dir') and aggregate other columns, but keep the count intact
 group_1_grouped = group_1.groupby(parameter_columns).agg({'count': 'first', **{col: list for col in group_1.columns if col not in parameter_columns + ['count']}}).reset_index()
@@ -42,9 +39,10 @@ print(group_1_grouped)
 print('Group 2 (final_fitness > threshold) grouped results:')
 print(group_2_grouped)
 
-print('Group 3 (good_fitness=True AND count > 1) grouped results:')
-print(group_3_grouped)
-
+# Save the grouped results to CSV files with semicolon as the delimiter
+save_path = os.path.join('..', 'log', 'test_randomsearchV4_2', 'testdaten_randomsearchV4_2_gefiltert_1e-11.csv')
+save_path2 = os.path.join('..', 'log', 'test_randomsearchV4_2', 'testdaten_randomsearchV4_2_gefiltert_1e-6.csv')
+# save_path3 = os.path.join('log', 'testdata', 'testdaten_randomsearchV4_2_ungefiltert.csv')
 group_1_grouped.to_csv(save_path, index=False, sep=';')
 group_2_grouped.to_csv(save_path2, index=False, sep=';')
-group_3_grouped.to_csv(save_path3, index=False, sep=';')
+# group_3_grouped.to_csv(save_path3, index=False, sep=';')
