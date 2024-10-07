@@ -1,0 +1,9 @@
+function_dir;success_rate (%);best_fitness;seed_dir;found_generation;mean_seed_dir;mean_found_generation
+I.11.19;16.0;0.0;seed_18;894;seed_37;26525
+I.27.6;42.0;0.0;seed_5;190;seed_42;27008
+I.29.4;100.0;0.0;seed_14;1;seed_37;95
+I.39.1;100.0;0.0;seed_10;28;seed_50;1023
+I.50.26;14.000000000000002;3.071665668303202e-32;seed_50;6131;seed_32;38027
+I.8.14;18.0;0.0;seed_39;4280;seed_2;36889
+II.3.24;56.00000000000001;0.0;seed_31;691;seed_39;38970
+II.38.14;48.0;0.0;seed_1;53;seed_8;23284
