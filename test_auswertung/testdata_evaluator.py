@@ -405,14 +405,13 @@ def plot_stacked_bars_with_lines(data_tuple, param, percentages_df, save_path=No
             label=solution_name
         )
 
-    ax2.set_ylabel('Lösungsanzahl je Problem in den Besten 30%')
+    ax2.set_ylabel('Lösungsanzahl je Problem in den Besten 20%')
 
     # Legenden kombinieren
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper right')
 
-    plt.title(f"Lösungshäufigkeiten der Parameterkombination mit Werten {param_to_latex.get(param, param)}")
     plt.tight_layout()
     # Speichern als PDF, wenn der Pfad angegeben ist
     if save_path:
@@ -454,16 +453,16 @@ def main():
     os.chdir(base_dir)
 
     # Setze Pfad zur Datendatei
-    log_dir = os.path.join('log', 'testdata', 'V4')
-    save_path = os.path.join(log_dir, 'testdaten_randomsearchV4_2_gefiltert_1e-11_plots_new')
+    log_dir = os.path.join('log', 'testdata', 'Vfinal')
+    save_path = os.path.join(log_dir, 'testdaten_randomsearchVfinal_gefiltert_1e-11_plots_gen_100k')
     os.makedirs(log_dir, exist_ok=True)
     os.makedirs(save_path, exist_ok=True)
-    test_dir = os.path.join(log_dir, "testdaten_randomsearchV4_2_gefiltert_1e-11.csv")
+    test_dir = os.path.join(log_dir, "testdaten_randomsearchVfinal_gefiltert_1e-11.csv")
 
     # Daten einlesen
     df = read_data(test_dir)
 
-    # df = filter_data(df, 'gen == 100000')
+    df = filter_data(df, 'gen == 100000')
 
     # Neue Methode aufrufen, um zusätzliche Spalten zu erstellen (Top 5 Lösungen)
     processed_df = process_additional_columns(df, top_n_solutions=5)
