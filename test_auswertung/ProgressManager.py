@@ -1,3 +1,6 @@
+# KI-Nutzungshinweis: dieser Codes wurde mithilfe von GPT-basierten KI-Tools generiert (GPT-4o).
+# KI-basierte Anpassungen und Überarbeitungen wurden nachträglich durchgeführt.
+
 import json
 import os
 

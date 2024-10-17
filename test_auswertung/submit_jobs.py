@@ -1,3 +1,5 @@
+# dieser Code beruht auf shell-Skripten, welche für SGE geschrieben wurden
+
 import subprocess
 import random
 import os

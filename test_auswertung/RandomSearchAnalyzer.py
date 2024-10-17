@@ -1,3 +1,6 @@
+# KI-Nutzungshinweis: dieser Codes wurde mithilfe von GPT-basierten KI-Tools generiert (vorallem GPT-4o).
+# KI-basierte und manuelle Anpassungen und Überarbeitungen wurden nachträglich durchgeführt.
+
 import os
 import re
 import math

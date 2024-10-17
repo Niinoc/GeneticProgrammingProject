@@ -1,3 +1,6 @@
+# KI-Nutzungshinweis: dieser Codes wurde mithilfe von GPT-basierten KI-Tools generiert (o1-mini).
+# KI-basierte und manuelle Anpassungen und Überarbeitungen wurden nachträglich durchgeführt.
+
 import os
 import pandas as pd
 

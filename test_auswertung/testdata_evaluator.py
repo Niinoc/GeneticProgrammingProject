@@ -1,3 +1,8 @@
+# KI-Nutzungshinweis: dieser Codes beruht auf FitnessDataAnalyzerOverhaul.py und wurde
+# mithilfe von GPT-basierten KI-Tools generiert (vorallem o1-preview und o1-mini).
+# KI-basierte und manuelle Anpassungen und Überarbeitungen wurden nachträglich durchgeführt.
+
+
 import pandas as pd
 import ast
 import os

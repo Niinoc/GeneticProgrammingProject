@@ -1,3 +1,5 @@
+# dieser Code wurde nicht mittels KI generiert und dient als Basis für FitnessDataAnalyzerOverhaul.py
+
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
